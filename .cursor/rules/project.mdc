@@ -1,0 +1,23 @@
+---
+description: ProFolio project rules
+alwaysApply: true
+---
+
+# ProFolio
+Multi-tenant portfolio platform for any profession. Owners sign up, build a
+portfolio, and share a public /[username] page with an AI chatbot that answers
+questions about the profile. FREE/PRO tiers, resume parsing, and themes come
+after the v1 launch.
+
+## Stack
+Next.js App Router, TypeScript strict, Tailwind, PostgreSQL + Prisma,
+Server Actions for mutations, Route Handlers for /api/chat, UploadThing for
+file uploads (resume, photos).
+
+## Rules
+- Server Components by default; add 'use client' only when needed
+- Validate all input on the server with zod
+- Every write must check the logged-in user owns the record
+- Never commit secrets; use .env
+- Semantic, accessible HTML
+- Explain your plan before making big changes
