@@ -1,9 +1,9 @@
 ---
-description: ProFolio project rules
+description: Handle project rules
 alwaysApply: true
 ---
 
-# ProFolio
+# Handle
 Multi-tenant portfolio platform for any profession. Owners sign up, build a
 portfolio, and share a public /[username] page with an AI chatbot that answers
 questions about the profile. FREE/PRO tiers, resume parsing, and themes come
