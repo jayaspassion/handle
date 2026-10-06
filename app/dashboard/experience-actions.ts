@@ -42,11 +42,15 @@ export type ExperienceField =
   | "endDate"
   | "description";
 
+export type ExperienceValues = Record<ExperienceField, string> & {
+  current: string;
+};
+
 export type ExperienceFormState = {
   status: "idle" | "success" | "error";
   message?: string;
   errors?: Partial<Record<ExperienceField, string>>;
-  values?: Record<ExperienceField, string> & { current: string };
+  values?: ExperienceValues;
 };
 
 // "2023-06" -> Date (first of that month, UTC)
@@ -54,14 +58,17 @@ function monthToDate(value: string) {
   return new Date(`${value}-01T00:00:00.000Z`);
 }
 
-export async function addExperience(
+// Creates a new entry, or updates one when the form sends a hidden "id"
+export async function saveExperience(
   _prev: ExperienceFormState,
   formData: FormData,
 ): Promise<ExperienceFormState> {
   const { userId } = await auth();
   if (!userId) return { status: "error", message: "You must be signed in." };
 
-  const raw = {
+  const id = String(formData.get("id") ?? "");
+
+  const raw: ExperienceValues = {
     company: String(formData.get("company") ?? ""),
     role: String(formData.get("role") ?? ""),
     location: String(formData.get("location") ?? ""),
@@ -85,7 +92,30 @@ export async function addExperience(
     return { status: "error", errors, values: raw };
   }
 
-  // Ownership: find the profile through the logged-in user
+  const d = parsed.data;
+  const data = {
+    company: d.company,
+    role: d.role,
+    location: d.location || null,
+    startDate: monthToDate(d.startDate),
+    endDate: d.current ? null : monthToDate(d.endDate),
+    description: d.description || null,
+  };
+
+  if (id) {
+    // Edit: the ownership check lives in the query itself
+    const result = await prisma.experience.updateMany({
+      where: { id, profile: { user: { clerkId: userId } } },
+      data,
+    });
+    if (result.count === 0) {
+      return { status: "error", message: "Entry not found.", values: raw };
+    }
+    revalidatePath("/dashboard");
+    return { status: "success", message: "Experience updated." };
+  }
+
+  // Add: find the profile through the logged-in user
   const profile = await prisma.profile.findFirst({
     where: { user: { clerkId: userId } },
     select: { id: true },
@@ -94,18 +124,7 @@ export async function addExperience(
     return { status: "error", message: "Profile not found.", values: raw };
   }
 
-  const d = parsed.data;
-  await prisma.experience.create({
-    data: {
-      profileId: profile.id,
-      company: d.company,
-      role: d.role,
-      location: d.location || null,
-      startDate: monthToDate(d.startDate),
-      endDate: d.current ? null : monthToDate(d.endDate),
-      description: d.description || null,
-    },
-  });
+  await prisma.experience.create({ data: { profileId: profile.id, ...data } });
 
   revalidatePath("/dashboard");
   return { status: "success", message: "Experience added." };
@@ -118,7 +137,6 @@ export async function deleteExperience(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  // The ownership check lives in the query itself
   await prisma.experience.deleteMany({
     where: { id, profile: { user: { clerkId: userId } } },
   });

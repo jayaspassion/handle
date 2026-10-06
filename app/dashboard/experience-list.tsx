@@ -1,4 +1,4 @@
-import { deleteExperience } from "./experience-actions";
+import ExperienceItem from "./experience-item";
 
 type Item = {
   id: string;
@@ -18,6 +18,9 @@ function formatMonth(date: Date) {
   });
 }
 
+// Date -> "YYYY-MM", the format the month picker uses
+const toMonth = (date: Date) => date.toISOString().slice(0, 7);
+
 export default function ExperienceList({ items }: { items: Item[] }) {
   if (items.length === 0) {
     return <p className="mt-4 text-sm text-gray-600">No experience added yet.</p>;
@@ -26,33 +29,28 @@ export default function ExperienceList({ items }: { items: Item[] }) {
   return (
     <ul className="mt-4 max-w-xl space-y-3">
       {items.map((item) => (
-        <li key={item.id} className="rounded-md border border-gray-200 p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-medium">{item.role}</p>
-              <p className="text-sm">
-                {item.company}
-                {item.location ? ` · ${item.location}` : ""}
-              </p>
-              <p className="text-sm text-gray-600">
-                {formatMonth(item.startDate)} –{" "}
-                {item.endDate ? formatMonth(item.endDate) : "Present"}
-              </p>
-              {item.description && (
-                <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
-              )}
-            </div>
-            <form action={deleteExperience}>
-              <input type="hidden" name="id" value={item.id} />
-              <button
-                type="submit"
-                className="text-sm text-red-600 hover:underline"
-              >
-                Delete
-              </button>
-            </form>
-          </div>
-        </li>
+        <ExperienceItem
+          key={item.id}
+          item={{
+            id: item.id,
+            role: item.role,
+            company: item.company,
+            location: item.location,
+            range: `${formatMonth(item.startDate)} – ${
+              item.endDate ? formatMonth(item.endDate) : "Present"
+            }`,
+            description: item.description,
+          }}
+          initial={{
+            company: item.company,
+            role: item.role,
+            location: item.location ?? "",
+            startDate: toMonth(item.startDate),
+            endDate: item.endDate ? toMonth(item.endDate) : "",
+            description: item.description ?? "",
+            current: item.endDate ? "" : "on",
+          }}
+        />
       ))}
     </ul>
   );

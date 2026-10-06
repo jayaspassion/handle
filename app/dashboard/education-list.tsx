@@ -1,4 +1,4 @@
-import { deleteEducation } from "./education-actions";
+import EducationItem from "./education-item";
 
 type Item = {
   id: string;
@@ -18,6 +18,9 @@ function formatMonth(date: Date) {
   });
 }
 
+// Date -> "YYYY-MM", the format the month picker uses
+const toMonth = (date: Date) => date.toISOString().slice(0, 7);
+
 export default function EducationList({ items }: { items: Item[] }) {
   if (items.length === 0) {
     return <p className="mt-4 text-sm text-gray-600">No education added yet.</p>;
@@ -26,33 +29,28 @@ export default function EducationList({ items }: { items: Item[] }) {
   return (
     <ul className="mt-4 max-w-xl space-y-3">
       {items.map((item) => (
-        <li key={item.id} className="rounded-md border border-gray-200 p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-medium">
-                {item.degree}
-                {item.fieldOfStudy ? `, ${item.fieldOfStudy}` : ""}
-              </p>
-              <p className="text-sm">{item.institution}</p>
-              <p className="text-sm text-gray-600">
-                {formatMonth(item.startDate)} –{" "}
-                {item.endDate ? formatMonth(item.endDate) : "Present"}
-              </p>
-              {item.description && (
-                <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
-              )}
-            </div>
-            <form action={deleteEducation}>
-              <input type="hidden" name="id" value={item.id} />
-              <button
-                type="submit"
-                className="text-sm text-red-600 hover:underline"
-              >
-                Delete
-              </button>
-            </form>
-          </div>
-        </li>
+        <EducationItem
+          key={item.id}
+          item={{
+            id: item.id,
+            degree: item.degree,
+            fieldOfStudy: item.fieldOfStudy,
+            institution: item.institution,
+            range: `${formatMonth(item.startDate)} – ${
+              item.endDate ? formatMonth(item.endDate) : "Present"
+            }`,
+            description: item.description,
+          }}
+          initial={{
+            institution: item.institution,
+            degree: item.degree,
+            fieldOfStudy: item.fieldOfStudy ?? "",
+            startDate: toMonth(item.startDate),
+            endDate: item.endDate ? toMonth(item.endDate) : "",
+            description: item.description ?? "",
+            current: item.endDate ? "" : "on",
+          }}
+        />
       ))}
     </ul>
   );
