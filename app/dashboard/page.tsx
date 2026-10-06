@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProfileForm from "./profile-form";
+import ExperienceForm from "./experience-form";
+import ExperienceList from "./experience-list";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -9,7 +11,11 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { clerkId: userId },
-    include: { profile: true },
+    include: {
+      profile: {
+        include: { experiences: { orderBy: { startDate: "desc" } } },
+      },
+    },
   });
 
   if (!user) {
@@ -29,6 +35,7 @@ export default async function DashboardPage() {
       <p>Plan: {user.tier}</p>
       <p>Profile: {profile?.isPublished ? "Published" : "Draft"}</p>
 
+      <h2 className="mt-8 text-xl font-semibold">Profile</h2>
       <ProfileForm
         defaults={{
           fullName: profile?.fullName ?? "",
@@ -37,6 +44,10 @@ export default async function DashboardPage() {
           location: profile?.location ?? "",
         }}
       />
+
+      <h2 className="mt-12 text-xl font-semibold">Experience</h2>
+      <ExperienceList items={profile?.experiences ?? []} />
+      <ExperienceForm />
     </main>
   );
 }
