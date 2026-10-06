@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import ProfileForm from "./profile-form";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -19,12 +20,23 @@ export default async function DashboardPage() {
     );
   }
 
+  const profile = user.profile;
+
   return (
     <main className="p-8">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <p className="mt-2">Signed in as {user.email}</p>
       <p>Plan: {user.tier}</p>
-      <p>Profile: {user.profile?.isPublished ? "Published" : "Draft"}</p>
+      <p>Profile: {profile?.isPublished ? "Published" : "Draft"}</p>
+
+      <ProfileForm
+        defaults={{
+          fullName: profile?.fullName ?? "",
+          headline: profile?.headline ?? "",
+          bio: profile?.bio ?? "",
+          location: profile?.location ?? "",
+        }}
+      />
     </main>
   );
 }
