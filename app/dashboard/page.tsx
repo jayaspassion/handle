@@ -6,6 +6,8 @@ import ExperienceForm from "./experience-form";
 import ExperienceList from "./experience-list";
 import EducationForm from "./education-form";
 import EducationList from "./education-list";
+import ProjectForm from "./project-form";
+import ProjectList from "./project-list";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -18,6 +20,7 @@ export default async function DashboardPage() {
         include: {
           experiences: { orderBy: { startDate: "desc" } },
           education: { orderBy: { startDate: "desc" } },
+          projects: { orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
         },
       },
     },
@@ -57,6 +60,10 @@ export default async function DashboardPage() {
       <h2 className="mt-12 text-xl font-semibold">Education</h2>
       <EducationList items={profile?.education ?? []} />
       <EducationForm />
+
+      <h2 className="mt-12 text-xl font-semibold">Projects</h2>
+      <ProjectList items={profile?.projects ?? []} />
+      <ProjectForm />
     </main>
   );
 }
