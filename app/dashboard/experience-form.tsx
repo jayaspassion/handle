@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   addExperience,
   type ExperienceFormState,
   type ExperienceField,
 } from "./experience-actions";
 import MonthPicker from "./month-picker";
+import AddPanel from "./add-panel";
 
 type TextField = Exclude<ExperienceField, "startDate" | "endDate">;
 
@@ -24,7 +25,13 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export default function ExperienceForm() {
+function ExperienceFormFields({
+  onSaved,
+  onCancel,
+}: {
+  onSaved: () => void;
+  onCancel: () => void;
+}) {
   const [state, formAction, pending] = useActionState(addExperience, initialState);
 
   // The dates and checkbox are controlled so the picker and checkbox can work together
@@ -32,17 +39,11 @@ export default function ExperienceForm() {
   const [endDate, setEndDate] = useState("");
   const [current, setCurrent] = useState(false);
 
-  // Clear them after a successful save. Comparing with the previous state
-  // during render avoids needing an effect.
-  const [lastState, setLastState] = useState(state);
-  if (state !== lastState) {
-    setLastState(state);
-    if (state.status === "success") {
-      setStartDate("");
-      setEndDate("");
-      setCurrent(false);
-    }
-  }
+  // When the save succeeds, tell the panel to close. The form unmounts,
+  // so the next time it opens everything starts fresh.
+  useEffect(() => {
+    if (state.status === "success") onSaved();
+  }, [state, onSaved]);
 
   const v = state.values;
   const err = state.errors ?? {};
@@ -57,7 +58,9 @@ export default function ExperienceForm() {
   });
 
   return (
-    <form action={formAction} className="mt-4 max-w-xl space-y-4">
+    <form action={formAction} className="space-y-4">
+      <h3 className="text-sm font-semibold">New experience</h3>
+
       <div>
         <label htmlFor="company" className="text-sm font-medium">Company</label>
         <input {...field("company")} />
@@ -120,7 +123,7 @@ export default function ExperienceForm() {
         <FieldError id="description-error" message={err.description} />
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <button
           type="submit"
           disabled={pending}
@@ -128,15 +131,28 @@ export default function ExperienceForm() {
         >
           {pending ? "Adding..." : "Add experience"}
         </button>
-        <p role="status" className="text-sm">
-          {state.status === "success" && (
-            <span className="text-green-700">{state.message}</span>
-          )}
-          {state.status === "error" && state.message && (
-            <span className="text-red-600">{state.message}</span>
-          )}
-        </p>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={pending}
+          className="rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+        >
+          Cancel
+        </button>
+        {state.status === "error" && state.message && (
+          <p role="alert" className="text-sm text-red-600">{state.message}</p>
+        )}
       </div>
     </form>
+  );
+}
+
+export default function ExperienceForm() {
+  return (
+    <AddPanel label="Add experience" savedMessage="Experience added.">
+      {({ onSaved, onCancel }) => (
+        <ExperienceFormFields onSaved={onSaved} onCancel={onCancel} />
+      )}
+    </AddPanel>
   );
 }
