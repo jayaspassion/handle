@@ -32,8 +32,8 @@ model Profile {
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  username    String   @unique
-  fullName    String
+  username    String?   @unique
+  fullName    String?
   headline    String?
   bio         String?
   avatarUrl   String?
