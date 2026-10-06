@@ -1,0 +1,59 @@
+import { deleteEducation } from "./education-actions";
+
+type Item = {
+  id: string;
+  institution: string;
+  degree: string;
+  fieldOfStudy: string | null;
+  startDate: Date;
+  endDate: Date | null;
+  description: string | null;
+};
+
+function formatMonth(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+export default function EducationList({ items }: { items: Item[] }) {
+  if (items.length === 0) {
+    return <p className="mt-4 text-sm text-gray-600">No education added yet.</p>;
+  }
+
+  return (
+    <ul className="mt-4 max-w-xl space-y-3">
+      {items.map((item) => (
+        <li key={item.id} className="rounded-md border border-gray-200 p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-medium">
+                {item.degree}
+                {item.fieldOfStudy ? `, ${item.fieldOfStudy}` : ""}
+              </p>
+              <p className="text-sm">{item.institution}</p>
+              <p className="text-sm text-gray-600">
+                {formatMonth(item.startDate)} –{" "}
+                {item.endDate ? formatMonth(item.endDate) : "Present"}
+              </p>
+              {item.description && (
+                <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
+              )}
+            </div>
+            <form action={deleteEducation}>
+              <input type="hidden" name="id" value={item.id} />
+              <button
+                type="submit"
+                className="text-sm text-red-600 hover:underline"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}

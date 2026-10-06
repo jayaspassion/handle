@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import ProfileForm from "./profile-form";
 import ExperienceForm from "./experience-form";
 import ExperienceList from "./experience-list";
+import EducationForm from "./education-form";
+import EducationList from "./education-list";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -13,7 +15,10 @@ export default async function DashboardPage() {
     where: { clerkId: userId },
     include: {
       profile: {
-        include: { experiences: { orderBy: { startDate: "desc" } } },
+        include: {
+          experiences: { orderBy: { startDate: "desc" } },
+          education: { orderBy: { startDate: "desc" } },
+        },
       },
     },
   });
@@ -48,6 +53,10 @@ export default async function DashboardPage() {
       <h2 className="mt-12 text-xl font-semibold">Experience</h2>
       <ExperienceList items={profile?.experiences ?? []} />
       <ExperienceForm />
+
+      <h2 className="mt-12 text-xl font-semibold">Education</h2>
+      <EducationList items={profile?.education ?? []} />
+      <EducationForm />
     </main>
   );
 }
