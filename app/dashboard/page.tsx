@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import ProfileForm from "./_sections/profile/form";
+import ProfileSection from "./_sections/profile/section";
 import LinkForm from "./_sections/links/form";
 import LinkList from "./_sections/links/list";
 import ExperienceForm from "./_sections/experience/form";
@@ -64,12 +64,12 @@ export default async function DashboardPage() {
       <p>Profile: {profile?.isPublished ? "Published" : "Draft"}</p>
 
       <h2 className="mt-8 text-xl font-semibold">Profile</h2>
-      <ProfileForm
-        defaults={{
+      <ProfileSection
+        values={{
           fullName: profile?.fullName ?? "",
           headline: profile?.headline ?? "",
-          bio: profile?.bio ?? "",
           location: profile?.location ?? "",
+          bio: profile?.bio ?? "",
         }}
       />
 
