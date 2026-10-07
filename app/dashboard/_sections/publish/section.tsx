@@ -28,7 +28,15 @@ export default function PublishSection({ username, isPublished, hasName }: Props
               Published
             </span>
             <p className="mt-2 text-sm">
-              Your public address: <span className="font-medium">/{username}</span>
+              Your public address:{" "}
+              <a
+                href={`/${username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-purple-700 hover:underline"
+              >
+                /{username}
+              </a>
             </p>
             <p className="mt-1 text-xs text-gray-600">
               To change your username, unpublish first.
