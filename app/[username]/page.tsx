@@ -18,15 +18,28 @@ const DEFAULT_ORDER = [
 
 const LINK_REL = "nofollow ugc noopener noreferrer";
 
+const pill =
+  "inline-flex min-h-11 items-center rounded-full border border-pf-border px-4 text-sm font-medium hover:bg-pf-surface motion-safe:transition-colors";
+const pillSolid =
+  "inline-flex min-h-11 items-center rounded-full bg-pf-solid px-4 text-sm font-medium text-pf-solid-fg hover:opacity-90 motion-safe:transition-opacity";
+const smallButton =
+  "inline-flex min-h-10 items-center rounded-md border border-pf-border px-3 text-sm hover:bg-pf-bg motion-safe:transition-colors";
+const textLink = "text-pf-accent underline-offset-4 hover:underline";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
   const profile = await getPublishedProfile(username);
   if (!profile) return { title: "Profile not found" };
 
   const name = profile.fullName ?? profile.username ?? username;
+  const title = `${name} | Handle`;
+  const description = profile.headline ?? `${name}'s portfolio on Handle`;
+
   return {
-    title: `${name} | Handle`,
-    description: profile.headline ?? undefined,
+    title,
+    description,
+    openGraph: { title, description, type: "profile", siteName: "Handle" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -58,13 +71,44 @@ function initials(name: string) {
   );
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function ExternalLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
-    <section className="mt-10">
-      <h2 className="border-b border-gray-200 pb-2 text-xl font-semibold">
+    <a href={href} target="_blank" rel={LINK_REL} className={className}>
+      {children}
+      <span className="sr-only"> (opens in a new tab)</span>
+    </a>
+  );
+}
+
+function Section({
+  id,
+  title,
+  children,
+}: {
+  id: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      aria-labelledby={`${id}-heading`}
+      className="mt-12 border-t border-pf-border pt-8"
+    >
+      <h2
+        id={`${id}-heading`}
+        className="text-sm font-semibold uppercase tracking-wider text-pf-muted"
+      >
         {title}
       </h2>
-      <div className="mt-4">{children}</div>
+      <div className="mt-6">{children}</div>
     </section>
   );
 }
@@ -75,7 +119,7 @@ function Chips({ items, label }: { items: string[]; label?: string }) {
       {items.map((item) => (
         <li
           key={item}
-          className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+          className="rounded-full border border-pf-border px-3 py-1 text-sm"
         >
           {item}
         </li>
@@ -84,18 +128,34 @@ function Chips({ items, label }: { items: string[]; label?: string }) {
   );
 }
 
-function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
+function TimelineItem({
+  range,
+  title,
+  subtitle,
+  description,
+}: {
+  range: string;
+  title: string;
+  subtitle?: string;
+  description?: string | null;
+}) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel={LINK_REL}
-      className="text-purple-700 hover:underline"
-    >
-      {children}
-    </a>
+    <li className="grid gap-1 md:grid-cols-[11rem_1fr] md:gap-8">
+      <p className="text-sm text-pf-muted md:pt-0.5">{range}</p>
+      <div className="min-w-0">
+        <h3 className="font-medium">{title}</h3>
+        {subtitle && <p className="text-sm text-pf-muted">{subtitle}</p>}
+        {description && (
+          <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed">
+            {description}
+          </p>
+        )}
+      </div>
+    </li>
   );
 }
+
+const card = "flex min-w-0 flex-col rounded-xl border border-pf-border bg-pf-surface p-5";
 
 export default async function PublicProfilePage({ params }: Props) {
   const { username } = await params;
@@ -121,76 +181,68 @@ export default async function PublicProfilePage({ params }: Props) {
 
   const sections: Record<string, ReactNode> = {
     experience: profile.experiences.length > 0 && (
-      <Section title="Experience">
-        <ul className="space-y-6">
+      <Section id="experience" title="Experience">
+        <ul className="space-y-8">
           {profile.experiences.map((e) => (
-            <li key={e.id}>
-              <h3 className="font-medium">{e.role}</h3>
-              <p className="text-sm">
-                {e.company}
-                {e.location ? ` · ${e.location}` : ""}
-              </p>
-              <p className="text-sm text-gray-600">
-                {formatRange(e.startDate, e.endDate)}
-              </p>
-              {e.description && (
-                <p className="mt-2 whitespace-pre-line text-sm">
-                  {e.description}
-                </p>
-              )}
-            </li>
+            <TimelineItem
+              key={e.id}
+              range={formatRange(e.startDate, e.endDate)}
+              title={e.role}
+              subtitle={[e.company, e.location].filter(Boolean).join(" · ")}
+              description={e.description}
+            />
           ))}
         </ul>
       </Section>
     ),
 
     education: profile.education.length > 0 && (
-      <Section title="Education">
-        <ul className="space-y-6">
+      <Section id="education" title="Education">
+        <ul className="space-y-8">
           {profile.education.map((e) => (
-            <li key={e.id}>
-              <h3 className="font-medium">
-                {e.degree}
-                {e.fieldOfStudy ? `, ${e.fieldOfStudy}` : ""}
-              </h3>
-              <p className="text-sm">{e.institution}</p>
-              <p className="text-sm text-gray-600">
-                {formatRange(e.startDate, e.endDate)}
-              </p>
-              {e.description && (
-                <p className="mt-2 whitespace-pre-line text-sm">
-                  {e.description}
-                </p>
-              )}
-            </li>
+            <TimelineItem
+              key={e.id}
+              range={formatRange(e.startDate, e.endDate)}
+              title={`${e.degree}${e.fieldOfStudy ? `, ${e.fieldOfStudy}` : ""}`}
+              subtitle={e.institution}
+              description={e.description}
+            />
           ))}
         </ul>
       </Section>
     ),
 
     projects: profile.projects.length > 0 && (
-      <Section title="Projects">
-        <ul className="space-y-6">
+      <Section id="projects" title="Projects">
+        <ul className="grid gap-4 sm:grid-cols-2">
           {profile.projects.map((p) => {
             const live = safeUrl(p.liveUrl);
             const repo = safeUrl(p.repoUrl);
             return (
-              <li key={p.id}>
+              <li key={p.id} className={card}>
                 <h3 className="font-medium">{p.title}</h3>
                 {p.description && (
-                  <p className="mt-1 whitespace-pre-line text-sm">
+                  <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed">
                     {p.description}
                   </p>
                 )}
                 {p.tags.length > 0 && (
-                  <div className="mt-2">
+                  <div className="mt-4">
                     <Chips items={p.tags} label="Tags" />
                   </div>
                 )}
                 {(live || repo) && (
-                  <p className="mt-2 flex gap-4 text-sm">
-                    {live && <ExternalLink href={live}>Live</ExternalLink>}
-                    {repo && <ExternalLink href={repo}>Source</ExternalLink>}
+                  <p className="mt-auto flex gap-2 pt-4">
+                    {live && (
+                      <ExternalLink href={live} className={smallButton}>
+                        Live
+                      </ExternalLink>
+                    )}
+                    {repo && (
+                      <ExternalLink href={repo} className={smallButton}>
+                        Source
+                      </ExternalLink>
+                    )}
                   </p>
                 )}
               </li>
@@ -201,12 +253,12 @@ export default async function PublicProfilePage({ params }: Props) {
     ),
 
     skills: profile.skills.length > 0 && (
-      <Section title="Skills">
+      <Section id="skills" title="Skills">
         {hasCategories ? (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {orderedGroups.map(([category, names]) => (
               <div key={category || "other"}>
-                <h3 className="mb-2 text-sm font-medium text-gray-700">
+                <h3 className="mb-2 text-sm font-medium">
                   {category || "Other"}
                 </h3>
                 <Chips items={names} />
@@ -220,8 +272,8 @@ export default async function PublicProfilePage({ params }: Props) {
     ),
 
     certifications: profile.certifications.length > 0 && (
-      <Section title="Certifications">
-        <ul className="space-y-4">
+      <Section id="certifications" title="Certifications">
+        <ul className="grid gap-4 sm:grid-cols-2">
           {profile.certifications.map((c) => {
             const credential = safeUrl(c.credentialUrl);
             const dates = [
@@ -231,13 +283,15 @@ export default async function PublicProfilePage({ params }: Props) {
               .filter(Boolean)
               .join(" · ");
             return (
-              <li key={c.id}>
+              <li key={c.id} className={card}>
                 <h3 className="font-medium">{c.name}</h3>
                 <p className="text-sm">{c.issuer}</p>
-                {dates && <p className="text-sm text-gray-600">{dates}</p>}
+                {dates && <p className="text-sm text-pf-muted">{dates}</p>}
                 {credential && (
-                  <p className="mt-1 text-sm">
-                    <ExternalLink href={credential}>View credential</ExternalLink>
+                  <p className="mt-auto pt-3 text-sm">
+                    <ExternalLink href={credential} className={textLink}>
+                      View credential
+                    </ExternalLink>
                   </p>
                 )}
               </li>
@@ -248,22 +302,22 @@ export default async function PublicProfilePage({ params }: Props) {
     ),
 
     testimonials: profile.testimonials.length > 0 && (
-      <Section title="Testimonials">
-        <ul className="space-y-6">
+      <Section id="testimonials" title="Testimonials">
+        <ul className="grid gap-4 md:grid-cols-2">
           {profile.testimonials.map((t) => {
             const byline = [t.authorRole, t.authorCompany]
               .filter(Boolean)
               .join(" at ");
             return (
-              <li key={t.id}>
-                <blockquote>
-                  <p className="whitespace-pre-line text-sm italic">
+              <li key={t.id} className={card}>
+                <blockquote className="border-l-2 border-pf-accent pl-4">
+                  <p className="whitespace-pre-line break-words text-sm italic leading-relaxed">
                     &ldquo;{t.quote}&rdquo;
                   </p>
-                  <footer className="mt-2 text-sm">
+                  <footer className="mt-3 text-sm">
                     <span className="font-medium">{t.authorName}</span>
                     {byline && (
-                      <span className="text-gray-600"> · {byline}</span>
+                      <span className="text-pf-muted"> · {byline}</span>
                     )}
                   </footer>
                 </blockquote>
@@ -271,7 +325,7 @@ export default async function PublicProfilePage({ params }: Props) {
             );
           })}
         </ul>
-        <p className="mt-4 text-xs text-gray-600">
+        <p className="mt-4 text-xs text-pf-muted">
           Testimonials are shared by the profile owner and have not been
           independently verified.
         </p>
@@ -283,52 +337,66 @@ export default async function PublicProfilePage({ params }: Props) {
   const order = [...new Set([...profile.sectionOrder, ...DEFAULT_ORDER])];
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
-      <header className="flex items-start gap-4">
-        <div
-          aria-hidden="true"
-          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xl font-semibold text-purple-800"
-        >
-          {initials(name)}
-        </div>
-        <div>
-          <h1 className="text-3xl font-semibold">{name}</h1>
-          {profile.headline && <p className="mt-1 text-lg">{profile.headline}</p>}
-          {profile.location && (
-            <p className="text-sm text-gray-600">{profile.location}</p>
-          )}
-        </div>
-      </header>
-
-      {profile.bio && <p className="mt-6 whitespace-pre-line">{profile.bio}</p>}
-
-      {(links.length > 0 || resumeUrl) && (
-        <nav aria-label="Profile links">
-          <ul className="mt-6 flex flex-wrap gap-4 text-sm">
-            {resumeUrl && (
-              <li>
-                <ExternalLink href={resumeUrl}>Resume</ExternalLink>
-              </li>
+    <div className="profile-theme flex-1 bg-pf-bg font-sans text-pf-fg antialiased">
+      <main className="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-16">
+        <header className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+          <div
+            aria-hidden="true"
+            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-pf-avatar-bg text-2xl font-semibold text-pf-avatar-fg sm:h-24 sm:w-24 sm:text-3xl"
+          >
+            {initials(name)}
+          </div>
+          <div className="min-w-0">
+            <h1 className="break-words text-3xl font-semibold tracking-tight sm:text-4xl">
+              {name}
+            </h1>
+            {profile.headline && (
+              <p className="mt-1 break-words text-lg">{profile.headline}</p>
             )}
-            {links.map((l) => (
-              <li key={l.id}>
-                <ExternalLink href={l.url}>{l.label}</ExternalLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+            {profile.location && (
+              <p className="mt-1 text-sm text-pf-muted">{profile.location}</p>
+            )}
+          </div>
+        </header>
 
-      {order.map((key) => (
-        <Fragment key={key}>{sections[key]}</Fragment>
-      ))}
+        {profile.bio && (
+          <p className="mt-8 max-w-2xl whitespace-pre-line break-words leading-relaxed">
+            {profile.bio}
+          </p>
+        )}
 
-      <footer className="mt-16 border-t border-gray-200 pt-4 text-xs text-gray-600">
-        Made with{" "}
-        <Link href="/" className="text-purple-700 hover:underline">
-          Handle
-        </Link>
-      </footer>
-    </main>
+        {(links.length > 0 || resumeUrl) && (
+          <nav aria-label="Profile links">
+            <ul className="mt-6 flex flex-wrap gap-3">
+              {resumeUrl && (
+                <li>
+                  <ExternalLink href={resumeUrl} className={pillSolid}>
+                    Resume
+                  </ExternalLink>
+                </li>
+              )}
+              {links.map((l) => (
+                <li key={l.id}>
+                  <ExternalLink href={l.url} className={pill}>
+                    {l.label}
+                  </ExternalLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
+        {order.map((key) => (
+          <Fragment key={key}>{sections[key]}</Fragment>
+        ))}
+
+        <footer className="mt-16 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden">
+          Made with{" "}
+          <Link href="/" className={textLink}>
+            Handle
+          </Link>
+        </footer>
+      </main>
+    </div>
   );
 }

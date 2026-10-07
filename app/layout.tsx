@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ),
   title: "Handle",
   description: "Build and share your professional portfolio",
 };
@@ -26,7 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <ClerkProvider>
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
+        <header className="flex justify-end items-center p-4 gap-4 h-16 print:hidden">
             <Show when="signed-out">
               <SignInButton />
               <SignUpButton>

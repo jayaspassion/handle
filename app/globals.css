@@ -24,3 +24,74 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ---------- Public profile theme ---------- */
+.profile-theme {
+  color-scheme: light;
+  --pf-bg: #ffffff;
+  --pf-fg: #171717;
+  --pf-muted: #525252;
+  --pf-border: #e5e5e5;
+  --pf-surface: #fafafa;
+  --pf-accent: #7e22ce;
+  --pf-solid: #7e22ce;
+  --pf-solid-fg: #ffffff;
+  --pf-avatar-bg: #f3e8ff;
+  --pf-avatar-fg: #581c87;
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile-theme {
+    color-scheme: dark;
+    --pf-bg: #0b0b0f;
+    --pf-fg: #ededed;
+    --pf-muted: #a3a3a3;
+    --pf-border: #2a2a31;
+    --pf-surface: #141418;
+    --pf-accent: #c4b5fd;
+    --pf-solid: #c4b5fd;
+    --pf-solid-fg: #1e1033;
+    --pf-avatar-bg: #2e1065;
+    --pf-avatar-fg: #ddd6fe;
+  }
+}
+
+/* Turns the tokens into classes like bg-pf-bg and text-pf-muted */
+@theme inline {
+  --color-pf-bg: var(--pf-bg);
+  --color-pf-fg: var(--pf-fg);
+  --color-pf-muted: var(--pf-muted);
+  --color-pf-border: var(--pf-border);
+  --color-pf-surface: var(--pf-surface);
+  --color-pf-accent: var(--pf-accent);
+  --color-pf-solid: var(--pf-solid);
+  --color-pf-solid-fg: var(--pf-solid-fg);
+  --color-pf-avatar-bg: var(--pf-avatar-bg);
+  --color-pf-avatar-fg: var(--pf-avatar-fg);
+}
+
+.profile-theme a:focus-visible,
+.profile-theme button:focus-visible {
+  outline: 2px solid var(--pf-accent);
+  outline-offset: 3px;
+}
+
+@media print {
+  .profile-theme {
+    color-scheme: light;
+    --pf-bg: #ffffff;
+    --pf-fg: #000000;
+    --pf-muted: #404040;
+    --pf-border: #d4d4d4;
+    --pf-surface: #ffffff;
+    --pf-accent: #000000;
+  }
+  .profile-theme a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    overflow-wrap: anywhere;
+  }
+  .profile-theme section li {
+    break-inside: avoid;
+  }
+}
