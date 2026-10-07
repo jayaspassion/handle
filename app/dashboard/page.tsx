@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import PublishSection from "./_sections/publish/section";
 import ProfileSection from "./_sections/profile/section";
 import LinkForm from "./_sections/links/form";
 import LinkList from "./_sections/links/list";
@@ -61,9 +62,15 @@ export default async function DashboardPage() {
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <p className="mt-2">Signed in as {user.email}</p>
       <p>Plan: {user.tier}</p>
-      <p>Profile: {profile?.isPublished ? "Published" : "Draft"}</p>
 
-      <h2 className="mt-8 text-xl font-semibold">Profile</h2>
+      <h2 className="mt-8 text-xl font-semibold">Publish</h2>
+      <PublishSection
+        username={profile?.username ?? ""}
+        isPublished={profile?.isPublished ?? false}
+        hasName={!!profile?.fullName?.trim()}
+      />
+
+      <h2 className="mt-12 text-xl font-semibold">Profile</h2>
       <ProfileSection
         values={{
           fullName: profile?.fullName ?? "",
