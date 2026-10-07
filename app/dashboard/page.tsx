@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProfileForm from "./_sections/profile/form";
+import LinkForm from "./_sections/links/form";
+import LinkList from "./_sections/links/list";
 import ExperienceForm from "./_sections/experience/form";
 import ExperienceList from "./_sections/experience/list";
 import EducationForm from "./_sections/education/form";
@@ -10,6 +12,12 @@ import ProjectForm from "./_sections/projects/form";
 import ProjectList from "./_sections/projects/list";
 import SkillForm from "./_sections/skills/form";
 import SkillList from "./_sections/skills/list";
+import CertificationForm from "./_sections/certifications/form";
+import CertificationList from "./_sections/certifications/list";
+import TestimonialForm from "./_sections/testimonials/form";
+import TestimonialList from "./_sections/testimonials/list";
+
+const byOrder = [{ order: "asc" as const }, { createdAt: "asc" as const }];
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -20,10 +28,13 @@ export default async function DashboardPage() {
     include: {
       profile: {
         include: {
+          links: { orderBy: byOrder },
           experiences: { orderBy: { startDate: "desc" } },
           education: { orderBy: { startDate: "desc" } },
-          projects: { orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
-          skills: { orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
+          projects: { orderBy: byOrder },
+          skills: { orderBy: byOrder },
+          certifications: { orderBy: byOrder },
+          testimonials: { orderBy: byOrder },
         },
       },
     },
@@ -62,6 +73,10 @@ export default async function DashboardPage() {
         }}
       />
 
+      <h2 className="mt-12 text-xl font-semibold">Links</h2>
+      <LinkList items={profile?.links ?? []} />
+      <LinkForm />
+
       <h2 className="mt-12 text-xl font-semibold">Experience</h2>
       <ExperienceList items={profile?.experiences ?? []} />
       <ExperienceForm />
@@ -77,6 +92,14 @@ export default async function DashboardPage() {
       <h2 className="mt-12 text-xl font-semibold">Skills</h2>
       <SkillList items={skills} categories={skillCategories} />
       <SkillForm categories={skillCategories} />
+
+      <h2 className="mt-12 text-xl font-semibold">Certifications</h2>
+      <CertificationList items={profile?.certifications ?? []} />
+      <CertificationForm />
+
+      <h2 className="mt-12 text-xl font-semibold">Testimonials</h2>
+      <TestimonialList items={profile?.testimonials ?? []} />
+      <TestimonialForm />
     </main>
   );
 }
