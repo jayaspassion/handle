@@ -8,6 +8,8 @@ import EducationForm from "./education-form";
 import EducationList from "./education-list";
 import ProjectForm from "./project-form";
 import ProjectList from "./project-list";
+import SkillForm from "./skill-form";
+import SkillList from "./skill-list";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -21,6 +23,7 @@ export default async function DashboardPage() {
           experiences: { orderBy: { startDate: "desc" } },
           education: { orderBy: { startDate: "desc" } },
           projects: { orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
+          skills: { orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
         },
       },
     },
@@ -35,6 +38,12 @@ export default async function DashboardPage() {
   }
 
   const profile = user.profile;
+  const skills = profile?.skills ?? [];
+
+  // Categories already in use, offered as suggestions in the skill forms
+  const skillCategories = [
+    ...new Set(skills.map((s) => s.category).filter((c): c is string => !!c)),
+  ];
 
   return (
     <main className="p-8">
@@ -64,6 +73,10 @@ export default async function DashboardPage() {
       <h2 className="mt-12 text-xl font-semibold">Projects</h2>
       <ProjectList items={profile?.projects ?? []} />
       <ProjectForm />
+
+      <h2 className="mt-12 text-xl font-semibold">Skills</h2>
+      <SkillList items={skills} categories={skillCategories} />
+      <SkillForm categories={skillCategories} />
     </main>
   );
 }
