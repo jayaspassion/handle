@@ -6,8 +6,8 @@ import {
   type SkillField,
   type SkillFormState,
   type SkillValues,
-} from "./skill-actions";
-import AddPanel from "./add-panel";
+} from "./actions";
+import AddPanel from "../../_components/add-panel";
 
 const initialState: SkillFormState = { status: "idle" };
 

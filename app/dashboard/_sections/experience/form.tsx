@@ -6,9 +6,9 @@ import {
   type ExperienceField,
   type ExperienceFormState,
   type ExperienceValues,
-} from "./experience-actions";
-import MonthPicker from "./month-picker";
-import AddPanel from "./add-panel";
+} from "./actions";
+import MonthPicker from "../../_components/month-picker";
+import AddPanel from "../../_components/add-panel";
 
 type TextField = Exclude<ExperienceField, "startDate" | "endDate">;
 

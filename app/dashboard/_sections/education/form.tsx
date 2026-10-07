@@ -6,9 +6,9 @@ import {
   type EducationField,
   type EducationFormState,
   type EducationValues,
-} from "./education-actions";
-import MonthPicker from "./month-picker";
-import AddPanel from "./add-panel";
+} from "./actions";
+import MonthPicker from "../../_components/month-picker";
+import AddPanel from "../../_components/add-panel";
 
 type TextField = Exclude<EducationField, "startDate" | "endDate">;
 

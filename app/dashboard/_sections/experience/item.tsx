@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { deleteProject, type ProjectValues } from "./project-actions";
-import { ProjectFormFields } from "./project-form";
+import { deleteExperience, type ExperienceValues } from "./actions";
+import { ExperienceFormFields } from "./form";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
@@ -10,16 +10,16 @@ const FIRST_FIELD =
 type Props = {
   item: {
     id: string;
-    title: string;
+    role: string;
+    company: string;
+    location: string | null;
+    range: string;
     description: string | null;
-    tags: string[];
-    liveUrl: string | null;
-    repoUrl: string | null;
   };
-  initial: ProjectValues;
+  initial: ExperienceValues;
 };
 
-export default function ProjectItem({ item, initial }: Props) {
+export default function ExperienceItem({ item, initial }: Props) {
   const [editing, setEditing] = useState(false);
   const editButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ export default function ProjectItem({ item, initial }: Props) {
     return (
       <li className="rounded-md border border-gray-200 p-4">
         <div ref={panelRef}>
-          <ProjectFormFields
+          <ExperienceFormFields
             editId={item.id}
             initial={initial}
             onSaved={() => setEditing(false)}
@@ -54,45 +54,14 @@ export default function ProjectItem({ item, initial }: Props) {
     <li className="rounded-md border border-gray-200 p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-medium">{item.title}</p>
+          <p className="font-medium">{item.role}</p>
+          <p className="text-sm">
+            {item.company}
+            {item.location ? ` · ${item.location}` : ""}
+          </p>
+          <p className="text-sm text-gray-600">{item.range}</p>
           {item.description && (
-            <p className="mt-1 whitespace-pre-line text-sm">{item.description}</p>
-          )}
-          {item.tags.length > 0 && (
-            <ul aria-label="Tags" className="mt-2 flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
-                <li
-                  key={tag}
-                  className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-800"
-                >
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          )}
-          {(item.liveUrl || item.repoUrl) && (
-            <p className="mt-2 flex gap-4 text-sm">
-              {item.liveUrl && (
-                <a
-                  href={item.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-700 hover:underline"
-                >
-                  Live
-                </a>
-              )}
-              {item.repoUrl && (
-                <a
-                  href={item.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-700 hover:underline"
-                >
-                  Source
-                </a>
-              )}
-            </p>
+            <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
           )}
         </div>
         <div className="flex items-center gap-3">
@@ -100,16 +69,16 @@ export default function ProjectItem({ item, initial }: Props) {
             ref={editButtonRef}
             type="button"
             onClick={() => setEditing(true)}
-            aria-label={`Edit ${item.title}`}
+            aria-label={`Edit ${item.role} at ${item.company}`}
             className="text-sm text-purple-700 hover:underline"
           >
             Edit
           </button>
-          <form action={deleteProject}>
+          <form action={deleteExperience}>
             <input type="hidden" name="id" value={item.id} />
             <button
               type="submit"
-              aria-label={`Delete ${item.title}`}
+              aria-label={`Delete ${item.role} at ${item.company}`}
               className="text-sm text-red-600 hover:underline"
             >
               Delete

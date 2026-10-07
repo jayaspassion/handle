@@ -21,3 +21,6 @@ file uploads (resume, photos).
 - Never commit secrets; use .env
 - Semantic, accessible HTML
 - Explain your plan before making big changes
+- Dashboard code is organized by section: app/dashboard/_sections/<section>/
+  with actions.ts, form.tsx, item.tsx, list.tsx. Components shared by several
+  sections go in app/dashboard/_components/

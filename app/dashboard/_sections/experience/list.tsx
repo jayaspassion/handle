@@ -1,4 +1,4 @@
-import ExperienceItem from "./experience-item";
+import ExperienceItem from "./item";
 
 type Item = {
   id: string;

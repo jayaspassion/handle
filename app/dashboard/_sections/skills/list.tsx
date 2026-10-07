@@ -1,4 +1,4 @@
-import SkillItem from "./skill-item";
+import SkillItem from "./item";
 
 type Item = {
   id: string;

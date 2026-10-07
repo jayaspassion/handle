@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { deleteSkill, type SkillValues } from "./skill-actions";
-import { SkillFormFields } from "./skill-form";
+import { deleteSkill, type SkillValues } from "./actions";
+import { SkillFormFields } from "./form";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';

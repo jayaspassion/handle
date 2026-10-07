@@ -6,8 +6,8 @@ import {
   type ProjectField,
   type ProjectFormState,
   type ProjectValues,
-} from "./project-actions";
-import AddPanel from "./add-panel";
+} from "./actions";
+import AddPanel from "../../_components/add-panel";
 
 const initialState: ProjectFormState = { status: "idle" };
 

@@ -1,15 +1,15 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import ProfileForm from "./profile-form";
-import ExperienceForm from "./experience-form";
-import ExperienceList from "./experience-list";
-import EducationForm from "./education-form";
-import EducationList from "./education-list";
-import ProjectForm from "./project-form";
-import ProjectList from "./project-list";
-import SkillForm from "./skill-form";
-import SkillList from "./skill-list";
+import ProfileForm from "./_sections/profile/form";
+import ExperienceForm from "./_sections/experience/form";
+import ExperienceList from "./_sections/experience/list";
+import EducationForm from "./_sections/education/form";
+import EducationList from "./_sections/education/list";
+import ProjectForm from "./_sections/projects/form";
+import ProjectList from "./_sections/projects/list";
+import SkillForm from "./_sections/skills/form";
+import SkillList from "./_sections/skills/list";
 
 export default async function DashboardPage() {
   const { userId } = await auth();

@@ -1,4 +1,4 @@
-import EducationItem from "./education-item";
+import EducationItem from "./item";
 
 type Item = {
   id: string;

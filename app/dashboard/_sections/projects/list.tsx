@@ -1,4 +1,4 @@
-import ProjectItem from "./project-item";
+import ProjectItem from "./item";
 
 type Item = {
   id: string;
