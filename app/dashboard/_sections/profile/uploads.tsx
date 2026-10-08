@@ -13,6 +13,27 @@ type RowProps = {
   url: string | null;
 };
 
+// Shrinks a photo in the browser before upload: max 800px, WebP.
+// Falls back to the original file if anything goes wrong.
+async function resizeImage(file: File): Promise<File> {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      const scale = Math.min(1, 800 / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(bitmap.width * scale);
+      canvas.height = Math.round(bitmap.height * scale);
+      canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      bitmap.close();
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/webp", 0.85),
+      );
+      if (!blob) return file;
+      return new File([blob], "avatar.webp", { type: "image/webp" });
+    } catch {
+      return file;
+    }
+  }
+
 function UploadRow({ endpoint, label, accept, hint, url }: RowProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +53,8 @@ function UploadRow({ endpoint, label, accept, hint, url }: RowProps) {
     e.target.value = "";
     if (!file) return;
     setError("");
-    await startUpload([file]);
+    const toUpload = endpoint === "avatar" ? await resizeImage(file) : file;
+    await startUpload([toUpload]);
   }
 
   const safeUrl = isUploadedFileUrl(url) ? url : null;
@@ -86,7 +108,7 @@ export function ProfileUploads({
 }) {
   return (
     <div className="mt-4 space-y-4 rounded-md border border-gray-200 p-4">
-      <UploadRow endpoint="avatar" label="Photo" accept="image/jpeg,image/png,image/webp" hint="JPG, PNG or WebP, up to 2 MB." url={avatarUrl} />
+      <UploadRow endpoint="avatar" label="Photo" accept="image/jpeg,image/png,image/webp" hint="JPG, PNG or WebP. Large photos are resized automatically." url={avatarUrl} />
       <UploadRow endpoint="resume" label="Resume" accept="application/pdf" hint="PDF, up to 4 MB." url={resumeUrl} />
     </div>
   );
