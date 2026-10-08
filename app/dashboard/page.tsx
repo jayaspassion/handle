@@ -78,6 +78,8 @@ export default async function DashboardPage() {
           location: profile?.location ?? "",
           bio: profile?.bio ?? "",
         }}
+        avatarUrl={profile?.avatarUrl ?? null}
+        resumeUrl={profile?.resumeUrl ?? null}
       />
 
       <h2 className="mt-12 text-xl font-semibold">Links</h2>

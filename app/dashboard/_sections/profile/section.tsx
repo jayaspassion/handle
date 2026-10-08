@@ -2,11 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ProfileFormFields, type ProfileValues } from "./form";
+import { ProfileUploads } from "./uploads";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
 
-export default function ProfileSection({ values }: { values: ProfileValues }) {
+export default function ProfileSection({
+  values,
+  avatarUrl,
+  resumeUrl,
+}: {
+  values: ProfileValues;
+  avatarUrl: string | null;
+  resumeUrl: string | null;
+}) {
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -77,7 +86,7 @@ export default function ProfileSection({ values }: { values: ProfileValues }) {
           </div>
         </div>
       )}
-
+      <ProfileUploads avatarUrl={avatarUrl} resumeUrl={resumeUrl} />
       {/* Always mounted so screen readers announce the message when it appears */}
       <p
         role="status"

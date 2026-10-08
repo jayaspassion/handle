@@ -25,38 +25,51 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ---------- Public profile theme ---------- */
-.profile-theme {
-  color-scheme: light;
-  --pf-bg: #ffffff;
-  --pf-fg: #171717;
-  --pf-muted: #525252;
-  --pf-border: #e5e5e5;
-  --pf-surface: #fafafa;
-  --pf-accent: #7e22ce;
-  --pf-solid: #7e22ce;
-  --pf-solid-fg: #ffffff;
-  --pf-avatar-bg: #f3e8ff;
-  --pf-avatar-fg: #581c87;
+/* ---------- Theme ---------- */
+:root {
+  color-scheme: light dark;
+
+  /* Tokens for the public page and the toggle */
+  --pf-bg: light-dark(#ffffff, #0b0b0f);
+  --pf-fg: light-dark(#171717, #ededed);
+  --pf-muted: light-dark(#525252, #a3a3a3);
+  --pf-border: light-dark(#e5e5e5, #2a2a31);
+  --pf-surface: light-dark(#fafafa, #141418);
+  --pf-accent: light-dark(#7e22ce, #c4b5fd);
+  --pf-solid: light-dark(#7e22ce, #c4b5fd);
+  --pf-solid-fg: light-dark(#ffffff, #1e1033);
+  --pf-avatar-bg: light-dark(#f3e8ff, #2e1065);
+  --pf-avatar-fg: light-dark(#581c87, #ddd6fe);
+
+  /* Dashboard: remap the Tailwind colors it already uses */
+  --color-white: light-dark(#ffffff, #17171c);
+  --color-gray-50: light-dark(#f9fafb, #1c1c22);
+  --color-gray-100: light-dark(#f3f4f6, #23232a);
+  --color-gray-200: light-dark(#e5e7eb, #2a2a31);
+  --color-gray-300: light-dark(#d1d5db, #3a3a44);
+  --color-gray-500: light-dark(#6b7280, #9a9aa5);
+  --color-gray-600: light-dark(#4b5563, #a3a3ad);
+  --color-gray-700: light-dark(#374151, #c4c4cc);
+  --color-gray-800: light-dark(#1f2937, #e5e5ea);
+  --color-gray-900: light-dark(#111827, #ededed);
+  --color-purple-50: light-dark(#faf5ff, #1e1033);
+  --color-purple-700: light-dark(#7e22ce, #c4b5fd);
+  --color-red-500: light-dark(#ef4444, #f87171);
+  --color-red-600: light-dark(#dc2626, #f87171);
+  --color-green-100: light-dark(#dcfce7, #052e16);
+  --color-green-700: light-dark(#15803d, #4ade80);
+  --color-green-800: light-dark(#166534, #86efac);
+  --color-amber-700: light-dark(#b45309, #fbbf24);
 }
 
-@media (prefers-color-scheme: dark) {
-  .profile-theme {
-    color-scheme: dark;
-    --pf-bg: #0b0b0f;
-    --pf-fg: #ededed;
-    --pf-muted: #a3a3a3;
-    --pf-border: #2a2a31;
-    --pf-surface: #141418;
-    --pf-accent: #c4b5fd;
-    --pf-solid: #c4b5fd;
-    --pf-solid-fg: #1e1033;
-    --pf-avatar-bg: #2e1065;
-    --pf-avatar-fg: #ddd6fe;
-  }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+body {
+  background: var(--pf-bg);
+  color: var(--pf-fg);
 }
 
-/* Turns the tokens into classes like bg-pf-bg and text-pf-muted */
 @theme inline {
   --color-pf-bg: var(--pf-bg);
   --color-pf-fg: var(--pf-fg);
@@ -77,9 +90,8 @@ body {
 }
 
 @media print {
+  :root:root:root { color-scheme: light; }
   .profile-theme {
-    color-scheme: light;
-    --pf-bg: #ffffff;
     --pf-fg: #000000;
     --pf-muted: #404040;
     --pf-border: #d4d4d4;
