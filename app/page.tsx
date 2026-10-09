@@ -120,8 +120,11 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="mt-16 border-t border-pf-border pt-4 text-xs text-pf-muted">
-          &copy; {new Date().getFullYear()} Handle
+        <footer className="mt-16 flex flex-wrap items-center gap-4 border-t border-pf-border pt-4 text-xs text-pf-muted">
+          <span>&copy; {new Date().getFullYear()} Handle</span>
+          <Link href="/privacy" className="underline-offset-4 hover:underline">
+            Privacy Policy
+          </Link>
         </footer>
       </main>
     </div>
