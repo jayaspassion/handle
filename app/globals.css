@@ -8,8 +8,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+  --font-serif: Georgia, "Times New Roman", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,46 +23,50 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 /* ---------- Theme ---------- */
 :root {
   color-scheme: light dark;
 
-  /* Tokens for the public page and the toggle */
-  --pf-bg: light-dark(#ffffff, #0b0b0f);
-  --pf-fg: light-dark(#171717, #ededed);
-  --pf-muted: light-dark(#525252, #a3a3a3);
-  --pf-border: light-dark(#e5e5e5, #2a2a31);
-  --pf-surface: light-dark(#fafafa, #141418);
-  --pf-accent: light-dark(#7e22ce, #c4b5fd);
-  --pf-solid: light-dark(#7e22ce, #c4b5fd);
-  --pf-solid-fg: light-dark(#ffffff, #1e1033);
-  --pf-avatar-bg: light-dark(#f3e8ff, #2e1065);
-  --pf-avatar-fg: light-dark(#581c87, #ddd6fe);
+  /* Shape tokens */
+  --radius-input: 0.625rem;
+  --radius-card: 1rem;
+
+  /* Tokens for the public page and the toggle (Editorial lavender) */
+  --pf-bg: light-dark(#faf8f5, #17121d);
+  --pf-fg: light-dark(#281331, #f6f0fa);
+  --pf-muted: light-dark(#6e6677, #bbafc6);
+  --pf-border: light-dark(#e7e0e9, #403249);
+  --pf-surface: light-dark(#ffffff, #231b2a);
+  --pf-tint: light-dark(#eee7f7, #2b2134);
+  --pf-accent: light-dark(#6b3fa0, #d4b9ef); /* readable link/text color */
+  --pf-brand: light-dark(#9975ca, #b99be0); /* decoration: bars, dots, focus */
+  --pf-solid: light-dark(#3d2145, #d4b9ef);
+  --pf-solid-fg: light-dark(#ffffff, #281331);
+  --pf-avatar-bg: light-dark(#eee7f7, #403249);
+  --pf-avatar-fg: light-dark(#3d2145, #d4b9ef);
+  --pf-success: light-dark(#1b6b3a, #9ad9ae);
+  --pf-success-bg: light-dark(#e4f4e8, #1f3a2b);
+  --pf-danger: light-dark(#b3261e, #ffb4ab);
+  --pf-danger-bg: light-dark(#fdecea, #3a1f22);
 
   /* Dashboard: remap the Tailwind colors it already uses */
-  --color-white: light-dark(#ffffff, #17171c);
-  --color-gray-50: light-dark(#f9fafb, #1c1c22);
-  --color-gray-100: light-dark(#f3f4f6, #23232a);
-  --color-gray-200: light-dark(#e5e7eb, #2a2a31);
-  --color-gray-300: light-dark(#d1d5db, #3a3a44);
-  --color-gray-500: light-dark(#6b7280, #9a9aa5);
-  --color-gray-600: light-dark(#4b5563, #a3a3ad);
-  --color-gray-700: light-dark(#374151, #c4c4cc);
-  --color-gray-800: light-dark(#1f2937, #e5e5ea);
-  --color-gray-900: light-dark(#111827, #ededed);
-  --color-purple-50: light-dark(#faf5ff, #1e1033);
-  --color-purple-700: light-dark(#7e22ce, #c4b5fd);
+  --color-white: light-dark(#ffffff, #231b2a);
+  --color-gray-50: light-dark(#faf8f5, #1d1624);
+  --color-gray-100: light-dark(#f3eef6, #2b2134);
+  --color-gray-200: light-dark(#e7e0e9, #403249);
+  --color-gray-300: light-dark(#d9cfdd, #4d3f58);
+  --color-gray-500: light-dark(#6e6677, #a99cb6);
+  --color-gray-600: light-dark(#5f566a, #bbafc6);
+  --color-gray-700: light-dark(#463d50, #d0c6da);
+  --color-gray-800: light-dark(#281331, #e9e1f0);
+  --color-gray-900: light-dark(#281331, #f6f0fa);
+  --color-purple-50: light-dark(#eee7f7, #2b2134);
+  --color-purple-700: light-dark(#3d2145, #d4b9ef);
   --color-red-500: light-dark(#ef4444, #f87171);
-  --color-red-600: light-dark(#dc2626, #f87171);
-  --color-green-100: light-dark(#dcfce7, #052e16);
-  --color-green-700: light-dark(#15803d, #4ade80);
-  --color-green-800: light-dark(#166534, #86efac);
+  --color-red-600: light-dark(#b3261e, #ffb4ab);
+  --color-green-100: light-dark(#e4f4e8, #1f3a2b);
+  --color-green-700: light-dark(#1b6b3a, #9ad9ae);
+  --color-green-800: light-dark(#14532d, #b6e8c6);
   --color-amber-700: light-dark(#b45309, #fbbf24);
 }
 
@@ -68,6 +76,7 @@ body {
 body {
   background: var(--pf-bg);
   color: var(--pf-fg);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 @theme inline {
@@ -81,12 +90,18 @@ body {
   --color-pf-solid-fg: var(--pf-solid-fg);
   --color-pf-avatar-bg: var(--pf-avatar-bg);
   --color-pf-avatar-fg: var(--pf-avatar-fg);
+  --color-pf-tint: var(--pf-tint);
+  --color-pf-brand: var(--pf-brand);
+  --color-pf-success: var(--pf-success);
+  --color-pf-success-bg: var(--pf-success-bg);
+  --color-pf-danger: var(--pf-danger);
+  --color-pf-danger-bg: var(--pf-danger-bg);
 }
 
-.profile-theme a:focus-visible,
-.profile-theme button:focus-visible {
-  outline: 2px solid var(--pf-accent);
-  outline-offset: 3px;
+/* Visible keyboard focus everywhere */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--pf-brand);
+  outline-offset: 2px;
 }
 
 @media print {
@@ -97,6 +112,8 @@ body {
     --pf-border: #d4d4d4;
     --pf-surface: #ffffff;
     --pf-accent: #000000;
+    --pf-tint: #ffffff;
+    --pf-brand: #000000;
   }
   .profile-theme a[href^="http"]::after {
     content: " (" attr(href) ")";
@@ -106,4 +123,111 @@ body {
   .profile-theme section li {
     break-inside: avoid;
   }
+}
+
+/* ---------- Shared component styles (used from phase 2 on) ---------- */
+@layer components {
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pf-muted);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-input);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, opacity 0.15s;
+  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-sm { min-height: 2.5rem; padding: 0 0.875rem; font-size: 0.875rem; }
+  .btn-primary { background: var(--pf-solid); color: var(--pf-solid-fg); }
+  .btn-primary:hover:not(:disabled) { opacity: 0.9; }
+  .btn-outline { border-color: var(--pf-border); color: var(--pf-fg); background: transparent; }
+  .btn-outline:hover:not(:disabled) { background: var(--pf-tint); }
+  .btn-danger {
+    background: var(--pf-danger-bg);
+    color: var(--pf-danger);
+    border-color: color-mix(in srgb, var(--pf-danger) 35%, transparent);
+  }
+  .btn-danger:hover:not(:disabled) { border-color: var(--pf-danger); }
+
+  .card {
+    position: relative;
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+  }
+  .card-accent { overflow: hidden; }
+  .card-accent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5rem;
+    height: 2px;
+    background: var(--pf-brand);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--pf-border);
+    border-radius: 999px;
+    background: var(--pf-bg);
+    color: var(--pf-fg);
+    font-size: 0.8125rem;
+  }
+
+  .input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--pf-surface);
+    color: var(--pf-fg);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--radius-input);
+    font: inherit;
+    font-size: 0.9375rem;
+  }
+  .input:focus-visible {
+    outline: 2px solid var(--pf-brand);
+    outline-offset: 1px;
+    border-color: var(--pf-brand);
+  }
+  .input[aria-invalid="true"] { border-color: var(--pf-danger); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem 0.625rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--pf-tint);
+    color: var(--pf-muted);
+  }
+  .badge-success { background: var(--pf-success-bg); color: var(--pf-success); }
+
+  .msg-success,
+  .msg-error {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-input);
+    font-size: 0.875rem;
+  }
+  .msg-success { background: var(--pf-success-bg); color: var(--pf-success); }
+  .msg-error { background: var(--pf-danger-bg); color: var(--pf-danger); }
 }
