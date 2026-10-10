@@ -30,11 +30,12 @@ export default async function Image({
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 72,
-          background: "#0b0b0f",
-          color: "#ededed",
+          background: "#17121d",
+          backgroundImage: "linear-gradient(135deg, #17121d 0%, #2b2134 100%)",
+          color: "#f6f0fa",
         }}
       >
-        <div style={{ display: "flex", fontSize: 32, color: "#c4b5fd" }}>
+        <div style={{ display: "flex", fontSize: 32, color: "#d4b9ef" }}>
           handle
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -47,7 +48,7 @@ export default async function Image({
                 display: "flex",
                 marginTop: 20,
                 fontSize: 36,
-                color: "#a3a3a3",
+                color: "#bbafc6",
               }}
             >
               {headline}
