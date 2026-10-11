@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useId } from "react";
+import { useActionState, useId, useState } from "react";
 import { updateProfile, type ProfileFormState } from "./actions";
 
 export type ProfileValues = {
@@ -14,34 +14,27 @@ type Field = keyof ProfileValues;
 
 const initialState: ProfileFormState = { status: "idle" };
 
-const inputClass =
-  "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm";
+const inputClass = "input mt-1";
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-1 text-sm text-red-600">
+    <p id={id} className="mt-1 text-sm text-pf-danger">
       {message}
     </p>
   );
 }
 
-type Props = {
-  initial: ProfileValues; // the saved values, pre-filled when the form opens
-  onSaved: () => void;
-  onCancel: () => void;
-};
-
-export function ProfileFormFields({ initial, onSaved, onCancel }: Props) {
+export function ProfileFormFields({ initial }: { initial: ProfileValues }) {
   const [state, formAction, pending] = useActionState(updateProfile, initialState);
+
+  // Hide the "saved" message as soon as the user edits again
+  const [touchedState, setTouchedState] = useState<ProfileFormState | null>(null);
+  const showSaved = state.status === "success" && touchedState !== state;
 
   // Unique ids so labels always point at the right field
   const uid = useId();
   const fid = (name: string) => `${uid}-${name}`;
-
-  useEffect(() => {
-    if (state.status === "success") onSaved();
-  }, [state, onSaved]);
 
   // After a failed submit, keep what the user typed instead of resetting
   const base = state.values ?? initial;
@@ -57,9 +50,11 @@ export function ProfileFormFields({ initial, onSaved, onCancel }: Props) {
   });
 
   return (
-    <form action={formAction} className="space-y-4">
-      <h3 className="text-sm font-semibold">Edit profile</h3>
-
+    <form
+      action={formAction}
+      onInput={() => setTouchedState(state)}
+      className="space-y-3"
+    >
       <div>
         <label htmlFor={fid("fullName")} className="text-sm font-medium">Full name</label>
         <input {...field("fullName")} />
@@ -67,7 +62,7 @@ export function ProfileFormFields({ initial, onSaved, onCancel }: Props) {
       </div>
 
       <div>
-        <label htmlFor={fid("headline")} className="text-sm font-medium">Headline</label>
+        <label htmlFor={fid("headline")} className="text-sm font-medium">Professional headline</label>
         <input {...field("headline")} placeholder="e.g. Full-stack developer" />
         <FieldError id={`${fid("headline")}-error`} message={err.headline} />
       </div>
@@ -80,29 +75,21 @@ export function ProfileFormFields({ initial, onSaved, onCancel }: Props) {
 
       <div>
         <label htmlFor={fid("bio")} className="text-sm font-medium">Bio</label>
-        <textarea rows={5} {...field("bio")} />
+        <textarea rows={4} {...field("bio")} />
         <FieldError id={`${fid("bio")}-error`} message={err.bio} />
       </div>
 
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        {/* Always mounted so screen readers announce the message when it appears */}
+        <p role="status" className={showSaved ? "msg-success" : "sr-only"}>
+          {showSaved ? "Profile saved." : ""}
+        </p>
+        {state.status === "error" && state.message && (
+          <p role="alert" className="msg-error">{state.message}</p>
+        )}
+        <button type="submit" disabled={pending} className="btn btn-primary">
           {pending ? "Saving..." : "Save changes"}
         </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={pending}
-          className="rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
-        >
-          Cancel
-        </button>
-        {state.status === "error" && state.message && (
-          <p role="alert" className="text-sm text-red-600">{state.message}</p>
-        )}
       </div>
     </form>
   );

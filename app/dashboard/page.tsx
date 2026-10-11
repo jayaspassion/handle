@@ -1,6 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
+import { UserButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import ThemeToggle from "../_components/theme-toggle";
+import DashboardNav from "./_components/dashboard-nav";
+import DashboardSection from "./_components/dashboard-section";
+import ProfileCompletion from "./_components/profile-completion";
 import PublishSection from "./_sections/publish/section";
 import ProfileSection from "./_sections/profile/section";
 import LinkForm from "./_sections/links/form";
@@ -51,64 +56,165 @@ export default async function DashboardPage() {
 
   const profile = user.profile;
   const skills = profile?.skills ?? [];
+  const username = profile?.username ?? "";
+  const isPublished = profile?.isPublished ?? false;
 
   // Categories already in use, offered as suggestions in the skill forms
   const skillCategories = [
     ...new Set(skills.map((s) => s.category).filter((c): c is string => !!c)),
   ];
 
+  const completion = [
+    { label: "Add a photo", done: !!profile?.avatarUrl, href: "#profile" },
+    { label: "Write a bio", done: !!profile?.bio?.trim(), href: "#profile" },
+    { label: "Add a project", done: (profile?.projects.length ?? 0) > 0, href: "#projects" },
+    { label: "Add skills", done: skills.length > 0, href: "#skills" },
+    { label: "Add links", done: (profile?.links.length ?? 0) > 0, href: "#links" },
+    { label: "Add experience", done: (profile?.experiences.length ?? 0) > 0, href: "#experience" },
+  ];
+
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <p className="mt-2">Signed in as {user.email}</p>
-      <p>Plan: {user.tier}</p>
+    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)]">
+      <DashboardNav email={user.email} tier={user.tier} />
 
-      <h2 className="mt-8 text-xl font-semibold">Publish</h2>
-      <PublishSection
-        username={profile?.username ?? ""}
-        isPublished={profile?.isPublished ?? false}
-        hasName={!!profile?.fullName?.trim()}
-      />
+      <main className="min-w-0 px-5 pb-12 pt-4 lg:px-6 lg:pt-6">
+        <div className="mx-auto max-w-6xl">
+          <header
+            id="overview"
+            className="flex scroll-mt-16 flex-wrap items-start justify-between gap-x-4 gap-y-3 lg:scroll-mt-6"
+          >
+            <div>
+              <h1 className="font-serif text-3xl leading-9 tracking-tight">
+                Your next chapter starts here.
+              </h1>
+              <p className="mt-1 text-pf-muted">Shape your story. Share your work.</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              {isPublished && username && (
+                <a
+                  href={`/${username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline btn-sm"
+                >
+                  View public page
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+                  </svg>
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              )}
+              <ThemeToggle />
+              <UserButton />
+            </div>
+          </header>
 
-      <h2 className="mt-12 text-xl font-semibold">Profile</h2>
-      <ProfileSection
-        values={{
-          fullName: profile?.fullName ?? "",
-          headline: profile?.headline ?? "",
-          location: profile?.location ?? "",
-          bio: profile?.bio ?? "",
-        }}
-        avatarUrl={profile?.avatarUrl ?? null}
-        resumeUrl={profile?.resumeUrl ?? null}
-      />
+          {/* Left: profile and sections. Right: publication and checklist.
+              On small screens everything stacks: profile, rail, sections. */}
+          <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_19rem] xl:items-start">
+            <DashboardSection
+              id="profile"
+              title="Profile details"
+              description="This information appears on your public portfolio."
+            >
+              <ProfileSection
+                values={{
+                  fullName: profile?.fullName ?? "",
+                  headline: profile?.headline ?? "",
+                  location: profile?.location ?? "",
+                  bio: profile?.bio ?? "",
+                }}
+                avatarUrl={profile?.avatarUrl ?? null}
+                resumeUrl={profile?.resumeUrl ?? null}
+              />
+            </DashboardSection>
 
-      <h2 className="mt-12 text-xl font-semibold">Links</h2>
-      <LinkList items={profile?.links ?? []} />
-      <LinkForm />
+            <div className="space-y-4 xl:col-start-2 xl:row-span-2 xl:row-start-1">
+              <PublishSection
+                username={username}
+                isPublished={isPublished}
+                hasName={!!profile?.fullName?.trim()}
+              />
+              <ProfileCompletion items={completion} />
+            </div>
 
-      <h2 className="mt-12 text-xl font-semibold">Experience</h2>
-      <ExperienceList items={profile?.experiences ?? []} />
-      <ExperienceForm />
+            <div className="space-y-5 xl:col-start-1">
+              <DashboardSection
+                id="links"
+                title="Links"
+                description="Where visitors can find you elsewhere."
+              >
+                <LinkList items={profile?.links ?? []} />
+                <LinkForm />
+              </DashboardSection>
 
-      <h2 className="mt-12 text-xl font-semibold">Education</h2>
-      <EducationList items={profile?.education ?? []} />
-      <EducationForm />
+              <DashboardSection
+                id="projects"
+                title="Projects"
+                description="Showcase your best work."
+              >
+                <ProjectList items={profile?.projects ?? []} />
+                <ProjectForm />
+              </DashboardSection>
 
-      <h2 className="mt-12 text-xl font-semibold">Projects</h2>
-      <ProjectList items={profile?.projects ?? []} />
-      <ProjectForm />
+              <DashboardSection
+                id="experience"
+                title="Experience"
+                description="Your work history."
+              >
+                <ExperienceList items={profile?.experiences ?? []} />
+                <ExperienceForm />
+              </DashboardSection>
 
-      <h2 className="mt-12 text-xl font-semibold">Skills</h2>
-      <SkillList items={skills} categories={skillCategories} />
-      <SkillForm categories={skillCategories} />
+              <DashboardSection
+                id="education"
+                title="Education"
+                description="Where you studied."
+              >
+                <EducationList items={profile?.education ?? []} />
+                <EducationForm />
+              </DashboardSection>
 
-      <h2 className="mt-12 text-xl font-semibold">Certifications</h2>
-      <CertificationList items={profile?.certifications ?? []} />
-      <CertificationForm />
+              <DashboardSection
+                id="skills"
+                title="Skills"
+                description="Tools and technologies, grouped by category."
+              >
+                <SkillList items={skills} categories={skillCategories} />
+                <SkillForm categories={skillCategories} />
+              </DashboardSection>
 
-      <h2 className="mt-12 text-xl font-semibold">Testimonials</h2>
-      <TestimonialList items={profile?.testimonials ?? []} />
-      <TestimonialForm />
-    </main>
+              <DashboardSection
+                id="certifications"
+                title="Certifications"
+                description="Showcase your professional certifications."
+              >
+                <CertificationList items={profile?.certifications ?? []} />
+                <CertificationForm />
+              </DashboardSection>
+
+              <DashboardSection
+                id="testimonials"
+                title="Testimonials"
+                description="Kind words from people you've worked with."
+              >
+                <TestimonialList items={profile?.testimonials ?? []} />
+                <TestimonialForm />
+              </DashboardSection>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
