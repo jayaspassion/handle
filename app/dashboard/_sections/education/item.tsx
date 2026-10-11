@@ -12,6 +12,8 @@ type Props = {
     id: string;
     degree: string;
     fieldOfStudy: string | null;
+    location: string | null;
+    gpa: string | null;
     institution: string;
     range: string;
     description: string | null;
@@ -58,8 +60,17 @@ export default function EducationItem({ item, initial }: Props) {
             {item.degree}
             {item.fieldOfStudy ? `, ${item.fieldOfStudy}` : ""}
           </p>
-          <p className="text-sm">{item.institution}</p>
-          <p className="text-sm text-pf-muted">{item.range}</p>
+          <p className="text-sm">
+            {[item.institution, item.location].filter(Boolean).join(" | ")}
+          </p>
+          <p className="text-sm text-pf-muted">
+            {[
+              item.range,
+              item.gpa ? (/^\d/.test(item.gpa) ? `GPA ${item.gpa}` : item.gpa) : null,
+            ]
+              .filter(Boolean)
+              .join(" | ")}
+          </p>
           {item.description && (
             <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
           )}

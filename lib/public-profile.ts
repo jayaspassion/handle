@@ -43,6 +43,8 @@ export const getPublishedProfile = cache(async (username: string) => {
                     institution: true,
                     degree: true,
                     fieldOfStudy: true,
+          location: true,
+          gpa: true,
                     startDate: true,
                     endDate: true,
                     description: true,

@@ -375,7 +375,14 @@ export default async function PublicProfilePage({ params }: Props) {
               {e.fieldOfStudy ? `, ${e.fieldOfStudy}` : ""}
             </h3>
             <p className="text-sm text-pf-muted">
-              {e.institution} | {formatRange(e.startDate, e.endDate)}
+              {[
+                e.institution,
+                e.location,
+                formatRange(e.startDate, e.endDate),
+                e.gpa ? (/^\d/.test(e.gpa) ? `GPA ${e.gpa}` : e.gpa) : null,
+              ]
+                .filter(Boolean)
+                .join(" | ")}
             </p>
             {e.description && (
               <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed">

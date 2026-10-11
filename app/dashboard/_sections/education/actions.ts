@@ -12,6 +12,8 @@ const educationSchema = z
     institution: z.string().trim().min(1, "Institution is required").max(150, "Max 150 characters"),
     degree: z.string().trim().min(1, "Degree is required").max(100, "Max 100 characters"),
     fieldOfStudy: z.string().trim().max(100, "Max 100 characters"),
+    location: z.string().trim().max(100, "Max 100 characters"),
+    gpa: z.string().trim().max(30, "Max 30 characters"),
     startDate: z.string().regex(MONTH, "Start date is required"),
     endDate: z.string(),
     current: z.boolean(),
@@ -38,6 +40,8 @@ export type EducationField =
   | "institution"
   | "degree"
   | "fieldOfStudy"
+  | "location"
+  | "gpa"
   | "startDate"
   | "endDate"
   | "description";
@@ -72,6 +76,8 @@ export async function saveEducation(
     institution: String(formData.get("institution") ?? ""),
     degree: String(formData.get("degree") ?? ""),
     fieldOfStudy: String(formData.get("fieldOfStudy") ?? ""),
+    location: String(formData.get("location") ?? ""),
+    gpa: String(formData.get("gpa") ?? ""),
     startDate: String(formData.get("startDate") ?? ""),
     endDate: String(formData.get("endDate") ?? ""),
     description: String(formData.get("description") ?? ""),
@@ -97,6 +103,8 @@ export async function saveEducation(
     institution: d.institution,
     degree: d.degree,
     fieldOfStudy: d.fieldOfStudy || null,
+    location: d.location || null,
+    gpa: d.gpa || null,
     startDate: monthToDate(d.startDate),
     endDate: d.current ? null : monthToDate(d.endDate),
     description: d.description || null,

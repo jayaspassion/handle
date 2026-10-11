@@ -5,6 +5,8 @@ type Item = {
   institution: string;
   degree: string;
   fieldOfStudy: string | null;
+  location: string | null;
+  gpa: string | null;
   startDate: Date;
   endDate: Date | null;
   description: string | null;
@@ -35,6 +37,8 @@ export default function EducationList({ items }: { items: Item[] }) {
             id: item.id,
             degree: item.degree,
             fieldOfStudy: item.fieldOfStudy,
+            location: item.location,
+            gpa: item.gpa,
             institution: item.institution,
             range: `${formatMonth(item.startDate)} – ${
               item.endDate ? formatMonth(item.endDate) : "Present"
@@ -45,6 +49,8 @@ export default function EducationList({ items }: { items: Item[] }) {
             institution: item.institution,
             degree: item.degree,
             fieldOfStudy: item.fieldOfStudy ?? "",
+            location: item.location ?? "",
+            gpa: item.gpa ?? "",
             startDate: toMonth(item.startDate),
             endDate: item.endDate ? toMonth(item.endDate) : "",
             description: item.description ?? "",

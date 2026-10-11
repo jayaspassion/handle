@@ -76,6 +76,8 @@ model Education {
   institution  String
   degree       String
   fieldOfStudy String?
+  location     String?
+  gpa          String?
   startDate    DateTime
   endDate      DateTime?
   description  String?

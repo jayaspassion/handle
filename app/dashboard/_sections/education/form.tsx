@@ -94,6 +94,19 @@ export function EducationFormFields({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
+          <label htmlFor={fid("location")} className="text-sm font-medium">Location (optional)</label>
+          <input {...field("location")} placeholder="e.g. Boston, MA" />
+          <FieldError id={`${fid("location")}-error`} message={err.location} />
+        </div>
+        <div>
+          <label htmlFor={fid("gpa")} className="text-sm font-medium">GPA / grade (optional)</label>
+          <input {...field("gpa")} placeholder="e.g. 3.8 / 4.0" />
+          <FieldError id={`${fid("gpa")}-error`} message={err.gpa} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
           <label htmlFor={fid("startDate")} className="text-sm font-medium">Start date</label>
           <MonthPicker
             id={fid("startDate")}
