@@ -1,5 +1,4 @@
-import { ProfileFormFields, type ProfileValues } from "./form";
-import { PhotoUploader, ResumeUploader } from "./uploads";
+import { ProfileForm, type ProfileValues } from "./form";
 
 type Props = {
   values: ProfileValues;
@@ -9,10 +8,6 @@ type Props = {
 
 export default function ProfileSection({ values, avatarUrl, resumeUrl }: Props) {
   return (
-    <div className="grid gap-5 md:grid-cols-[9rem_minmax(0,1fr)_12rem]">
-      <PhotoUploader avatarUrl={avatarUrl} name={values.fullName} />
-      <ProfileFormFields initial={values} />
-      <ResumeUploader resumeUrl={resumeUrl} />
-    </div>
+    <ProfileForm initial={values} avatarUrl={avatarUrl} resumeUrl={resumeUrl} />
   );
 }

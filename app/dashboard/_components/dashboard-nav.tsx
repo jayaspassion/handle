@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: "home" },
@@ -87,23 +87,42 @@ export default function DashboardNav({
   tier: string;
 }) {
   const [active, setActive] = useState<string>("overview");
+  const lockUntil = useRef(0);
 
-  // Highlight the section currently near the top of the screen
+  // Highlight the section near the top of the screen. At the very top it is
+  // Overview, at the very bottom the last section. A click wins briefly so
+  // short sections at the end can still be selected.
   useEffect(() => {
-    const els = NAV_ITEMS.map((i) => document.getElementById(i.id)).filter(
-      (el): el is HTMLElement => !!el,
-    );
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-10% 0px -70% 0px" },
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const ids = NAV_ITEMS.map((i) => i.id);
+    function update() {
+      if (Date.now() < lockUntil.current) return;
+      if (window.scrollY < 80) {
+        setActive(ids[0]);
+        return;
+      }
+      // The activation line sits 35% down the screen and slides to the bottom
+      // edge over the last stretch of the page, so the final short sections
+      // are highlighted one after the other.
+      const vh = window.innerHeight;
+      const remaining =
+        document.documentElement.scrollHeight - (window.scrollY + vh);
+      const range = vh * 0.65;
+      const t = remaining < range ? 1 - Math.max(remaining, 0) / range : 0;
+      const line = vh * (0.35 + 0.65 * t);
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= line) current = id;
+      }
+      setActive(current);
+    }
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   return (
@@ -126,7 +145,10 @@ export default function DashboardNav({
                 <li key={item.id} className="shrink-0">
                   <a
                     href={`#${item.id}`}
-                    onClick={() => setActive(item.id)}
+                    onClick={() => {
+                      lockUntil.current = Date.now() + 800;
+                      setActive(item.id);
+                    }}
                     aria-current={isActive ? "location" : undefined}
                     className={`flex min-h-10 items-center gap-3 whitespace-nowrap rounded-lg px-3 text-sm ${
                       isActive
