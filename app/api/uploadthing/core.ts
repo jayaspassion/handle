@@ -61,6 +61,15 @@ export const ourFileRouter = {
             const oldKey = keyFromUrl(old?.resumeUrl ?? null);
             if (oldKey) await utapi.deleteFiles(oldKey).catch(() => { });
         }),
+  // Project images: uploaded from the project form before the project exists,
+  // so the URL goes back to the form and is saved together with the project.
+  projectImage: f({
+    "image/jpeg": { maxFileSize: "2MB", maxFileCount: 1 },
+    "image/png": { maxFileSize: "2MB", maxFileCount: 1 },
+    "image/webp": { maxFileSize: "2MB", maxFileCount: 1 },
+  })
+    .middleware(requireProfile)
+    .onUploadComplete(async ({ file }) => ({ url: file.ufsUrl })),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

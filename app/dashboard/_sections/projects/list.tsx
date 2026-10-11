@@ -12,7 +12,11 @@ type Item = {
 
 export default function ProjectList({ items }: { items: Item[] }) {
   if (items.length === 0) {
-    return <p className="rounded-lg border border-dashed border-pf-border p-4 text-center text-sm text-pf-muted">No projects added yet.</p>;
+    return (
+      <p className="rounded-lg border border-dashed border-pf-border p-4 text-center text-sm text-pf-muted">
+        No projects added yet.
+      </p>
+    );
   }
 
   return (
@@ -27,6 +31,7 @@ export default function ProjectList({ items }: { items: Item[] }) {
             tags: item.tags,
             liveUrl: item.liveUrl,
             repoUrl: item.repoUrl,
+            coverImageUrl: item.coverImageUrl,
           }}
           initial={{
             title: item.title,

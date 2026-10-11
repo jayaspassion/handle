@@ -1,6 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useId } from "react";
+import {
+  useActionState,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from "react";
 import {
   saveProject,
   type ProjectField,
@@ -8,16 +15,20 @@ import {
   type ProjectValues,
 } from "./actions";
 import AddPanel from "../../_components/add-panel";
+import { useUploadThing } from "@/lib/uploadthing";
+import { isUploadedFileUrl } from "@/lib/uploads";
+import { resizeImage } from "../profile/uploads";
+
+type TextField = Exclude<ProjectField, "coverImageUrl">;
 
 const initialState: ProjectFormState = { status: "idle" };
 
-const inputClass =
-  "input mt-1";
+const inputClass = "input mt-1";
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-1 text-sm text-red-600">
+    <p id={id} className="mt-1 text-sm text-pf-danger">
       {message}
     </p>
   );
@@ -43,6 +54,31 @@ export function ProjectFormFields({
   const uid = useId();
   const fid = (name: string) => `${uid}-${name}`;
 
+  // Project image: uploaded first, then saved with the project
+  const [cover, setCover] = useState(
+    isUploadedFileUrl(initial?.coverImageUrl) ? initial!.coverImageUrl : "",
+  );
+  const [uploadError, setUploadError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
+  const { startUpload, isUploading } = useUploadThing("projectImage", {
+    onClientUploadComplete: (res) => {
+      const url = res?.[0]?.serverData?.url;
+      if (url) {
+        setCover(url);
+        setUploadError("");
+      }
+    },
+    onUploadError: (e) => setUploadError(e.message),
+  });
+
+  async function onFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploadError("");
+    await startUpload([await resizeImage(file)]);
+  }
+
   useEffect(() => {
     if (state.status === "success") onSaved();
   }, [state, onSaved]);
@@ -51,7 +87,7 @@ export function ProjectFormFields({
   const base = state.values ?? initial;
   const err = state.errors ?? {};
 
-  const field = (name: ProjectField, hintId?: string) => ({
+  const field = (name: TextField, hintId?: string) => ({
     id: fid(name),
     name,
     defaultValue: base?.[name] ?? "",
@@ -69,9 +105,11 @@ export function ProjectFormFields({
     autoComplete: "off",
   };
 
+  const safeCover = isUploadedFileUrl(cover) ? cover : null;
+
   return (
     <form action={formAction} className="space-y-4">
-      <h3 className="text-sm font-semibold">
+      <h3 className="font-serif text-lg">
         {editId ? "Edit project" : "New project"}
       </h3>
       {editId && <input type="hidden" name="id" value={editId} />}
@@ -100,30 +138,79 @@ export function ProjectFormFields({
         <FieldError id={`${fid("tags")}-error`} message={err.tags} />
       </div>
 
-      <div>
-        <label htmlFor={fid("liveUrl")} className="text-sm font-medium">Live link (optional)</label>
-        <input {...field("liveUrl")} {...urlProps} placeholder="https://my-project.com" />
-        <FieldError id={`${fid("liveUrl")}-error`} message={err.liveUrl} />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor={fid("liveUrl")} className="text-sm font-medium">Live link (optional)</label>
+          <input {...field("liveUrl")} {...urlProps} placeholder="https://my-project.com" />
+          <FieldError id={`${fid("liveUrl")}-error`} message={err.liveUrl} />
+        </div>
+        <div>
+          <label htmlFor={fid("repoUrl")} className="text-sm font-medium">Source link (optional)</label>
+          <input {...field("repoUrl")} {...urlProps} placeholder="https://github.com/you/project" />
+          <FieldError id={`${fid("repoUrl")}-error`} message={err.repoUrl} />
+        </div>
       </div>
 
       <div>
-        <label htmlFor={fid("repoUrl")} className="text-sm font-medium">Repository or source link (optional)</label>
-        <input {...field("repoUrl")} {...urlProps} placeholder="https://github.com/you/project" />
-        <FieldError id={`${fid("repoUrl")}-error`} message={err.repoUrl} />
-      </div>
-
-      <div>
-        <label htmlFor={fid("coverImageUrl")} className="text-sm font-medium">Cover image link (optional)</label>
-        <input {...field("coverImageUrl")} {...urlProps} placeholder="https://..." />
+        <p className="text-sm font-medium">Project image (optional)</p>
+        <div className="mt-1 flex flex-wrap items-center gap-3">
+          {safeCover ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={safeCover}
+              alt="Project image preview"
+              className="h-16 w-24 rounded-md border border-pf-border object-cover"
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              className="grid h-16 w-24 place-items-center rounded-md border border-dashed border-pf-border text-xs text-pf-muted"
+            >
+              No image
+            </div>
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={onFile}
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+          <button
+            type="button"
+            disabled={isUploading}
+            onClick={() => fileRef.current?.click()}
+            className="btn btn-outline btn-sm"
+          >
+            {isUploading ? "Uploading..." : safeCover ? "Replace" : "Upload image"}
+          </button>
+          {safeCover && (
+            <button
+              type="button"
+              disabled={isUploading}
+              onClick={() => setCover("")}
+              className="btn btn-outline btn-sm"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+        <input type="hidden" name="coverImageUrl" value={cover} />
+        <p className="mt-1 text-xs text-pf-muted">
+          JPG, PNG or WebP. Resized automatically. Shown beside your project on your public page.
+        </p>
         <FieldError id={`${fid("coverImageUrl")}-error`} message={err.coverImageUrl} />
+        {uploadError && (
+          <p role="alert" className="msg-error mt-2">
+            {uploadError}
+          </p>
+        )}
       </div>
 
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="btn btn-primary"
-        >
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" disabled={pending || isUploading} className="btn btn-primary">
           {pending
             ? editId ? "Saving..." : "Adding..."
             : editId ? "Save changes" : "Add project"}
@@ -137,7 +224,7 @@ export function ProjectFormFields({
           Cancel
         </button>
         {state.status === "error" && state.message && (
-          <p role="alert" className="text-sm text-red-600">{state.message}</p>
+          <p role="alert" className="msg-error">{state.message}</p>
         )}
       </div>
     </form>

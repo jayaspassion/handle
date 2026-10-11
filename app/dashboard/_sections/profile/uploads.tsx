@@ -7,7 +7,7 @@ import { isUploadedFileUrl } from "@/lib/uploads";
 
 // Shrinks a photo in the browser before upload: max 800px, WebP.
 // Falls back to the original file if anything goes wrong.
-async function resizeImage(file: File): Promise<File> {
+export async function resizeImage(file: File): Promise<File> {
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
     const scale = Math.min(1, 800 / Math.max(bitmap.width, bitmap.height));

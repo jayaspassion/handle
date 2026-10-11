@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isHttpUrl, normalizeUrl } from "@/lib/url";
+import { isUploadedFileUrl } from "@/lib/uploads";
+import { deleteUploadedFile } from "@/lib/uploads-server";
 
 
 // "React, TypeScript, react" -> ["React", "TypeScript"]
@@ -32,7 +34,9 @@ const projectSchema = z.object({
   description: z.string().trim().max(2000, "Max 2000 characters"),
   liveUrl: urlField,
   repoUrl: urlField,
-  coverImageUrl: urlField,
+  coverImageUrl: z
+    .string()
+    .refine((v) => v === "" || isUploadedFileUrl(v), "Please upload the image again"),
   tags: z
     .array(z.string().max(30, "Each tag must be 30 characters or fewer"))
     .max(10, "Max 10 tags"),
@@ -81,7 +85,7 @@ export async function saveProject(
     tags: parseTags(raw.tags),
     liveUrl: normalizeUrl(raw.liveUrl),
     repoUrl: normalizeUrl(raw.repoUrl),
-    coverImageUrl: normalizeUrl(raw.coverImageUrl),
+    coverImageUrl: raw.coverImageUrl.trim(),
   });
 
   if (!parsed.success) {
@@ -105,12 +109,19 @@ export async function saveProject(
 
   if (id) {
     // Edit: the ownership check lives in the query itself
+    const before = await prisma.project.findFirst({
+      where: { id, profile: { user: { clerkId: userId } } },
+      select: { coverImageUrl: true },
+    });
     const result = await prisma.project.updateMany({
       where: { id, profile: { user: { clerkId: userId } } },
       data,
     });
     if (result.count === 0) {
       return { status: "error", message: "Project not found.", values: raw };
+    }
+    if (before?.coverImageUrl && before.coverImageUrl !== data.coverImageUrl) {
+      await deleteUploadedFile(before.coverImageUrl);
     }
     revalidatePath("/dashboard");
     return { status: "success", message: "Project updated." };
@@ -147,9 +158,14 @@ export async function deleteProject(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
+  const before = await prisma.project.findFirst({
+    where: { id, profile: { user: { clerkId: userId } } },
+    select: { coverImageUrl: true },
+  });
   await prisma.project.deleteMany({
     where: { id, profile: { user: { clerkId: userId } } },
   });
+  await deleteUploadedFile(before?.coverImageUrl);
 
   revalidatePath("/dashboard");
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { isUploadedFileUrl } from "@/lib/uploads";
 import { deleteProject, type ProjectValues } from "./actions";
 import { ProjectFormFields } from "./form";
 
@@ -15,6 +16,7 @@ type Props = {
     tags: string[];
     liveUrl: string | null;
     repoUrl: string | null;
+    coverImageUrl: string | null;
   };
   initial: ProjectValues;
 };
@@ -50,50 +52,59 @@ export default function ProjectItem({ item, initial }: Props) {
     );
   }
 
+  const thumb = isUploadedFileUrl(item.coverImageUrl) ? item.coverImageUrl : null;
+
   return (
     <li className="rounded-lg border border-pf-border p-4">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="font-medium">{item.title}</p>
-          {item.description && (
-            <p className="mt-1 whitespace-pre-line text-sm">{item.description}</p>
+        <div className="flex min-w-0 flex-1 gap-3">
+          {thumb && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={thumb}
+              alt=""
+              className="h-14 w-20 shrink-0 rounded-md border border-pf-border object-cover"
+            />
           )}
-          {item.tags.length > 0 && (
-            <ul aria-label="Tags" className="mt-2 flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
-                <li
-                  key={tag}
-                  className="chip text-xs"
-                >
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          )}
-          {(item.liveUrl || item.repoUrl) && (
-            <p className="mt-2 flex gap-4 text-sm">
-              {item.liveUrl && (
-                <a
-                  href={item.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-pf-accent hover:underline"
-                >
-                  Live
-                </a>
-              )}
-              {item.repoUrl && (
-                <a
-                  href={item.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-pf-accent hover:underline"
-                >
-                  Source
-                </a>
-              )}
-            </p>
-          )}
+          <div className="min-w-0">
+            <p className="font-medium">{item.title}</p>
+            {item.description && (
+              <p className="mt-1 whitespace-pre-line text-sm">{item.description}</p>
+            )}
+            {item.tags.length > 0 && (
+              <ul aria-label="Tags" className="mt-2 flex flex-wrap gap-2">
+                {item.tags.map((tag) => (
+                  <li key={tag} className="chip text-xs">
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {(item.liveUrl || item.repoUrl) && (
+              <p className="mt-2 flex gap-4 text-sm">
+                {item.liveUrl && (
+                  <a
+                    href={item.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pf-accent hover:underline"
+                  >
+                    Live
+                  </a>
+                )}
+                {item.repoUrl && (
+                  <a
+                    href={item.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pf-accent hover:underline"
+                  >
+                    Source
+                  </a>
+                )}
+              </p>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button
