@@ -11,11 +11,11 @@ type Item = {
 
 export default function TestimonialList({ items }: { items: Item[] }) {
   if (items.length === 0) {
-    return <p className="mt-4 text-sm text-gray-600">No testimonials added yet.</p>;
+    return <p className="rounded-lg border border-dashed border-pf-border p-4 text-center text-sm text-pf-muted">No testimonials added yet.</p>;
   }
 
   return (
-    <ul className="mt-4 max-w-xl space-y-3">
+    <ul className="space-y-2">
       {items.map((item) => (
         <TestimonialItem
           key={item.id}

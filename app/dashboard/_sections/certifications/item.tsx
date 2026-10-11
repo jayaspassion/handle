@@ -36,7 +36,7 @@ export default function CertificationItem({ item, initial }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <CertificationFormFields
             editId={item.id}
@@ -50,19 +50,19 @@ export default function CertificationItem({ item, initial }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 p-4">
+    <li className="rounded-lg border border-pf-border p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-medium">{item.name}</p>
           <p className="text-sm">{item.issuer}</p>
-          {item.dates && <p className="text-sm text-gray-600">{item.dates}</p>}
+          {item.dates && <p className="text-sm text-pf-muted">{item.dates}</p>}
           {item.credentialUrl && (
             <p className="mt-2 text-sm">
               <a
                 href={item.credentialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-purple-700 hover:underline"
+                className="text-pf-accent hover:underline"
               >
                 View credential
               </a>
@@ -75,7 +75,7 @@ export default function CertificationItem({ item, initial }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit ${item.name}`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -84,7 +84,7 @@ export default function CertificationItem({ item, initial }: Props) {
             <button
               type="submit"
               aria-label={`Delete ${item.name}`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

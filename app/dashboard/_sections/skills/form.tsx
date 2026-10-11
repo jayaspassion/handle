@@ -12,7 +12,7 @@ import AddPanel from "../../_components/add-panel";
 const initialState: SkillFormState = { status: "idle" };
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm";
+  "input mt-1";
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -81,7 +81,7 @@ export function SkillFormFields({
           placeholder={editId ? undefined : "React, TypeScript, Node.js"}
         />
         {!editId && (
-          <p id={`${fid("name")}-hint`} className="mt-1 text-xs text-gray-600">
+          <p id={`${fid("name")}-hint`} className="mt-1 text-xs text-pf-muted">
             Add several at once, separated by commas.
           </p>
         )}
@@ -110,7 +110,7 @@ export function SkillFormFields({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="btn btn-primary"
         >
           {pending
             ? editId ? "Saving..." : "Adding..."
@@ -120,7 +120,7 @@ export function SkillFormFields({
           type="button"
           onClick={onCancel}
           disabled={pending}
-          className="rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+          className="btn btn-outline"
         >
           Cancel
         </button>

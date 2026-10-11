@@ -22,11 +22,11 @@ const toMonth = (date: Date) => date.toISOString().slice(0, 7);
 
 export default function CertificationList({ items }: { items: Item[] }) {
   if (items.length === 0) {
-    return <p className="mt-4 text-sm text-gray-600">No certifications added yet.</p>;
+    return <p className="rounded-lg border border-dashed border-pf-border p-4 text-center text-sm text-pf-muted">No certifications added yet.</p>;
   }
 
   return (
-    <ul className="mt-4 max-w-xl space-y-3">
+    <ul className="space-y-2">
       {items.map((item) => {
         const parts: string[] = [];
         if (item.issueDate) parts.push(`Issued ${formatMonth(item.issueDate)}`);

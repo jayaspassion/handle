@@ -37,7 +37,7 @@ export default function ProjectItem({ item, initial }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <ProjectFormFields
             editId={item.id}
@@ -51,7 +51,7 @@ export default function ProjectItem({ item, initial }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 p-4">
+    <li className="rounded-lg border border-pf-border p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-medium">{item.title}</p>
@@ -63,7 +63,7 @@ export default function ProjectItem({ item, initial }: Props) {
               {item.tags.map((tag) => (
                 <li
                   key={tag}
-                  className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-800"
+                  className="chip text-xs"
                 >
                   {tag}
                 </li>
@@ -77,7 +77,7 @@ export default function ProjectItem({ item, initial }: Props) {
                   href={item.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-purple-700 hover:underline"
+                  className="text-pf-accent hover:underline"
                 >
                   Live
                 </a>
@@ -87,7 +87,7 @@ export default function ProjectItem({ item, initial }: Props) {
                   href={item.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-purple-700 hover:underline"
+                  className="text-pf-accent hover:underline"
                 >
                   Source
                 </a>
@@ -101,7 +101,7 @@ export default function ProjectItem({ item, initial }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit ${item.title}`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -110,7 +110,7 @@ export default function ProjectItem({ item, initial }: Props) {
             <button
               type="submit"
               aria-label={`Delete ${item.title}`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

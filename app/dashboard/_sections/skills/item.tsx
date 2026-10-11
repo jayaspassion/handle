@@ -31,7 +31,7 @@ export default function SkillItem({ item, initial, categories }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <SkillFormFields
             editId={item.id}
@@ -46,12 +46,12 @@ export default function SkillItem({ item, initial, categories }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 px-4 py-3">
+    <li className="rounded-lg border border-pf-border px-4 py-3">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm">
           <span className="font-medium">{item.name}</span>
           {item.category && (
-            <span className="text-gray-600"> · {item.category}</span>
+            <span className="text-pf-muted"> · {item.category}</span>
           )}
         </p>
         <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export default function SkillItem({ item, initial, categories }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit ${item.name}`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -69,7 +69,7 @@ export default function SkillItem({ item, initial, categories }: Props) {
             <button
               type="submit"
               aria-label={`Delete ${item.name}`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

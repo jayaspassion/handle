@@ -24,7 +24,7 @@ const SUGGESTED_LABELS = [
 ];
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm";
+  "input mt-1";
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -111,7 +111,7 @@ export function LinkFormFields({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="btn btn-primary"
         >
           {pending
             ? editId ? "Saving..." : "Adding..."
@@ -121,7 +121,7 @@ export function LinkFormFields({
           type="button"
           onClick={onCancel}
           disabled={pending}
-          className="rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+          className="btn btn-outline"
         >
           Cancel
         </button>

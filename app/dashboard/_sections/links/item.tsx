@@ -30,7 +30,7 @@ export default function LinkItem({ item, initial }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <LinkFormFields
             editId={item.id}
@@ -44,18 +44,18 @@ export default function LinkItem({ item, initial }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 px-4 py-3">
+    <li className="rounded-lg border border-pf-border px-4 py-3">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <a
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-purple-700 hover:underline"
+            className="text-sm font-medium text-pf-accent hover:underline"
           >
             {item.label}
           </a>
-          <p className="truncate text-xs text-gray-600">{item.url}</p>
+          <p className="truncate text-xs text-pf-muted">{item.url}</p>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <button
@@ -63,7 +63,7 @@ export default function LinkItem({ item, initial }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit ${item.label} link`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -72,7 +72,7 @@ export default function LinkItem({ item, initial }: Props) {
             <button
               type="submit"
               aria-label={`Delete ${item.label} link`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

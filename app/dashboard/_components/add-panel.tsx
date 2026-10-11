@@ -29,9 +29,12 @@ export default function AddPanel({ label, savedMessage, children }: Props) {
   }, [open]);
 
   return (
-    <div className="mt-4 max-w-xl">
+    <div className="mt-3">
       {open ? (
-        <div ref={panelRef} className="rounded-md border border-gray-200 p-4">
+        <div
+          ref={panelRef}
+          className="rounded-lg border border-pf-border bg-pf-bg p-4"
+        >
           {children({
             onSaved: () => {
               setSaved(true);
@@ -48,18 +51,15 @@ export default function AddPanel({ label, savedMessage, children }: Props) {
             setSaved(false);
             setOpen(true);
           }}
-          className="rounded-md border border-purple-700 px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-50"
+          className="btn btn-outline btn-sm"
         >
-          <span aria-hidden="true">+ </span>
+          <span aria-hidden="true">+</span>
           {label}
         </button>
       )}
 
       {/* Always mounted so screen readers announce the message when it appears */}
-      <p
-        role="status"
-        className={saved ? "mt-2 text-sm text-green-700" : "sr-only"}
-      >
+      <p role="status" className={saved ? "msg-success mt-2" : "sr-only"}>
         {saved ? savedMessage : ""}
       </p>
     </div>

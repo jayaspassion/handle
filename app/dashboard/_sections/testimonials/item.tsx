@@ -35,7 +35,7 @@ export default function TestimonialItem({ item, initial }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <TestimonialFormFields
             editId={item.id}
@@ -49,7 +49,7 @@ export default function TestimonialItem({ item, initial }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 p-4">
+    <li className="rounded-lg border border-pf-border p-4">
       <div className="flex items-start justify-between gap-4">
         <blockquote>
           <p className="whitespace-pre-line text-sm italic">
@@ -58,7 +58,7 @@ export default function TestimonialItem({ item, initial }: Props) {
           <footer className="mt-2 text-sm">
             <span className="font-medium">{item.authorName}</span>
             {item.byline && (
-              <span className="text-gray-600"> · {item.byline}</span>
+              <span className="text-pf-muted"> · {item.byline}</span>
             )}
           </footer>
         </blockquote>
@@ -68,7 +68,7 @@ export default function TestimonialItem({ item, initial }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit testimonial from ${item.authorName}`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -77,7 +77,7 @@ export default function TestimonialItem({ item, initial }: Props) {
             <button
               type="submit"
               aria-label={`Delete testimonial from ${item.authorName}`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

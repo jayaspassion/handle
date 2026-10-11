@@ -37,7 +37,7 @@ export default function EducationItem({ item, initial }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <EducationFormFields
             editId={item.id}
@@ -51,7 +51,7 @@ export default function EducationItem({ item, initial }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 p-4">
+    <li className="rounded-lg border border-pf-border p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-medium">
@@ -59,7 +59,7 @@ export default function EducationItem({ item, initial }: Props) {
             {item.fieldOfStudy ? `, ${item.fieldOfStudy}` : ""}
           </p>
           <p className="text-sm">{item.institution}</p>
-          <p className="text-sm text-gray-600">{item.range}</p>
+          <p className="text-sm text-pf-muted">{item.range}</p>
           {item.description && (
             <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
           )}
@@ -70,7 +70,7 @@ export default function EducationItem({ item, initial }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit ${item.degree} at ${item.institution}`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -79,7 +79,7 @@ export default function EducationItem({ item, initial }: Props) {
             <button
               type="submit"
               aria-label={`Delete ${item.degree} at ${item.institution}`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

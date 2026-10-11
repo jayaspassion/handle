@@ -37,7 +37,7 @@ export default function ExperienceItem({ item, initial }: Props) {
 
   if (editing) {
     return (
-      <li className="rounded-md border border-gray-200 p-4">
+      <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
           <ExperienceFormFields
             editId={item.id}
@@ -51,7 +51,7 @@ export default function ExperienceItem({ item, initial }: Props) {
   }
 
   return (
-    <li className="rounded-md border border-gray-200 p-4">
+    <li className="rounded-lg border border-pf-border p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-medium">{item.role}</p>
@@ -59,7 +59,7 @@ export default function ExperienceItem({ item, initial }: Props) {
             {item.company}
             {item.location ? ` · ${item.location}` : ""}
           </p>
-          <p className="text-sm text-gray-600">{item.range}</p>
+          <p className="text-sm text-pf-muted">{item.range}</p>
           {item.description && (
             <p className="mt-2 whitespace-pre-line text-sm">{item.description}</p>
           )}
@@ -70,7 +70,7 @@ export default function ExperienceItem({ item, initial }: Props) {
             type="button"
             onClick={() => setEditing(true)}
             aria-label={`Edit ${item.role} at ${item.company}`}
-            className="text-sm text-purple-700 hover:underline"
+            className="btn btn-outline btn-sm"
           >
             Edit
           </button>
@@ -79,7 +79,7 @@ export default function ExperienceItem({ item, initial }: Props) {
             <button
               type="submit"
               aria-label={`Delete ${item.role} at ${item.company}`}
-              className="text-sm text-red-600 hover:underline"
+              className="btn btn-danger btn-sm"
             >
               Delete
             </button>

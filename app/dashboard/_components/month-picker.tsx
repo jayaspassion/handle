@@ -105,14 +105,14 @@ export default function MonthPicker({
         aria-controls={open ? popoverId : undefined}
         aria-describedby={describedBy}
         onClick={toggle}
-        className={`mt-1 flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
-          invalid ? "border-red-500" : "border-gray-300"
+        className={`mt-1 flex w-full items-center justify-between min-h-11 rounded-lg border bg-pf-surface px-3 py-2 text-left text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
+          invalid ? "border-pf-danger" : "border-pf-border"
         }`}
       >
-        <span className={selected ? "" : "text-gray-500"}>
+        <span className={selected ? "" : "text-pf-muted"}>
           {selected ? `${MONTHS[selected.month - 1]} ${selected.year}` : placeholder}
         </span>
-        <span aria-hidden="true" className="text-gray-500">▾</span>
+        <span aria-hidden="true" className="text-pf-muted">▾</span>
       </button>
 
       {open && (
@@ -120,7 +120,7 @@ export default function MonthPicker({
           id={popoverId}
           role="dialog"
           aria-label="Choose month and year"
-          className="absolute left-0 z-10 mt-1 w-64 rounded-md border border-gray-200 bg-white p-3 text-gray-900 shadow-lg"
+          className="absolute left-0 z-10 mt-1 w-64 rounded-lg border border-pf-border bg-pf-surface p-3 text-pf-fg shadow-lg"
         >
           <div className="flex items-center justify-between">
             <button
@@ -128,7 +128,7 @@ export default function MonthPicker({
               aria-label="Previous year"
               disabled={viewYear <= MIN_YEAR}
               onClick={() => setViewYear((y) => y - 1)}
-              className="rounded px-2 py-1 text-sm hover:bg-gray-100 disabled:opacity-40"
+              className="rounded px-2 py-1 text-sm hover:bg-pf-tint disabled:opacity-40"
             >
               ‹
             </button>
@@ -140,7 +140,7 @@ export default function MonthPicker({
               aria-label="Next year"
               disabled={viewYear >= maxYear}
               onClick={() => setViewYear((y) => y + 1)}
-              className="rounded px-2 py-1 text-sm hover:bg-gray-100 disabled:opacity-40"
+              className="rounded px-2 py-1 text-sm hover:bg-pf-tint disabled:opacity-40"
             >
               ›
             </button>
@@ -160,8 +160,8 @@ export default function MonthPicker({
                   onClick={() => choose(viewYear, i + 1)}
                   className={`rounded px-2 py-2 text-sm ${
                     isSelected
-                      ? "bg-purple-700 text-white"
-                      : "hover:bg-gray-100"
+                      ? "bg-pf-solid text-pf-solid-fg"
+                      : "hover:bg-pf-tint"
                   }`}
                 >
                   {label}
@@ -177,14 +177,14 @@ export default function MonthPicker({
                 onChange("");
                 close();
               }}
-              className="text-gray-600 hover:underline"
+              className="text-pf-muted hover:underline"
             >
               Clear
             </button>
             <button
               type="button"
               onClick={() => choose(thisYear, now.getMonth() + 1)}
-              className="text-purple-700 hover:underline"
+              className="text-pf-accent hover:underline"
             >
               This month
             </button>

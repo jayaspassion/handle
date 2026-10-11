@@ -14,11 +14,11 @@ export default function SkillList({
   categories: string[];
 }) {
   if (items.length === 0) {
-    return <p className="mt-4 text-sm text-gray-600">No skills added yet.</p>;
+    return <p className="rounded-lg border border-dashed border-pf-border p-4 text-center text-sm text-pf-muted">No skills added yet.</p>;
   }
 
   return (
-    <ul className="mt-4 max-w-xl space-y-2">
+    <ul className="space-y-2">
       {items.map((item) => (
         <SkillItem
           key={item.id}
