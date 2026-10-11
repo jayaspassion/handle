@@ -20,7 +20,7 @@ const inputClass =
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-1 text-sm text-red-600">
+    <p id={id} className="field-error">
       {message}
     </p>
   );
@@ -168,7 +168,7 @@ export function EducationFormFields({
           Cancel
         </button>
         {state.status === "error" && state.message && (
-          <p role="alert" className="text-sm text-red-600">{state.message}</p>
+          <p role="alert" className="msg-error">{state.message}</p>
         )}
       </div>
     </form>

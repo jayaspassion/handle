@@ -22,7 +22,7 @@ const inputClass = "input mt-1";
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-1 text-sm text-pf-danger">
+    <p id={id} className="field-error">
       {message}
     </p>
   );

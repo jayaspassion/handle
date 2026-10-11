@@ -126,7 +126,7 @@ export default function SkillsSection({
               aria-describedby={hintId}
               className="input mt-1"
             />
-            {err.name && <p className="mt-1 text-sm text-pf-danger">{err.name}</p>}
+            {err.name && <p className="field-error">{err.name}</p>}
           </div>
           <div>
             <label htmlFor={categoryId} className="text-sm font-medium">
@@ -150,7 +150,7 @@ export default function SkillsSection({
               ))}
             </datalist>
             {err.category && (
-              <p className="mt-1 text-sm text-pf-danger">{err.category}</p>
+              <p className="field-error">{err.category}</p>
             )}
           </div>
           <button

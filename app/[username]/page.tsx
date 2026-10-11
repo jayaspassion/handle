@@ -4,12 +4,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedProfile } from "@/lib/public-profile";
 import { isHttpUrl } from "@/lib/url";
-import ProjectsCarousel from "@/app/_components/projects-carousel";
+import ProjectsSection from "@/app/_components/projects-carousel";
 
 type Props = { params: Promise<{ username: string }> };
 
 const LINK_REL = "nofollow ugc noopener noreferrer";
-const BLOCK = "mt-16 sm:mt-20";
+const BLOCK = "-mt-px";
+const PANEL = "panel print:border-0 print:bg-transparent print:p-0";
 const textLink =
   "inline-flex items-center gap-1.5 font-medium text-pf-accent underline-offset-4 hover:underline";
 const heroLink =
@@ -102,7 +103,13 @@ function ArrowIcon() {
 
 function QuoteIcon() {
   return (
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg
+      width="34"
+      height="34"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M9.5 6C6.5 7 4 9.8 4 13.5V18h6v-6H7c.2-1.8 1.4-3.2 3-3.8L9.5 6Zm9 0c-3 1-5.5 3.8-5.5 7.5V18h6v-6h-3c.2-1.8 1.4-3.2 3-3.8L18.5 6Z" />
     </svg>
   );
@@ -118,14 +125,26 @@ function LinkIcon({ url }: { url: string }) {
   }
   if (host === "github.com") {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
         <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
       </svg>
     );
   }
   if (host.endsWith("linkedin.com")) {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
       </svg>
     );
@@ -169,17 +188,21 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-heading`} className="min-w-0 scroll-mt-8">
+    <section
+      id={id}
+      aria-labelledby={`${id}-heading`}
+      className={`${PANEL} min-w-0 scroll-mt-8`}
+    >
       <p className="eyebrow" aria-hidden="true">
         {eyebrow}
       </p>
       <h2
         id={`${id}-heading`}
-        className="mt-2 font-serif text-3xl tracking-tight sm:text-4xl"
+        className="mt-1 font-serif text-[1.75rem] leading-9 tracking-tight"
       >
         {title}
       </h2>
-      <div className="mt-6">{children}</div>
+      <div className="mt-4">{children}</div>
     </section>
   );
 }
@@ -203,22 +226,24 @@ function MiniSection({
   );
 }
 
-// Two sections side by side (with a thin divider) when both exist,
-// otherwise the one that exists takes the full width
+// Education and certifications share one panel, with a thin divider between them
 function Pair({ left, right }: { left: ReactNode; right: ReactNode }) {
   if (!left && !right) return null;
-  if (!left || !right) {
-    return (
-      <div className={BLOCK}>
-        {left}
-        {right}
-      </div>
-    );
-  }
+  const both = Boolean(left && right);
   return (
-    <div className={`${BLOCK} grid gap-12 lg:grid-cols-2 lg:gap-0`}>
-      <div className="min-w-0 lg:border-r lg:border-pf-border lg:pr-12">{left}</div>
-      <div className="min-w-0 lg:pl-12">{right}</div>
+    <div
+      className={`${BLOCK} ${PANEL} grid gap-8 ${both ? "lg:grid-cols-2 lg:gap-0" : ""}`}
+    >
+      {left && (
+        <div
+          className={`min-w-0 ${both ? "lg:border-r lg:border-pf-border lg:pr-8" : ""}`}
+        >
+          {left}
+        </div>
+      )}
+      {right && (
+        <div className={`min-w-0 ${both ? "lg:pl-8" : ""}`}>{right}</div>
+      )}
     </div>
   );
 }
@@ -254,19 +279,47 @@ function TimelineItem({
   subtitle?: string;
   description?: string | null;
 }) {
+  // Long descriptions start collapsed; short ones are simply shown
+  const long =
+    !!description && (description.length > 140 || description.includes("\n"));
+  const text = "mt-2 whitespace-pre-line break-words text-sm leading-relaxed";
   return (
     <li className="relative">
       <span
         aria-hidden="true"
-        className="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-pf-brand ring-4 ring-pf-bg"
+        className="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-pf-brand ring-4 [--tw-ring-color:var(--pf-panel)]"
       />
       <p className="text-sm text-pf-muted">{range}</p>
-      <h3 className="mt-0.5 break-words font-serif text-xl">{title}</h3>
+      <h3 className="mt-0.5 break-words font-serif text-lg">{title}</h3>
       {subtitle && <p className="text-sm text-pf-muted">{subtitle}</p>}
-      {description && (
-        <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed">
-          {description}
-        </p>
+      {description && !long && <p className={text}>{description}</p>}
+      {description && long && (
+        <>
+          <details className="group mt-2 print:hidden">
+            <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-sm font-medium text-pf-accent hover:underline [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">Show details</span>
+              <span className="hidden group-open:inline">Hide details</span>
+              <span className="sr-only"> for {title}</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="motion-safe:transition-transform group-open:rotate-180"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </summary>
+            <p className={text}>{description}</p>
+          </details>
+          {/* Printed pages always show the full text */}
+          <p className={`${text} hidden print:block`}>{description}</p>
+        </>
       )}
     </li>
   );
@@ -318,7 +371,7 @@ export default async function PublicProfilePage({ params }: Props) {
           {orderedGroups.map(([category, names]) => (
             <div
               key={category || "other"}
-              className="grid gap-2 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6"
+              className="grid gap-2 py-3 sm:grid-cols-[9rem_1fr] sm:gap-6"
             >
               <dt className="text-sm font-medium">{category || "Other"}</dt>
               <dd>
@@ -338,7 +391,7 @@ export default async function PublicProfilePage({ params }: Props) {
       <ul className="space-y-5">
         {profile.education.map((e) => (
           <li key={e.id}>
-            <h3 className="break-words font-serif text-xl">
+            <h3 className="break-words font-serif text-lg">
               {e.degree}
               {e.fieldOfStudy ? `, ${e.fieldOfStudy}` : ""}
             </h3>
@@ -376,7 +429,7 @@ export default async function PublicProfilePage({ params }: Props) {
             .join(" | ");
           return (
             <li key={c.id}>
-              <h3 className="break-words font-serif text-xl">{c.name}</h3>
+              <h3 className="break-words font-serif text-lg">{c.name}</h3>
               <p className="text-sm text-pf-muted">
                 {[c.issuer, dates].filter(Boolean).join(" | ")}
               </p>
@@ -396,41 +449,34 @@ export default async function PublicProfilePage({ params }: Props) {
 
   return (
     <div className="profile-theme relative isolate flex-1 overflow-hidden bg-pf-bg font-sans text-pf-fg antialiased">
-      {/* Soft glow behind the hero, drawn with CSS only (delete this block to remove) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[30rem] print:hidden"
-        style={{
-          backgroundImage:
-            "radial-gradient(50rem 22rem at 85% -5%, color-mix(in srgb, var(--pf-brand) 16%, transparent), transparent 70%)",
-        }}
-      />
-
-      <main className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-16">
+      <main className="mx-auto max-w-5xl px-5 py-6 sm:px-8 sm:py-8">
         {/* Hero */}
-        <header className="grid items-center gap-8 md:grid-cols-[1fr_14rem] md:gap-12 lg:grid-cols-[1fr_17rem]">
+        <header
+          className={`${PANEL} grid items-center gap-8 md:grid-cols-[1fr_14rem] md:gap-10 lg:grid-cols-[1fr_16rem]`}
+        >
+          {" "}
           <div className="order-2 min-w-0 text-center md:order-1 md:text-left">
-            <h1 className="break-words font-serif text-5xl leading-[1.05] tracking-tight sm:text-6xl">
+            <h1 className="break-words font-serif text-4xl leading-[1.17] tracking-tight md:text-5xl md:leading-[1.17]">
               {name}
             </h1>
             {profile.headline && (
-              <p className="mt-3 break-words font-serif text-2xl sm:text-3xl">
+              <p className="mt-2 break-words font-serif text-lg md:text-2xl">
                 {profile.headline}
               </p>
             )}
             {profile.bio && (
-              <p className="mt-6 max-w-xl whitespace-pre-line break-words text-left leading-relaxed text-pf-muted">
+              <p className="mt-4 max-w-xl whitespace-pre-line break-words text-left leading-6 text-pf-muted">
                 {profile.bio}
               </p>
             )}
             {profile.location && (
-              <p className="mt-5 flex items-center justify-center gap-2 text-sm text-pf-muted md:justify-start">
+              <p className="mt-4 flex items-center justify-center gap-2 text-sm text-pf-muted md:justify-start">
                 <PinIcon />
                 {profile.location}
               </p>
             )}
 
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3 md:justify-start">
               {hasProjects && (
                 <a href="#projects" className="btn btn-primary print:hidden">
                   View my work
@@ -462,14 +508,13 @@ export default async function PublicProfilePage({ params }: Props) {
               )}
             </div>
           </div>
-
           <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full">
             {profile.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatarUrl}
                 alt={`Photo of ${name}`}
-                className="aspect-square w-full rounded-xl border border-pf-border object-cover"
+                className="aspect-square w-full rounded-xl object-cover"
               />
             ) : (
               <div
@@ -489,65 +534,69 @@ export default async function PublicProfilePage({ params }: Props) {
         {/* Projects: one row, slides sideways, image on the left when there is one */}
         {hasProjects && (
           <div className={BLOCK}>
-            <Section id="projects" eyebrow="Selected work" title="Projects">
-              <ProjectsCarousel label="Projects">
-                {profile.projects.map((p) => {
-                  const live = safeUrl(p.liveUrl);
-                  const repo = safeUrl(p.repoUrl);
-                  return (
-                    <li
-                      key={p.id}
-                      className={`shrink-0 snap-start print:w-full ${
-                        profile.projects.length === 1
-                          ? "w-full"
-                          : "w-[88%] sm:w-[calc(50%-0.625rem)]"
-                      }`}
-                    >
-                      <article className="card card-accent flex h-full flex-col p-0 sm:flex-row">
-                        {p.coverImageUrl && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={p.coverImageUrl}
-                            alt={`Screenshot of ${p.title}`}
-                            loading="lazy"
-                            className="h-40 w-full object-cover sm:h-auto sm:w-2/5 sm:shrink-0"
-                          />
+            <ProjectsSection
+              id="projects"
+              eyebrow="Selected work"
+              title="Projects"
+            >
+              {profile.projects.map((p) => {
+                const live = safeUrl(p.liveUrl);
+                const repo = safeUrl(p.repoUrl);
+                return (
+                  <li
+                    key={p.id}
+                    className={`shrink-0 snap-start print:w-full ${
+                      profile.projects.length === 1
+                        ? "w-full"
+                        : "w-[88%] sm:w-[calc(50%-0.625rem)]"
+                    }`}
+                  >
+                    <article className="card card-accent flex h-full flex-col bg-pf-surface p-0 sm:flex-row">
+                      {p.coverImageUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.coverImageUrl}
+                          alt={`Screenshot of ${p.title}`}
+                          loading="lazy"
+                          className="h-40 w-full object-cover sm:h-auto sm:w-2/5 sm:shrink-0"
+                        />
+                      )}
+                      <div className="flex min-w-0 flex-1 flex-col p-4">
+                        <h3 className="break-words font-serif text-lg">
+                          {p.title}
+                        </h3>
+                        {p.description && (
+                          <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed text-pf-muted">
+                            {p.description}
+                          </p>
                         )}
-                        <div className="flex min-w-0 flex-1 flex-col p-5">
-                          <h3 className="break-words font-serif text-xl">{p.title}</h3>
-                          {p.description && (
-                            <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed text-pf-muted">
-                              {p.description}
-                            </p>
-                          )}
-                          {p.tags.length > 0 && (
-                            <div className="mt-4">
-                              <Chips items={p.tags} label="Tags" />
-                            </div>
-                          )}
-                          {(live || repo) && (
-                            <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
-                              {live && (
-                                <ExternalLink href={live} className={textLink}>
-                                  Live site
-                                  <ArrowIcon />
-                                </ExternalLink>
-                              )}
-                              {repo && (
-                                <ExternalLink href={repo} className={textLink}>
-                                  Source code
-                                  <ArrowIcon />
-                                </ExternalLink>
-                              )}
-                            </p>
-                          )}
-                        </div>
-                      </article>
-                    </li>
-                  );
-                })}
-              </ProjectsCarousel>
-            </Section>
+                        {p.tags.length > 0 && (
+                          <div className="mt-4">
+                            <Chips items={p.tags} label="Tags" />
+                          </div>
+                        )}
+                        {(live || repo) && (
+                          <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
+                            {live && (
+                              <ExternalLink href={live} className={textLink}>
+                                Live site
+                                <ArrowIcon />
+                              </ExternalLink>
+                            )}
+                            {repo && (
+                              <ExternalLink href={repo} className={textLink}>
+                                Source code
+                                <ArrowIcon />
+                              </ExternalLink>
+                            )}
+                          </p>
+                        )}
+                      </div>
+                    </article>
+                  </li>
+                );
+              })}
+            </ProjectsSection>
           </div>
         )}
 
@@ -557,13 +606,13 @@ export default async function PublicProfilePage({ params }: Props) {
         {/* Testimonials */}
         {profile.testimonials.length > 0 && (
           <div className={BLOCK}>
-            <ul className="space-y-4" aria-label="Testimonials">
+            <ul className="space-y-3" aria-label="Testimonials">
               {profile.testimonials.map((t) => {
                 const byline = [t.authorRole, t.authorCompany]
                   .filter(Boolean)
                   .join(" at ");
                 return (
-                  <li key={t.id} className="card card-accent">
+                  <li key={t.id} className="card card-accent p-5">
                     <figure className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8">
                       <div className="flex min-w-0 flex-1 gap-4">
                         <span className="shrink-0 text-pf-brand">
@@ -583,9 +632,13 @@ export default async function PublicProfilePage({ params }: Props) {
                           {initials(t.authorName)}
                         </span>
                         <span className="min-w-0 text-sm">
-                          <span className="block font-medium">{t.authorName}</span>
+                          <span className="block font-medium">
+                            {t.authorName}
+                          </span>
                           {byline && (
-                            <span className="block text-pf-muted">{byline}</span>
+                            <span className="block text-pf-muted">
+                              {byline}
+                            </span>
                           )}
                         </span>
                       </figcaption>
@@ -608,7 +661,7 @@ export default async function PublicProfilePage({ params }: Props) {
           <section
             id="connect"
             aria-labelledby="connect-heading"
-            className={`${BLOCK} scroll-mt-8 rounded-xl bg-pf-tint p-8 sm:p-10 print:hidden`}
+            className={`${BLOCK} scroll-mt-8 rounded-xl bg-pf-tint p-6 sm:p-8 print:hidden`}
           >
             <div className="grid items-center gap-8 md:grid-cols-[1fr_auto]">
               <div>
@@ -617,7 +670,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 </p>
                 <h2
                   id="connect-heading"
-                  className="mt-2 font-serif text-3xl tracking-tight sm:text-4xl"
+                  className="mt-1 font-serif text-[1.75rem] leading-9 tracking-tight"
                 >
                   Let&apos;s connect.
                 </h2>
@@ -649,7 +702,7 @@ export default async function PublicProfilePage({ params }: Props) {
           </section>
         )}
 
-        <footer className="mt-16 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden">
+        <footer className="mt-8 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden">
           Made with{" "}
           <Link href="/" className={textLink}>
             Handle
