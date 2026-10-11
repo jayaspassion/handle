@@ -109,3 +109,35 @@ export async function unpublishProfile() {
 
   revalidatePath("/dashboard");
 }
+
+export type UsernameCheck = {
+  status: "available" | "taken" | "invalid" | "error";
+  message: string;
+};
+
+// Used by the live hint while typing. The database stays the final judge at publish.
+export async function checkUsername(raw: string): Promise<UsernameCheck> {
+  const { userId } = await auth();
+  if (!userId) return { status: "error", message: "You must be signed in." };
+
+  const parsed = usernameSchema.safeParse(String(raw).slice(0, 100));
+  if (!parsed.success) {
+    return {
+      status: "invalid",
+      message: parsed.error.issues[0]?.message ?? "Invalid username",
+    };
+  }
+
+  try {
+    const found = await prisma.profile.findFirst({
+      where: { username: parsed.data },
+      select: { user: { select: { clerkId: true } } },
+    });
+    if (found && found.user.clerkId !== userId) {
+      return { status: "taken", message: "That username is taken." };
+    }
+    return { status: "available", message: "Available." };
+  } catch {
+    return { status: "error", message: "Could not check right now." };
+  }
+}

@@ -16,8 +16,7 @@ import EducationForm from "./_sections/education/form";
 import EducationList from "./_sections/education/list";
 import ProjectForm from "./_sections/projects/form";
 import ProjectList from "./_sections/projects/list";
-import SkillForm from "./_sections/skills/form";
-import SkillList from "./_sections/skills/list";
+import SkillsSection from "./_sections/skills/section";
 import CertificationForm from "./_sections/certifications/form";
 import CertificationList from "./_sections/certifications/list";
 import TestimonialForm from "./_sections/testimonials/form";
@@ -190,8 +189,7 @@ export default async function DashboardPage() {
                 title="Skills"
                 description="Tools and technologies, grouped by category."
               >
-                <SkillList items={skills} categories={skillCategories} />
-                <SkillForm categories={skillCategories} />
+                <SkillsSection items={skills} categories={skillCategories} />
               </DashboardSection>
 
               <DashboardSection

@@ -1,7 +1,13 @@
 "use client";
 
 import { useActionState, useEffect, useId, useRef, useState } from "react";
-import { publishProfile, unpublishProfile, type PublishState } from "./actions";
+import {
+  checkUsername,
+  publishProfile,
+  unpublishProfile,
+  type PublishState,
+  type UsernameCheck,
+} from "./actions";
 
 const initialState: PublishState = { status: "idle" };
 
@@ -45,6 +51,29 @@ export default function PublishSection({ username, isPublished, hasName }: Props
   const inputId = `${uid}-username`;
   const hintId = `${uid}-hint`;
   const errorId = `${uid}-error`;
+  const statusId = `${uid}-status`;
+
+  // Live availability check, a moment after the user stops typing
+  const [typed, setTyped] = useState(state.values?.username ?? username);
+  const [check, setCheck] = useState<{ for: string; result: UsernameCheck } | null>(null);
+
+  useEffect(() => {
+    const value = typed.trim();
+    if (isPublished || value.length < 3) return;
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const result = await checkUsername(value);
+      if (!cancelled) setCheck({ for: value, result });
+    }, 450);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [typed, isPublished]);
+
+  const trimmed = typed.trim();
+  const live = check && check.for === trimmed ? check.result : null;
+  const checking = trimmed.length >= 3 && !live;
 
   const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -154,14 +183,32 @@ export default function PublishSection({ username, isPublished, hasName }: Props
           autoComplete="off"
           autoCapitalize="none"
           spellCheck={false}
-          aria-invalid={!!state.usernameError}
-          aria-describedby={state.usernameError ? `${hintId} ${errorId}` : hintId}
+          onChange={(e) => setTyped(e.target.value)}
+          aria-invalid={!!state.usernameError || live?.status === "taken" || live?.status === "invalid"}
+          aria-describedby={[hintId, statusId, state.usernameError ? errorId : null].filter(Boolean).join(" ")}
           className="input min-w-0 rounded-l-none"
         />
       </div>
       <p id={hintId} className="mt-1 text-xs text-pf-muted">
         3 to 30 characters: letters, numbers and hyphens. This becomes your
         public address.
+      </p>
+      <p
+        id={statusId}
+        role="status"
+        className={
+          !live && !checking
+            ? "sr-only"
+            : `mt-1 text-sm ${
+                live?.status === "available"
+                  ? "text-pf-success"
+                  : live
+                    ? "text-pf-danger"
+                    : "text-pf-muted"
+              }`
+        }
+      >
+        {live ? live.message : checking ? "Checking..." : ""}
       </p>
       {state.usernameError && (
         <p id={errorId} className="mt-2 text-sm text-pf-danger">
@@ -177,7 +224,7 @@ export default function PublishSection({ username, isPublished, hasName }: Props
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || live?.status === "taken" || live?.status === "invalid"}
         className="btn btn-primary mt-4 w-full"
       >
         {pending ? "Publishing..." : "Publish portfolio"}

@@ -70,7 +70,11 @@ async function editSkill(
 ): Promise<SkillFormState> {
   const parsed = editSchema.safeParse(raw);
   if (!parsed.success) {
-    return { status: "error", errors: toErrors(parsed.error.issues), values: raw };
+    return {
+      status: "error",
+      errors: toErrors(parsed.error.issues),
+      values: raw,
+    };
   }
 
   // Ownership: this finds the skill only if it belongs to the logged-in user
@@ -117,7 +121,11 @@ async function addSkills(
     category: raw.category,
   });
   if (!parsed.success) {
-    return { status: "error", errors: toErrors(parsed.error.issues), values: raw };
+    return {
+      status: "error",
+      errors: toErrors(parsed.error.issues),
+      values: raw,
+    };
   }
 
   const profile = await prisma.profile.findFirst({
@@ -130,7 +138,7 @@ async function addSkills(
 
   const existing = await prisma.skill.findMany({
     where: { profileId: profile.id },
-    select: { name: true, order: true },
+    select: { name: true, order: true, category: true },
   });
 
   // Skip skills the user already has
@@ -152,6 +160,15 @@ async function addSkills(
     };
   }
 
+  // Typing "frontend" when "Frontend" exists adds to the existing group
+  const typedCategory = parsed.data.category;
+  const canonicalCategory = typedCategory
+    ? (existing.find(
+        (s) =>
+          s.category &&
+          s.category.toLowerCase() === typedCategory.toLowerCase(),
+      )?.category ?? typedCategory)
+    : "";
   // New skills go to the end of the list
   const start = existing.reduce((max, s) => Math.max(max, s.order), -1) + 1;
 
@@ -159,7 +176,7 @@ async function addSkills(
     data: fresh.map((name, i) => ({
       profileId: profile.id,
       name,
-      category: parsed.data.category || null,
+      category: canonicalCategory || null,
       order: start + i,
     })),
   });
