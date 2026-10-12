@@ -62,11 +62,16 @@ export function ProjectFormFields({
   const [uploadError, setUploadError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   // Busy from picking a file until its address is in the form (resizing
-  // happens before UploadThing starts), so Save can't drop the image
+  // happens before UploadThing starts), so Save can't drop the image.
+  // The ref is the hard guard checked on submit; the state drives the UI.
   const [imageBusy, setImageBusy] = useState(false);
+  const busyRef = useRef(false);
   const { startUpload, isUploading } = useUploadThing("projectImage", {
     onClientUploadComplete: (res) => {
-      const url = res?.[0]?.serverData?.url;
+      // ufsUrl comes straight from the upload. serverData (our own callback)
+      // can arrive late or empty in production, so it is only a fallback.
+      const file = res?.[0];
+      const url = file?.ufsUrl ?? file?.serverData?.url;
       if (url) {
         setCover(url);
         setUploadError("");
@@ -86,12 +91,14 @@ export function ProjectFormFields({
       return;
     }
     setUploadError("");
+    busyRef.current = true;
     setImageBusy(true);
     try {
       await startUpload([await resizeImage(file)]);
     } catch {
       setUploadError(uploadErrorMessage({}, "projectImage"));
     } finally {
+      busyRef.current = false;
       setImageBusy(false);
     }
   }
@@ -126,7 +133,17 @@ export function ProjectFormFields({
   const safeCover = isUploadedFileUrl(cover) ? cover : null;
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form
+      action={formAction}
+      onSubmit={(e) => {
+        // Never save while an image is still on its way into the form
+        if (busyRef.current) {
+          e.preventDefault();
+          setUploadError("Wait for the image to finish uploading, then save.");
+        }
+      }}
+      className="space-y-4"
+    >
       <h3 className="font-serif text-lg">
         {editId ? "Edit project" : "New project"}
       </h3>

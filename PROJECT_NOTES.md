@@ -411,7 +411,10 @@ attempts; browser DevTools Console.
   landing link preview, "Report this page" link, security headers in
   next.config.ts, CONTACT_EMAIL in lib/url.ts
 - QA fixes (HANDLE-1..8): project image can't be lost by an early Save (busy
-  state covers resize + upload), stricter URL check, friendly upload errors
+  state covers resize + upload; follow-up: the form now takes the address
+  from the upload itself (`ufsUrl`) instead of waiting for our server's
+  callback, which can be late in production, and a synchronous guard blocks
+  submitting mid-upload), stricter URL check, friendly upload errors
   (`lib/upload-errors.ts`), honest "hidden page / files" copy, leave-page
   warning for unsaved edits (`leave-warning.tsx`) + "Saves automatically"
   labels, "added" messages clear on the next action, username error only for
