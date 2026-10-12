@@ -541,7 +541,7 @@ export default async function PublicProfilePage({ params }: Props) {
     <div className="profile-theme relative isolate flex-1 overflow-hidden bg-pf-bg font-sans text-pf-fg antialiased">
       <main className="mx-auto max-w-5xl px-5 py-6 sm:px-8 sm:py-8">
         {/* Hero */}
-        <header className={`${PANEL} grid items-center gap-8 md:grid-cols-[1fr_14rem] md:gap-10 lg:grid-cols-[1fr_16rem]`}>
+        <header className={`${PANEL} grid items-center gap-8 md:items-start md:grid-cols-[1fr_14rem] md:gap-10 lg:grid-cols-[1fr_16rem]`}>
           <div className="order-2 min-w-0 text-center md:order-1 md:text-left">
             <h1 className="break-words font-serif text-4xl leading-[1.17] tracking-tight md:text-5xl md:leading-[1.17]">
               {name}
@@ -596,18 +596,18 @@ export default async function PublicProfilePage({ params }: Props) {
             </div>
           </div>
 
-          <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full md:self-stretch">
+          <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full">
             {profile.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatarUrl}
                 alt={`Photo of ${name}`}
-                className="aspect-square w-full rounded-xl object-cover md:aspect-auto md:h-full md:min-h-72"
+                className="aspect-[4/5] w-full rounded-xl object-cover"
               />
             ) : (
               <div
                 aria-hidden="true"
-                className="flex aspect-square w-full items-center justify-center rounded-xl border border-pf-border font-serif text-6xl text-pf-avatar-fg md:aspect-auto md:h-full md:min-h-72"
+                className="flex aspect-[4/5] w-full items-center justify-center rounded-xl border border-pf-border font-serif text-6xl text-pf-avatar-fg"
                 style={{
                   backgroundImage:
                     "linear-gradient(135deg, color-mix(in srgb, var(--pf-brand) 30%, var(--pf-tint)), var(--pf-tint))",
