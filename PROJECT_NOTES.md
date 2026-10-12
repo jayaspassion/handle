@@ -2,7 +2,7 @@
 
 Single source of truth for the project. Keep it updated after every step.
 Contains NO secrets (never paste keys, tokens or full database URLs here).
-Last updated: 9 Oct 2026
+Last updated: October 2026 (after the redesign release)
 
 ---
 
@@ -200,23 +200,30 @@ AGENTS.md  next.config.ts  package.json  proxy.ts  prisma7.config.ts
 PROJECT_NOTES.md
 prisma/schema.prisma  prisma/migrations/
 lib/prisma.ts  lib/url.ts  lib/public-profile.ts
-lib/uploadthing.ts  lib/uploads.ts
-app/layout.tsx  app/globals.css  app/page.tsx (landing)
-app/privacy/page.tsx
-app/_components/theme-toggle.tsx
-app/generated/prisma/            (generated; npx prisma generate)
+lib/uploadthing.ts  lib/uploads.ts  lib/uploads-server.ts
+app/layout.tsx  app/globals.css  app/page.tsx (landing)  app/privacy/page.tsx
+app/_components/site-header.tsx      (hidden on /dashboard)
+app/_components/theme-toggle.tsx     (3 small icons: system / light / dark)
+app/_components/projects-carousel.tsx (ProjectsSection: panel + sliding row)
+app/generated/prisma/                (generated; npx prisma generate)
 app/api/webhooks/clerk/route.ts
-app/api/uploadthing/core.ts  route.ts
+app/api/uploadthing/core.ts  route.ts   (avatar, resume, projectImage)
 app/[username]/page.tsx  not-found.tsx  opengraph-image.tsx
 app/dashboard/page.tsx
-app/dashboard/_components/add-panel.tsx  month-picker.tsx
+app/dashboard/_components/
+  dashboard-nav.tsx (sidebar)  dashboard-section.tsx (collapsible card)
+  profile-completion.tsx  add-panel.tsx  month-picker.tsx
 app/dashboard/_sections/profile/{actions.ts,form.tsx,section.tsx,uploads.tsx}
 app/dashboard/_sections/publish/{actions.ts,section.tsx}
-app/dashboard/_sections/{experience,education,projects,skills,
-  certifications,testimonials,links}/{actions.ts,form.tsx,item.tsx,list.tsx}
+app/dashboard/_sections/skills/{actions.ts,section.tsx}   (chips, grouped)
+app/dashboard/_sections/{experience,education,projects,certifications,
+  testimonials,links}/{actions.ts,form.tsx,item.tsx,list.tsx}
 ```
-Dashboard order: Publish, Profile, Links, Experience, Education, Projects,
-Skills, Certifications, Testimonials.
+Dashboard order: Overview (header), Profile details, then Links, Projects,
+Experience, Education, Skills, Certifications, Testimonials. Publication and
+Profile completion live in a right-hand column on wide screens.
+Public page order: Intro, Projects (sliding row), Experience, Skills,
+Testimonials, Education + Certifications (one box), closing links band.
 (Also present, from prisma init: .agents/ .claude/ .windsurf/ skills-lock.json)
 
 ---
@@ -272,42 +279,48 @@ Everything cascades from Profile.
 
 ## 10. Status
 
-DONE and working: auth + webhook sync, protected dashboard, all 8 sections
-add/edit/delete, profile card, publish flow, public page (timeline, cards,
-dark mode, OG image, print), theme toggle, photo + resume upload with
-auto-resize and old-file cleanup, landing page `/`, privacy page `/privacy`,
-deployed to Vercel on own domain, production DB + Clerk production + webhook
-(verified: email sign-up, profile save and publish worked in production).
+LIVE at https://www.handleprofile.tech: auth + webhook sync, dashboard (all
+sections), publish flow with live username check, public page, photo / resume /
+project-image uploads (resized in the browser), landing page, privacy page,
+"Editorial lavender" redesign (light + dark), collapsible dashboard sections,
+skills as grouped chips, Education location + GPA (free text), projects as a
+sliding row with the image on the left, long experience descriptions collapsed
+behind "Show details".
 
-STILL TO VERIFY IN PRODUCTION (tick when done):
-- [ ] Photo upload shows on public page
-- [ ] Resume upload and public Resume button
-- [ ] One item in each section: add / edit / delete
-- [ ] Public page signed out: no email anywhere, links open in new tab
-- [ ] `/<handle>/opengraph-image` and link preview
-- [ ] Unknown / unpublished handle gives the same 404
-- [ ] Google sign-up works (no redirect_uri_mismatch / access_denied)
-- [ ] Theme + mobile + print
-- [ ] Delete a test account: User/Profile rows disappear
-- [ ] `NEXT_PUBLIC_SITE_URL` set to the `www` address and redeployed
+Database changes since the first deploy (all applied to handle-prod):
+- Education.location (String?) and Education.gpa (String?) - migration
+  `education_location_gpa`.
+- Project.coverImageUrl is now only set from our own uploads (old pasted links
+  are ignored).
 
-SMALL TODOs:
-- [ ] Replace `YOUR_EMAIL_HERE` in `app/privacy/page.tsx`
-- [ ] Fill in where the domain's DNS is managed (section 4)
-- [ ] Raise Clerk password minimum (set to 8)
-- [ ] Clerk popups don't follow our theme yet (Clerk appearance options)
-- [ ] File cleanup on account deletion (section 9)
-- [ ] Consider a separate UploadThing app for production
+KNOWN GAPS (fine to ship):
+- Deleting an account does not delete its UploadThing files. An image uploaded
+  in a project form that is then cancelled stays orphaned.
+- sectionOrder is stored but the public page uses a fixed order.
+- Clerk sign-in popups do not follow our theme yet.
+- No project screenshots in test data = project cards look sparse.
+- Password minimum in Clerk is 8 (consider 10+).
+- No analytics or error monitoring besides Vercel logs.
 
 ---
 
 ## 11. Roadmap
 
-1. Drag-and-drop reordering for items and sectionOrder (stored, not editable)
-2. Messaging (login required; inbox; optional email via Resend)
-3. Chatbot on public page (login required, streaming, rate limits, prompt
+Small things first:
+1. Delete UploadThing files when an account is deleted (user.deleted webhook).
+2. Clerk popups: apply our theme via Clerk's appearance options.
+3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
+   buttons, 44px minimum for small buttons, a separate "role/tagline" field,
+   "Open to opportunities", nav links on the public page.
+
+Features (pick one at a time):
+4. Drag-and-drop reordering for items and sectionOrder
+5. Messaging (login required; inbox; optional email via Resend)
+6. Chatbot on public page (login required, streaming, rate limits, prompt
    injection defenses; treat profile text as untrusted data)
-4. Themes, analytics, resume parsing, Stripe test mode
+7. Resume autofill (needs an AI API; suggestions only, reviewed by the user;
+   build after the chatbot, they share the groundwork)
+8. Themes, analytics, Stripe test mode
 
 ---
 
@@ -337,3 +350,48 @@ attempts; browser DevTools Console.
 - Removed deprecated createRouteMatcher
 - Deployed to Vercel; domain handleprofile.tech; Neon handle-prod; Clerk
   production; Google OAuth; webhook URL moved to the `www` address
+- Redesign (Editorial lavender): fonts, tokens, public page, dashboard shell,
+  section cards, landing page, site header
+- Polish batches: dirty-aware Save button, sidebar highlight, collapsible
+  sections, skill chips, live username check, Education location/GPA,
+  project images + sliding row, compact boxed public page
+
+---
+
+## 14. Troubleshooting log (things that bit us)
+
+- `prisma migrate dev` said "Drift detected ... reset the schema": the dev
+  database had tables but no migration history. Fix (no data loss): mark the
+  two old migrations as applied with `prisma migrate resolve --applied <name>`
+  using the DIRECT dev URL, then run `migrate dev` again. Never run
+  `migrate reset` on a database you care about.
+- Always confirm the host before a migration: dev is `morning-band`, prod is
+  `aged-hat`.
+- Webhook failing with no POST in Vercel logs: the webhook URL must be the
+  `www` address (the apex domain redirects and senders do not follow it).
+- Clerk 400s on `*.vercel.app`: expected. Use the real domain.
+- Local sign-up of a NEW dev user needs ngrok + the dev Clerk webhook pointed
+  at the current ngrok address (it changes on every restart). Signing in with
+  an existing dev account does not need ngrok.
+- zsh: quote globs (`--include="*.tsx"`) and bracket paths.
+
+---
+
+## 15. Design system (Editorial lavender)
+
+- Fonts: Georgia (serif, headings via `font-serif`) + Inter (body).
+- Colors (light / dark): background #FAF8F5 / #17121D, surface #FFFFFF /
+  #231B2A, ink #281331 / #F6F0FA, muted #6E6677 / #BBAFC6, primary #3D2145 /
+  #D4B9EF, border #E7E0E9 / #403249, brand (decoration) #9975CA / #B99BE0.
+- Tokens live in app/globals.css as `--pf-*` (+ `pf-*` Tailwind colors). The
+  dashboard remaps old Tailwind gray/purple/red/green vars to the same palette.
+- Radii: panel 6px (`.panel`), cards `--radius-card` (set to your chosen
+  value), buttons and chips `--radius-btn` 6px, inputs `--radius-input` 8px.
+- Shared classes: `.btn` (+ `-primary -outline -danger -sm`), `.card`
+  (+ `.card-accent`), `.panel` (very subtle section box), `.chip`, `.input`,
+  `.badge`, `.msg-success`, `.msg-error`, `.field-error`, `.eyebrow`.
+- Public page boxes overlap by 1px (`-mt-px`) so borders merge; print removes
+  boxes and shows full experience text.
+- Accessibility rules we keep: visible focus outlines, labels tied to inputs,
+  `role="status"`/`"alert"` messages, aria-expanded on collapsibles, 40-44px
+  tap targets, never colour alone for meaning.
