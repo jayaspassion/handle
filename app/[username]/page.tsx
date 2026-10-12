@@ -386,7 +386,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 .join(" | ")}
             </p>
             {e.description && (
-              <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed">
+              <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed">
                 {e.description}
               </p>
             )}
@@ -455,7 +455,7 @@ export default async function PublicProfilePage({ params }: Props) {
                         <div className="flex min-w-0 flex-1 flex-col p-4">
                           <h3 className="break-words font-serif text-lg">{p.title}</h3>
                           {p.description && (
-                            <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed text-pf-muted">
+                            <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed text-pf-muted">
                               {p.description}
                             </p>
                           )}
@@ -552,7 +552,7 @@ export default async function PublicProfilePage({ params }: Props) {
               </p>
             )}
             {profile.bio && (
-              <p className="mt-4 max-w-xl whitespace-pre-line break-words text-left leading-6 text-pf-muted">
+              <p className="mt-4 max-w-xl whitespace-pre-line break-words text-left text-[0.9375rem] leading-relaxed text-pf-muted">
                 {profile.bio}
               </p>
             )}
@@ -596,18 +596,18 @@ export default async function PublicProfilePage({ params }: Props) {
             </div>
           </div>
 
-          <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full">
+          <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full md:self-stretch">
             {profile.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatarUrl}
                 alt={`Photo of ${name}`}
-                className="aspect-square w-full rounded-xl object-cover"
+                className="aspect-square w-full rounded-xl object-cover md:aspect-auto md:h-full md:min-h-72"
               />
             ) : (
               <div
                 aria-hidden="true"
-                className="flex aspect-square w-full items-center justify-center rounded-xl border border-pf-border font-serif text-6xl text-pf-avatar-fg"
+                className="flex aspect-square w-full items-center justify-center rounded-xl border border-pf-border font-serif text-6xl text-pf-avatar-fg md:aspect-auto md:h-full md:min-h-72"
                 style={{
                   backgroundImage:
                     "linear-gradient(135deg, color-mix(in srgb, var(--pf-brand) 30%, var(--pf-tint)), var(--pf-tint))",

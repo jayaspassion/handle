@@ -19,7 +19,7 @@ Read PROJECT_NOTES.md first. It is the source of truth for the stack, patterns, 
 
 ## Before every commit
 Run: `npx tsc --noEmit && npm run lint && npm run build`
-Fix errors before committing. End commit messages with the attribution lines the app provides.
+Fix errors before committing. Do not add Co-Authored-By or other attribution lines to commit messages.
 
 ## Code patterns (details in PROJECT_NOTES.md)
 - Server Actions: `auth()` -> zod validation -> ownership check inside the Prisma query -> write -> `revalidatePath`.
