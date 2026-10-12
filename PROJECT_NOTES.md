@@ -435,3 +435,39 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
   features; review diffs before committing; one fresh session per task.
 - Production migrations are always run by hand (direct handle-prod URL, host
   must contain `aged-hat`; dev host contains `morning-band`).
+
+## 18. Current status and next steps (handoff)
+
+### Built, not yet released
+- Reordering: drag and up/down buttons for links, projects, certifications and testimonials, plus section order on the public page.
+- Account-deletion cleanup: the Clerk `user.deleted` webhook now deletes the user's avatar, résumé and project images from UploadThing.
+- Both are tested locally. No database change, so no migration.
+- To release: `npx tsc --noEmit && npm run lint && npm run build`, commit, merge the feature branch into `main`, push, then check https://www.handleprofile.tech.
+
+### Next tasks, in order
+1. Release the work above.
+2. Themes, Stage A: add a nullable `Profile.theme` with a fixed allowlist of color themes, chosen in the dashboard and applied on the public page. Needs a dev migration, then a production migration that I run by hand.
+3. Layout templates, Stage B, after the themes work.
+4. Optional polish:
+   - Empty states with an icon and an add button.
+   - Spinners on Saving/Uploading.
+   - 44px minimum size for small buttons.
+   - A separate role/tagline field.
+   - An "Open to opportunities" badge.
+   - Nav links on the public page.
+   - Clerk popups styled to match the theme.
+5. Later features, in order: messaging, AI chatbot, résumé autofill (after the chatbot), Stripe FREE/PRO.
+
+### Known gaps
+- An uploaded image stays orphaned if a project form upload is cancelled before saving.
+- The card radius value is not yet written in the Design system section.
+
+### Open decisions
+- Whether themes are limited to colors, or also change fonts.
+- Which plan tier gets which themes and templates (decide when Stripe is added).
+
+### Working preferences
+- Short, simple answers.
+- Small changes are shown inline; large files get exact sections.
+- Every task ends with a numbered test checklist and a commit.
+- Never touch production or `.env` files.
