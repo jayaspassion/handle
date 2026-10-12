@@ -2,7 +2,7 @@
 
 Single source of truth for the project. Keep it updated after every step.
 Contains NO secrets (never paste keys, tokens or full database URLs here).
-Last updated: October 2026 (after the redesign release)
+Last updated: October 2026 (after the reordering release)
 
 ---
 
@@ -275,8 +275,8 @@ Everything cascades from Profile.
   are ignored so uploads never break).
 - Photos are resized in the browser (max 800px, WebP) before upload.
   PDFs are not resized; over 4 MB shows an error.
-- KNOWN GAP: deleting an account removes DB rows but NOT the files in
-  UploadThing. Add cleanup in the `user.deleted` webhook.
+- Deleting an account also deletes its UploadThing files (`user.deleted`
+  webhook, `deleteUploadedFile`, which skips files still referenced elsewhere).
 
 ---
 
@@ -288,17 +288,12 @@ project-image uploads (resized in the browser), landing page, privacy page,
 "Editorial lavender" redesign (light + dark), collapsible dashboard sections,
 skills as grouped chips, Education location + GPA (free text), projects as a
 sliding row with the image on the left, long experience descriptions collapsed
-behind "Show details".
-
-BUILT AND TESTED LOCALLY, NOT YET RELEASED (no database change, so release =
-merge + push + live checks):
-- Reordering: "Reorder" panel for Links, Projects, Certifications and
-  Testimonials (mouse drag + up/down buttons), and a "Page order" card for the
-  public page sections. The public page follows `Profile.sectionOrder`
-  (`lib/sections.ts` treats the old untouched default as "not set").
-  Experience/Education stay in date order; skills stay grouped by category.
-- Deleting an account now also deletes its UploadThing files (webhook,
-  `deleteUploadedFile`, which skips files still referenced elsewhere).
+behind "Show details", reordering ("Reorder" panel for Links, Projects,
+Certifications and Testimonials with mouse drag + up/down buttons, and a "Page
+order" card; the public page follows `Profile.sectionOrder`, and
+`lib/sections.ts` treats the old untouched default as "not set";
+Experience/Education stay in date order, skills stay grouped by category),
+UploadThing file cleanup when an account is deleted.
 
 Database changes so far (all applied to handle-prod): Education.location and
 Education.gpa (migration `education_location_gpa`).
@@ -314,10 +309,9 @@ KNOWN GAPS (fine to ship):
 ## 11. Roadmap
 
 Next, in this order:
-1. Release reordering + file cleanup (see Status).
-2. Color themes ("Stage A" of templates), see section 16.
-3. Clerk popups in our theme (Clerk appearance options).
-4. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
+1. Color themes ("Stage A" of templates), see section 16.
+2. Clerk popups in our theme (Clerk appearance options).
+3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
    buttons, 44px minimum for small buttons, a separate "role/tagline" field,
    "Open to opportunities", nav links on the public page.
 
@@ -363,6 +357,8 @@ attempts; browser DevTools Console.
 - Polish batches: dirty-aware Save button, sidebar highlight, collapsible
   sections, skill chips, live username check, Education location/GPA,
   project images + sliding row, compact boxed public page
+- Reordering (list items + public page section order) and UploadThing file
+  cleanup on account deletion
 
 ---
 
