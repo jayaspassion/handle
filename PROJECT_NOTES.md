@@ -318,8 +318,8 @@ UploadThing file cleanup when an account is deleted.
 
 Database changes so far: Education.location and Education.gpa (migration
 `education_location_gpa`, applied to handle-prod). Profile.colorMode, theme,
-font, openToWork (migration `appearance_open_to_work`, dev only until the
-themes release).
+font, openToWork (migration `appearance_open_to_work`, applied to handle-prod
+2026-10-12).
 
 KNOWN GAPS (fine to ship):
 - An image uploaded in a project form that is then cancelled stays orphaned.
@@ -332,8 +332,8 @@ KNOWN GAPS (fine to ship):
 ## 11. Roadmap
 
 Next, in this order:
-1. Release themes + font picker + saved mode + "Open to opportunities" (built,
-   needs the production migration `appearance_open_to_work`).
+1. Release themes + font picker + saved mode + "Open to opportunities"
+   (production migration done; merge and run the live checks).
 2. Layout templates ("Stage B", section 16; design together before building).
 3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
    buttons, 44px minimum for small buttons, a separate "role/tagline" field,
@@ -493,7 +493,7 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 - No database change, so no migration. Run the live checks on https://www.handleprofile.tech if not done yet.
 
 ### Next tasks, in order
-1. Release Stage A (built on `feature/themes`): themes, font pairs, light/dark saved to the account (also the public page default), "Open to opportunities" badge. Run the production migration `appearance_open_to_work` by hand, then merge.
+1. Release Stage A (built on `feature/themes`): themes, font pairs, light/dark saved to the account (also the public page default), "Open to opportunities" badge. Production migration `appearance_open_to_work` applied 2026-10-12; merge and run the live checks.
 2. Layout templates, Stage B, after the themes work.
 3. Optional polish:
    - Empty states with an icon and an add button.
