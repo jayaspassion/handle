@@ -201,6 +201,7 @@ PROJECT_NOTES.md
 prisma/schema.prisma  prisma/migrations/
 lib/prisma.ts  lib/url.ts  lib/public-profile.ts
 lib/uploadthing.ts  lib/uploads.ts  lib/uploads-server.ts
+lib/sections.ts   (section keys, labels, resolveSectionOrder)
 app/layout.tsx  app/globals.css  app/page.tsx (landing)  app/privacy/page.tsx
 app/_components/site-header.tsx      (hidden on /dashboard)
 app/_components/theme-toggle.tsx     (3 small icons: system / light / dark)
@@ -213,6 +214,8 @@ app/dashboard/page.tsx
 app/dashboard/_components/
   dashboard-nav.tsx (sidebar)  dashboard-section.tsx (collapsible card)
   profile-completion.tsx  add-panel.tsx  month-picker.tsx
+  sortable-list.tsx  reorder-panel.tsx  section-order-card.tsx
+app/dashboard/_actions/reorder.ts   (reorderItems, saveSectionOrder)
 app/dashboard/_sections/profile/{actions.ts,form.tsx,section.tsx,uploads.tsx}
 app/dashboard/_sections/publish/{actions.ts,section.tsx}
 app/dashboard/_sections/skills/{actions.ts,section.tsx}   (chips, grouped)
@@ -287,18 +290,22 @@ skills as grouped chips, Education location + GPA (free text), projects as a
 sliding row with the image on the left, long experience descriptions collapsed
 behind "Show details".
 
-Database changes since the first deploy (all applied to handle-prod):
-- Education.location (String?) and Education.gpa (String?) - migration
-  `education_location_gpa`.
-- Project.coverImageUrl is now only set from our own uploads (old pasted links
-  are ignored).
+BUILT AND TESTED LOCALLY, NOT YET RELEASED (no database change, so release =
+merge + push + live checks):
+- Reordering: "Reorder" panel for Links, Projects, Certifications and
+  Testimonials (mouse drag + up/down buttons), and a "Page order" card for the
+  public page sections. The public page follows `Profile.sectionOrder`
+  (`lib/sections.ts` treats the old untouched default as "not set").
+  Experience/Education stay in date order; skills stay grouped by category.
+- Deleting an account now also deletes its UploadThing files (webhook,
+  `deleteUploadedFile`, which skips files still referenced elsewhere).
+
+Database changes so far (all applied to handle-prod): Education.location and
+Education.gpa (migration `education_location_gpa`).
 
 KNOWN GAPS (fine to ship):
-- Deleting an account does not delete its UploadThing files. An image uploaded
-  in a project form that is then cancelled stays orphaned.
-- sectionOrder is stored but the public page uses a fixed order.
+- An image uploaded in a project form that is then cancelled stays orphaned.
 - Clerk sign-in popups do not follow our theme yet.
-- No project screenshots in test data = project cards look sparse.
 - Password minimum in Clerk is 8 (consider 10+).
 - No analytics or error monitoring besides Vercel logs.
 
@@ -306,21 +313,22 @@ KNOWN GAPS (fine to ship):
 
 ## 11. Roadmap
 
-Small things first:
-1. Delete UploadThing files when an account is deleted (user.deleted webhook).
-2. Clerk popups: apply our theme via Clerk's appearance options.
-3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
+Next, in this order:
+1. Release reordering + file cleanup (see Status).
+2. Color themes ("Stage A" of templates), see section 16.
+3. Clerk popups in our theme (Clerk appearance options).
+4. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
    buttons, 44px minimum for small buttons, a separate "role/tagline" field,
    "Open to opportunities", nav links on the public page.
 
-Features (pick one at a time):
-4. Drag-and-drop reordering for items and sectionOrder
-5. Messaging (login required; inbox; optional email via Resend)
-6. Chatbot on public page (login required, streaming, rate limits, prompt
+Bigger features (design together before building):
+5. Layout templates ("Stage B", section 16)
+6. Messaging (login required; inbox; optional email via Resend; spam limits)
+7. Chatbot on public page (login required, streaming, rate limits, prompt
    injection defenses; treat profile text as untrusted data)
-7. Resume autofill (needs an AI API; suggestions only, reviewed by the user;
-   build after the chatbot, they share the groundwork)
-8. Themes, analytics, Stripe test mode
+8. Resume autofill (needs an AI API; suggestions only, reviewed by the user;
+   after the chatbot, they share groundwork)
+9. Analytics, Stripe test mode (templates could be a PRO feature)
 
 ---
 
@@ -395,3 +403,35 @@ attempts; browser DevTools Console.
 - Accessibility rules we keep: visible focus outlines, labels tied to inputs,
   `role="status"`/`"alert"` messages, aria-expanded on collapsibles, 40-44px
   tap targets, never colour alone for meaning.
+
+---
+
+## 16. Plan: themes and templates (not built yet)
+
+Stage A, color themes: a handful of palettes (for example Lavender, Sage,
+Ocean, Sunset, Mono), each with a light and a dark version. One new nullable
+text column `Profile.theme`, validated against a fixed allowlist (never
+user-written CSS). The public page wrapper (`.profile-theme`) overrides the
+`--pf-*` tokens by a `data-` attribute. The link-preview image (opengraph) picks
+up the theme accent. Dashboard gets a theme picker. Needs a production migration
+before release (nullable column, same procedure as Education).
+
+Stage B, layout templates: a second column `Profile.template` plus one renderer
+per layout (for example Classic = today, single-column Resume, Sidebar). All
+renderers use the same data from `getPublishedProfile()` (the only place that
+decides what is public) and all honor `sectionOrder`.
+
+Possible PRO gating later: one free default, extra themes/templates for PRO.
+
+---
+
+## 17. Working in Claude Code (desktop app, Code tab, Local session)
+
+- Put the working rules in CLAUDE.md (read PROJECT_NOTES.md first; minimal
+  changes; run `npx tsc --noEmit` and `npm run lint`; end with a test
+  checklist; feature branches only; never touch .env, never run migrations or
+  anything against production, never `migrate reset`, never `npm audit fix`).
+- Keep Manual permission mode until trust is built; use Plan mode for big
+  features; review diffs before committing; one fresh session per task.
+- Production migrations are always run by hand (direct handle-prod URL, host
+  must contain `aged-hat`; dev host contains `morning-band`).
