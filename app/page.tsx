@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { Show, SignUpButton } from "@clerk/nextjs";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const HOST = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
   /^https?:\/\//,

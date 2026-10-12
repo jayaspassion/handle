@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: `/${profile.username}` },
     openGraph: { title, description, type: "profile", siteName: "Handle" },
     twitter: { card: "summary_large_image", title, description },
   };

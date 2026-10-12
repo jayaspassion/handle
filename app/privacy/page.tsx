@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy Policy | Handle",
   description: "How Handle collects and uses your information.",
+  alternates: { canonical: "/privacy" },
 };
 
 const h2 = "mt-8 text-lg font-semibold";

@@ -258,6 +258,12 @@ Everything cascades from Profile.
   only if they pass `isUploadedFileUrl` (https, host ends `.ufs.sh`, path
   starts `/f/`). Never arbitrary user-supplied image URLs.
 - Public page: unpublished == nonexistent (same 404). Username lowercase.
+- SEO: `app/robots.ts` (blocks /dashboard and /api/), `app/sitemap.ts`
+  (landing, /privacy, published profiles via `listPublishedProfiles()` in
+  lib/public-profile.ts; built per request), canonical tags on /, /privacy and
+  /<username>. All URLs use `SITE_URL` from lib/url.ts (the www address).
+  Search Console "Page with redirect" for the apex domain, http:// and
+  /dashboard is expected.
 - Theme: CSS tokens + `light-dark()` in globals.css. Light is the default:
   `<html data-theme="light">`, and an inline head script applies the saved
   choice from localStorage key `handle-theme` ("light" | "dark" | "system";
@@ -374,6 +380,8 @@ attempts; browser DevTools Console.
 - Dashboard on phones: no sideways scrolling (content grid is
   `minmax(0,1fr)`), sticky section tabs that keep the active tab in view,
   Edit/Delete buttons under each item, shorter "Public page" button
+- "résumé" spelled "resume" everywhere in the UI
+- SEO basics: robots.txt, sitemap.xml, canonical tags
 
 ---
 

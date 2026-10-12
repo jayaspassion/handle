@@ -102,3 +102,13 @@ export const getPublishedProfile = cache(async (username: string) => {
     })),
   };
 });
+
+// Published profiles for the sitemap: same rule as getPublishedProfile
+// (published with a username), and only the username and update time.
+export async function listPublishedProfiles() {
+  return prisma.profile.findMany({
+    where: { isPublished: true, username: { not: null } },
+    select: { username: true, updatedAt: true },
+    orderBy: { updatedAt: "desc" },
+  });
+}

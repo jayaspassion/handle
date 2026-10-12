@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "./_components/site-header";
+import { SITE_URL } from "@/lib/url";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,9 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  ),
+  metadataBase: new URL(SITE_URL),
   title: "Handle",
   description: "Build and share your professional portfolio",
 };
