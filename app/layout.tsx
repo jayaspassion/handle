@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "./_components/site-header";
@@ -42,6 +43,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteHeader />
           {children}
         </ClerkProvider>
+        {/* Anonymous page-view counts (no cookies); turned on in Vercel > Analytics */}
+        <Analytics />
       </body>
     </html>
   );

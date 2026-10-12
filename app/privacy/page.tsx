@@ -59,7 +59,11 @@ export default function PrivacyPage() {
         <li>Clerk: authentication and account management.</li>
         <li>Neon: database hosting.</li>
         <li>UploadThing: storage of uploaded photos, resumes and project images.</li>
-        <li>Vercel: website hosting.</li>
+        <li>
+          Vercel: website hosting and anonymous visit statistics (pages viewed,
+          referring site, country and device type; no cookies and no personal
+          profile).
+        </li>
       </ul>
 
       <h2 className={legalH2}>Your choices</h2>

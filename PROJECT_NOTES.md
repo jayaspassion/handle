@@ -47,7 +47,8 @@ Node 24 LTS, PostgreSQL on Neon, Prisma 7.10.0 with driver adapter
 (`@prisma/adapter-pg`), config `prisma7.config.ts`, client generated to
 `app/generated/prisma`, Clerk (`@clerk/nextjs` 7.9.9), zod, svix 1.75.0
 (pinned; 2.6.1 broke verification), UploadThing (`uploadthing`,
-`@uploadthing/react`), hosting on Vercel.
+`@uploadthing/react`), hosting on Vercel, `@vercel/analytics` (anonymous
+page views, `<Analytics />` in app/layout.tsx; enable in Vercel > Analytics).
 
 Ignore the "Prisma 8 rc" update notice. Don't upgrade mid-project.
 
@@ -330,7 +331,8 @@ KNOWN GAPS (fine to ship):
 - An image uploaded in a project form that is then cancelled stays orphaned.
 - Clerk sign-in popups do not follow our theme yet.
 - Password minimum in Clerk is 8 (consider 10+).
-- No analytics or error monitoring besides Vercel logs.
+- No error monitoring besides Vercel logs (Sentry planned). Visit stats via
+  Vercel Analytics.
 
 ---
 
