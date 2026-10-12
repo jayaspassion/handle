@@ -6,6 +6,9 @@ import ThemeToggle from "../_components/theme-toggle";
 import DashboardNav from "./_components/dashboard-nav";
 import DashboardSection from "./_components/dashboard-section";
 import ProfileCompletion from "./_components/profile-completion";
+import ReorderPanel from "./_components/reorder-panel";
+import SectionOrderCard from "./_components/section-order-card";
+import { resolveSectionOrder } from "@/lib/sections";
 import PublishSection from "./_sections/publish/section";
 import ProfileSection from "./_sections/profile/section";
 import LinkForm from "./_sections/links/form";
@@ -145,6 +148,7 @@ export default async function DashboardPage() {
                 hasName={!!profile?.fullName?.trim()}
               />
               <ProfileCompletion items={completion} />
+              <SectionOrderCard order={resolveSectionOrder(profile?.sectionOrder)} />
             </div>
 
             <div className="space-y-5 xl:col-start-1">
@@ -153,6 +157,10 @@ export default async function DashboardPage() {
                 title="Links"
                 description="Where visitors can find you elsewhere."
               >
+                <ReorderPanel
+                  model="link"
+                  items={(profile?.links ?? []).map((l) => ({ id: l.id, label: l.label }))}
+                />
                 <LinkList items={profile?.links ?? []} />
                 <LinkForm />
               </DashboardSection>
@@ -162,6 +170,10 @@ export default async function DashboardPage() {
                 title="Projects"
                 description="Showcase your best work."
               >
+                <ReorderPanel
+                  model="project"
+                  items={(profile?.projects ?? []).map((p) => ({ id: p.id, label: p.title }))}
+                />
                 <ProjectList items={profile?.projects ?? []} />
                 <ProjectForm />
               </DashboardSection>
@@ -197,6 +209,10 @@ export default async function DashboardPage() {
                 title="Certifications"
                 description="Showcase your professional certifications."
               >
+                <ReorderPanel
+                  model="certification"
+                  items={(profile?.certifications ?? []).map((c) => ({ id: c.id, label: c.name }))}
+                />
                 <CertificationList items={profile?.certifications ?? []} />
                 <CertificationForm />
               </DashboardSection>
@@ -206,6 +222,10 @@ export default async function DashboardPage() {
                 title="Testimonials"
                 description="Kind words from people you've worked with."
               >
+                <ReorderPanel
+                  model="testimonial"
+                  items={(profile?.testimonials ?? []).map((t) => ({ id: t.id, label: t.authorName }))}
+                />
                 <TestimonialList items={profile?.testimonials ?? []} />
                 <TestimonialForm />
               </DashboardSection>

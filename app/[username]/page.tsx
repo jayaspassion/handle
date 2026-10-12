@@ -1,15 +1,16 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedProfile } from "@/lib/public-profile";
 import { isHttpUrl } from "@/lib/url";
+import { resolveSectionOrder } from "@/lib/sections";
 import ProjectsSection from "@/app/_components/projects-carousel";
 
 type Props = { params: Promise<{ username: string }> };
 
 const LINK_REL = "nofollow ugc noopener noreferrer";
-const BLOCK = "-mt-px";
+const BLOCK = "mt-1";
 const PANEL = "panel print:border-0 print:bg-transparent print:p-0";
 const textLink =
   "inline-flex items-center gap-1.5 font-medium text-pf-accent underline-offset-4 hover:underline";
@@ -103,13 +104,7 @@ function ArrowIcon() {
 
 function QuoteIcon() {
   return (
-    <svg
-      width="34"
-      height="34"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-    >
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M9.5 6C6.5 7 4 9.8 4 13.5V18h6v-6H7c.2-1.8 1.4-3.2 3-3.8L9.5 6Zm9 0c-3 1-5.5 3.8-5.5 7.5V18h6v-6h-3c.2-1.8 1.4-3.2 3-3.8L18.5 6Z" />
     </svg>
   );
@@ -125,26 +120,14 @@ function LinkIcon({ url }: { url: string }) {
   }
   if (host === "github.com") {
     return (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden="true"
-      >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
       </svg>
     );
   }
   if (host.endsWith("linkedin.com")) {
     return (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden="true"
-      >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
       </svg>
     );
@@ -235,15 +218,11 @@ function Pair({ left, right }: { left: ReactNode; right: ReactNode }) {
       className={`${BLOCK} ${PANEL} grid gap-8 ${both ? "lg:grid-cols-2 lg:gap-0" : ""}`}
     >
       {left && (
-        <div
-          className={`min-w-0 ${both ? "lg:border-r lg:border-pf-border lg:pr-8" : ""}`}
-        >
+        <div className={`min-w-0 ${both ? "lg:border-r lg:border-pf-border lg:pr-8" : ""}`}>
           {left}
         </div>
       )}
-      {right && (
-        <div className={`min-w-0 ${both ? "lg:pl-8" : ""}`}>{right}</div>
-      )}
+      {right && <div className={`min-w-0 ${both ? "lg:pl-8" : ""}`}>{right}</div>}
     </div>
   );
 }
@@ -282,7 +261,8 @@ function TimelineItem({
   // Long descriptions start collapsed; short ones are simply shown
   const long =
     !!description && (description.length > 140 || description.includes("\n"));
-  const text = "mt-2 whitespace-pre-line break-words text-sm leading-relaxed";
+  const text =
+    "mt-2 whitespace-pre-line break-words text-sm leading-relaxed";
   return (
     <li className="relative">
       <span
@@ -447,14 +427,121 @@ export default async function PublicProfilePage({ params }: Props) {
     </MiniSection>
   );
 
+  const projectsNode = hasProjects && (
+          <div className={BLOCK}>
+            <ProjectsSection id="projects" eyebrow="Selected work" title="Projects">
+                {profile.projects.map((p) => {
+                  const live = safeUrl(p.liveUrl);
+                  const repo = safeUrl(p.repoUrl);
+                  return (
+                    <li
+                      key={p.id}
+                      className={`shrink-0 snap-start print:w-full ${
+                        profile.projects.length === 1
+                          ? "w-full"
+                          : "w-[88%] sm:w-[calc(50%-0.625rem)]"
+                      }`}
+                    >
+                      <article className="card card-accent flex h-full flex-col bg-pf-surface p-0 sm:flex-row">
+                        {p.coverImageUrl && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={p.coverImageUrl}
+                            alt={`Screenshot of ${p.title}`}
+                            loading="lazy"
+                            className="h-40 w-full object-cover sm:h-auto sm:w-2/5 sm:shrink-0"
+                          />
+                        )}
+                        <div className="flex min-w-0 flex-1 flex-col p-4">
+                          <h3 className="break-words font-serif text-lg">{p.title}</h3>
+                          {p.description && (
+                            <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed text-pf-muted">
+                              {p.description}
+                            </p>
+                          )}
+                          {p.tags.length > 0 && (
+                            <div className="mt-4">
+                              <Chips items={p.tags} label="Tags" />
+                            </div>
+                          )}
+                          {(live || repo) && (
+                            <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
+                              {live && (
+                                <ExternalLink href={live} className={textLink}>
+                                  Live site
+                                  <ArrowIcon />
+                                </ExternalLink>
+                              )}
+                              {repo && (
+                                <ExternalLink href={repo} className={textLink}>
+                                  Source code
+                                  <ArrowIcon />
+                                </ExternalLink>
+                              )}
+                            </p>
+                          )}
+                        </div>
+                      </article>
+                    </li>
+                  );
+                })}
+            </ProjectsSection>
+          </div>
+        );
+
+  const testimonialsNode = profile.testimonials.length > 0 && (
+          <div className={BLOCK}>
+            <ul className="space-y-3" aria-label="Testimonials">
+              {profile.testimonials.map((t) => {
+                const byline = [t.authorRole, t.authorCompany]
+                  .filter(Boolean)
+                  .join(" at ");
+                return (
+                  <li key={t.id} className="card card-accent p-5">
+                    <figure className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8">
+                      <div className="flex min-w-0 flex-1 gap-4">
+                        <span className="shrink-0 text-pf-brand">
+                          <QuoteIcon />
+                        </span>
+                        <blockquote className="min-w-0">
+                          <p className="whitespace-pre-line break-words font-serif text-lg italic leading-relaxed">
+                            {t.quote}
+                          </p>
+                        </blockquote>
+                      </div>
+                      <figcaption className="flex items-center gap-3 md:w-60 md:shrink-0 md:border-l md:border-pf-border md:pl-8">
+                        <span
+                          aria-hidden="true"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-pf-avatar-bg text-sm font-semibold text-pf-avatar-fg"
+                        >
+                          {initials(t.authorName)}
+                        </span>
+                        <span className="min-w-0 text-sm">
+                          <span className="block font-medium">{t.authorName}</span>
+                          {byline && (
+                            <span className="block text-pf-muted">{byline}</span>
+                          )}
+                        </span>
+                      </figcaption>
+                    </figure>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-3 text-xs text-pf-muted">
+              Testimonials are shared by the profile owner and have not been
+              independently verified.
+            </p>
+          </div>
+        );
+
+  const renderOrder = resolveSectionOrder(profile.sectionOrder);
+
   return (
     <div className="profile-theme relative isolate flex-1 overflow-hidden bg-pf-bg font-sans text-pf-fg antialiased">
       <main className="mx-auto max-w-5xl px-5 py-6 sm:px-8 sm:py-8">
         {/* Hero */}
-        <header
-          className={`${PANEL} grid items-center gap-8 md:grid-cols-[1fr_14rem] md:gap-10 lg:grid-cols-[1fr_16rem]`}
-        >
-          {" "}
+        <header className={`${PANEL} grid items-center gap-8 md:grid-cols-[1fr_14rem] md:gap-10 lg:grid-cols-[1fr_16rem]`}>
           <div className="order-2 min-w-0 text-center md:order-1 md:text-left">
             <h1 className="break-words font-serif text-4xl leading-[1.17] tracking-tight md:text-5xl md:leading-[1.17]">
               {name}
@@ -508,6 +595,7 @@ export default async function PublicProfilePage({ params }: Props) {
               )}
             </div>
           </div>
+
           <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full">
             {profile.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -531,130 +619,37 @@ export default async function PublicProfilePage({ params }: Props) {
           </div>
         </header>
 
-        {/* Projects: one row, slides sideways, image on the left when there is one */}
-        {hasProjects && (
-          <div className={BLOCK}>
-            <ProjectsSection
-              id="projects"
-              eyebrow="Selected work"
-              title="Projects"
-            >
-              {profile.projects.map((p) => {
-                const live = safeUrl(p.liveUrl);
-                const repo = safeUrl(p.repoUrl);
-                return (
-                  <li
-                    key={p.id}
-                    className={`shrink-0 snap-start print:w-full ${
-                      profile.projects.length === 1
-                        ? "w-full"
-                        : "w-[88%] sm:w-[calc(50%-0.625rem)]"
-                    }`}
-                  >
-                    <article className="card card-accent flex h-full flex-col bg-pf-surface p-0 sm:flex-row">
-                      {p.coverImageUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={p.coverImageUrl}
-                          alt={`Screenshot of ${p.title}`}
-                          loading="lazy"
-                          className="h-40 w-full object-cover sm:h-auto sm:w-2/5 sm:shrink-0"
-                        />
-                      )}
-                      <div className="flex min-w-0 flex-1 flex-col p-4">
-                        <h3 className="break-words font-serif text-lg">
-                          {p.title}
-                        </h3>
-                        {p.description && (
-                          <p className="mt-2 whitespace-pre-line break-words text-[0.9375rem] leading-relaxed text-pf-muted">
-                            {p.description}
-                          </p>
-                        )}
-                        {p.tags.length > 0 && (
-                          <div className="mt-4">
-                            <Chips items={p.tags} label="Tags" />
-                          </div>
-                        )}
-                        {(live || repo) && (
-                          <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
-                            {live && (
-                              <ExternalLink href={live} className={textLink}>
-                                Live site
-                                <ArrowIcon />
-                              </ExternalLink>
-                            )}
-                            {repo && (
-                              <ExternalLink href={repo} className={textLink}>
-                                Source code
-                                <ArrowIcon />
-                              </ExternalLink>
-                            )}
-                          </p>
-                        )}
-                      </div>
-                    </article>
-                  </li>
-                );
-              })}
-            </ProjectsSection>
-          </div>
-        )}
-
-        {experience && <div className={BLOCK}>{experience}</div>}
-        {skills && <div className={BLOCK}>{skills}</div>}
-
-        {/* Testimonials */}
-        {profile.testimonials.length > 0 && (
-          <div className={BLOCK}>
-            <ul className="space-y-3" aria-label="Testimonials">
-              {profile.testimonials.map((t) => {
-                const byline = [t.authorRole, t.authorCompany]
-                  .filter(Boolean)
-                  .join(" at ");
-                return (
-                  <li key={t.id} className="card card-accent p-5">
-                    <figure className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8">
-                      <div className="flex min-w-0 flex-1 gap-4">
-                        <span className="shrink-0 text-pf-brand">
-                          <QuoteIcon />
-                        </span>
-                        <blockquote className="min-w-0">
-                          <p className="whitespace-pre-line break-words font-serif text-lg italic leading-relaxed">
-                            {t.quote}
-                          </p>
-                        </blockquote>
-                      </div>
-                      <figcaption className="flex items-center gap-3 md:w-60 md:shrink-0 md:border-l md:border-pf-border md:pl-8">
-                        <span
-                          aria-hidden="true"
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-pf-avatar-bg text-sm font-semibold text-pf-avatar-fg"
-                        >
-                          {initials(t.authorName)}
-                        </span>
-                        <span className="min-w-0 text-sm">
-                          <span className="block font-medium">
-                            {t.authorName}
-                          </span>
-                          {byline && (
-                            <span className="block text-pf-muted">
-                              {byline}
-                            </span>
-                          )}
-                        </span>
-                      </figcaption>
-                    </figure>
-                  </li>
-                );
-              })}
-            </ul>
-            <p className="mt-3 text-xs text-pf-muted">
-              Testimonials are shared by the profile owner and have not been
-              independently verified.
-            </p>
-          </div>
-        )}
-
-        <Pair left={education} right={certifications} />
+        {renderOrder.map((key, i) => {
+          switch (key) {
+            case "projects":
+              return <Fragment key={key}>{projectsNode}</Fragment>;
+            case "experience":
+              return experience ? (
+                <div key={key} className={BLOCK}>
+                  {experience}
+                </div>
+              ) : null;
+            case "skills":
+              return skills ? (
+                <div key={key} className={BLOCK}>
+                  {skills}
+                </div>
+              ) : null;
+            case "testimonials":
+              return <Fragment key={key}>{testimonialsNode}</Fragment>;
+            case "education":
+              // Education and certifications share one box when they are neighbours
+              return renderOrder[i + 1] === "certifications" ? (
+                <Pair key={key} left={education} right={certifications} />
+              ) : (
+                <Pair key={key} left={education} right={null} />
+              );
+            case "certifications":
+              return renderOrder[i - 1] === "education" ? null : (
+                <Pair key={key} left={null} right={certifications} />
+              );
+          }
+        })}
 
         {/* Closing band: links only, never an email address */}
         {(links.length > 0 || resumeUrl) && (
