@@ -310,19 +310,21 @@ KNOWN GAPS (fine to ship):
 
 Next, in this order:
 1. Color themes ("Stage A" of templates), see section 16.
-2. Clerk popups in our theme (Clerk appearance options).
+2. Layout templates ("Stage B", section 16; design together before building).
 3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
    buttons, 44px minimum for small buttons, a separate "role/tagline" field,
    "Open to opportunities", nav links on the public page.
 
 Bigger features (design together before building):
-5. Layout templates ("Stage B", section 16)
-6. Messaging (login required; inbox; optional email via Resend; spam limits)
-7. Chatbot on public page (login required, streaming, rate limits, prompt
+4. Messaging (login required; inbox; optional email via Resend; spam limits)
+5. Chatbot on public page (login required, streaming, rate limits, prompt
    injection defenses; treat profile text as untrusted data)
-8. Resume autofill (needs an AI API; suggestions only, reviewed by the user;
+6. Resume autofill (needs an AI API; suggestions only, reviewed by the user;
    after the chatbot, they share groundwork)
-9. Analytics, Stripe test mode (templates could be a PRO feature)
+7. Analytics, Stripe test mode (templates could be a PRO feature)
+
+Parked (not planned for now): Clerk popups in our theme (Clerk appearance
+options).
 
 ---
 
@@ -449,8 +451,9 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
    - A separate role/tagline field.
    - An "Open to opportunities" badge.
    - Nav links on the public page.
-   - Clerk popups styled to match the theme.
 4. Later features, in order: messaging, AI chatbot, résumé autofill (after the chatbot), Stripe FREE/PRO.
+
+Parked, not planned for now: Clerk popups styled to match the theme.
 
 ### Known gaps
 - An uploaded image stays orphaned if a project form upload is cancelled before saving.
