@@ -416,7 +416,9 @@ attempts; browser DevTools Console.
   state covers resize + upload; follow-up: the form now takes the address
   from the upload itself (`ufsUrl`) instead of waiting for our server's
   callback, which can be late in production, and a synchronous guard blocks
-  submitting mid-upload), stricter URL check, friendly upload errors
+  submitting mid-upload; second follow-up: the busy state ends only when the
+  address arrives or an error shows, never when startUpload returns, which in
+  production can be before the address; 60 s safety timeout), stricter URL check, friendly upload errors
   (`lib/upload-errors.ts`), honest "hidden page / files" copy, leave-page
   warning for unsaved edits (`leave-warning.tsx`) + "Saves automatically"
   labels, "added" messages clear on the next action, username error only for

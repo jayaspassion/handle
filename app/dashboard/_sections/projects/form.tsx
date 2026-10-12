@@ -61,11 +61,36 @@ export function ProjectFormFields({
   );
   const [uploadError, setUploadError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
-  // Busy from picking a file until its address is in the form (resizing
-  // happens before UploadThing starts), so Save can't drop the image.
-  // The ref is the hard guard checked on submit; the state drives the UI.
+  // Busy from picking a file until its address is actually in the form.
+  // It is ended ONLY where the outcome is known (the address arrives, or an
+  // error), never when startUpload returns: in production that can return
+  // before the address does. The ref is the hard guard checked on submit;
+  // the state drives the UI. A timer makes sure Save never stays stuck.
   const [imageBusy, setImageBusy] = useState(false);
   const busyRef = useRef(false);
+  const busyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function startBusy() {
+    busyRef.current = true;
+    setImageBusy(true);
+    if (busyTimer.current) clearTimeout(busyTimer.current);
+    busyTimer.current = setTimeout(() => {
+      endBusy();
+      setUploadError("The upload is taking too long. Try again.");
+    }, 60_000);
+  }
+
+  function endBusy() {
+    busyRef.current = false;
+    setImageBusy(false);
+    if (busyTimer.current) clearTimeout(busyTimer.current);
+    busyTimer.current = null;
+  }
+
+  useEffect(() => () => {
+    if (busyTimer.current) clearTimeout(busyTimer.current);
+  }, []);
+
   const { startUpload, isUploading } = useUploadThing("projectImage", {
     onClientUploadComplete: (res) => {
       // ufsUrl comes straight from the upload. serverData (our own callback)
@@ -78,8 +103,12 @@ export function ProjectFormFields({
       } else {
         setUploadError(uploadErrorMessage({}, "projectImage"));
       }
+      endBusy();
     },
-    onUploadError: (e) => setUploadError(uploadErrorMessage(e, "projectImage")),
+    onUploadError: (e) => {
+      setUploadError(uploadErrorMessage(e, "projectImage"));
+      endBusy();
+    },
   });
 
   async function onFile(e: ChangeEvent<HTMLInputElement>) {
@@ -91,16 +120,14 @@ export function ProjectFormFields({
       return;
     }
     setUploadError("");
-    busyRef.current = true;
-    setImageBusy(true);
+    startBusy();
     try {
       await startUpload([await resizeImage(file)]);
     } catch {
       setUploadError(uploadErrorMessage({}, "projectImage"));
-    } finally {
-      busyRef.current = false;
-      setImageBusy(false);
+      endBusy();
     }
+    // No endBusy() here on purpose: see the comment above
   }
   const uploading = imageBusy || isUploading;
 
