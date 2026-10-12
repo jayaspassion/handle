@@ -6,9 +6,9 @@ export default function ProfileCompletion({ items }: { items: Item[] }) {
 
   return (
     <div className="card p-5">
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <h2 className="font-serif text-xl">Profile completion</h2>
-        <p className="text-sm text-pf-muted">
+        <p className="whitespace-nowrap text-sm text-pf-muted">
           {done} of {items.length} complete
         </p>
       </div>

@@ -202,7 +202,11 @@ prisma/schema.prisma  prisma/migrations/
 lib/prisma.ts  lib/url.ts  lib/public-profile.ts
 lib/uploadthing.ts  lib/uploads.ts  lib/uploads-server.ts
 lib/sections.ts   (section keys, labels, resolveSectionOrder)
-app/layout.tsx  app/globals.css  app/page.tsx (landing)  app/privacy/page.tsx
+app/layout.tsx  app/globals.css  app/page.tsx (landing)
+app/privacy/page.tsx  app/terms/page.tsx  app/_components/legal-page.tsx
+app/not-found.tsx  app/error.tsx  app/global-error.tsx
+app/icon.svg  app/apple-icon.tsx  app/opengraph-image.tsx (landing preview)
+app/robots.ts  app/sitemap.ts
 app/_components/site-header.tsx      (hidden on /dashboard)
 app/_components/theme-toggle.tsx     (3 small icons: system / light / dark)
 app/_components/projects-carousel.tsx (ProjectsSection: panel + sliding row)
@@ -400,6 +404,11 @@ attempts; browser DevTools Console.
 - SEO basics: robots.txt, sitemap.xml, canonical tags
 - Stage A: 8 color themes, 4 font pairs, light/dark saved to the account and
   used as the public page default, "Open to opportunities" badge
+- Beta prep: font names shown in their own fonts (even size via
+  font-size-adjust), switch for "Open to opportunities", Terms of Use page,
+  restyled Privacy page, site-wide 404 and error pages, own icon + apple icon,
+  landing link preview, "Report this page" link, security headers in
+  next.config.ts, CONTACT_EMAIL in lib/url.ts
 
 ---
 

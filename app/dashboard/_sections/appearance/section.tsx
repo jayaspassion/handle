@@ -100,7 +100,7 @@ export function AppearanceCard({
 
       <fieldset className="mt-4">
         <legend className="text-sm font-medium">Font</legend>
-        <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="mt-2 grid gap-2">
           {FONTS.map((f) => (
             <label key={f.id} className="cursor-pointer">
               <input
@@ -114,11 +114,29 @@ export function AppearanceCard({
                 }}
                 className="peer sr-only"
               />
-              <span className="flex min-h-11 items-center gap-2 rounded-lg border border-pf-border px-2.5 py-1.5 text-sm peer-checked:border-pf-fg peer-checked:font-medium peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-pf-brand">
-                <span aria-hidden="true" data-pf-font={f.id} className="font-serif text-lg">
-                  Aa
+              {/* Each name in its own heading font; font-size-adjust evens out
+                  how large different fonts look at the same size */}
+              <span className="flex min-h-11 items-center justify-between gap-3 rounded-lg border border-pf-border px-3 py-1.5 peer-checked:border-pf-fg peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-pf-brand [&>svg]:invisible peer-checked:[&>svg]:visible">
+                <span
+                  data-pf-font={f.id}
+                  className="font-serif text-lg leading-tight [font-size-adjust:ex-height_0.5]"
+                >
+                  {f.label}
                 </span>
-                {f.label}
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="shrink-0"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
               </span>
             </label>
           ))}
@@ -176,16 +194,23 @@ export function OpenToWorkCard({ value }: { value: boolean }) {
             Shows a badge at the top of your public page.
           </p>
         </div>
-        <input
-          id={id}
-          type="checkbox"
-          role="switch"
-          checked={checked}
-          disabled={pending}
-          aria-describedby={`${id}-hint`}
-          onChange={(e) => toggle(e.target.checked)}
-          className="mt-1.5 h-5 w-5 shrink-0 cursor-pointer accent-[var(--pf-solid)]"
-        />
+        {/* Native checkbox (keyboard and screen readers) drawn as a switch */}
+        <label className="relative -m-1.5 inline-flex shrink-0 cursor-pointer p-1.5">
+          <input
+            id={id}
+            type="checkbox"
+            role="switch"
+            checked={checked}
+            disabled={pending}
+            aria-describedby={`${id}-hint`}
+            onChange={(e) => toggle(e.target.checked)}
+            className="peer sr-only"
+          />
+          <span
+            aria-hidden="true"
+            className="relative h-7 w-12 rounded-full bg-pf-border transition-colors peer-checked:bg-pf-solid peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-pf-brand peer-disabled:opacity-60 after:absolute after:left-1 after:top-1 after:h-5 after:w-5 after:rounded-full after:bg-pf-surface after:shadow after:transition-transform peer-checked:after:translate-x-5"
+          />
+        </label>
       </div>
       {error && (
         <p role="alert" className="msg-error mt-2">

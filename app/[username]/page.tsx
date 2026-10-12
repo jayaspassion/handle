@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedProfile } from "@/lib/public-profile";
-import { isHttpUrl } from "@/lib/url";
+import { CONTACT_EMAIL, SITE_URL, isHttpUrl } from "@/lib/url";
 import { resolveSectionOrder } from "@/lib/sections";
 import ProjectsSection from "@/app/_components/projects-carousel";
 import { OwnerAppearance } from "@/app/_components/sync-color-mode";
@@ -722,11 +722,21 @@ export default async function PublicProfilePage({ params }: Props) {
           </section>
         )}
 
-        <footer className="mt-8 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden">
-          Made with{" "}
-          <Link href="/" className={textLink}>
-            Handle
-          </Link>
+        <footer className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden">
+          <p>
+            Made with{" "}
+            <Link href="/" className={textLink}>
+              Handle
+            </Link>
+          </p>
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+              `Report: ${SITE_URL}/${profile.username}`,
+            )}`}
+            className="underline-offset-4 hover:underline"
+          >
+            Report this page
+          </a>
         </footer>
       </main>
     </div>

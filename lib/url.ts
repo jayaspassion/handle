@@ -3,6 +3,9 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
 ).replace(/\/$/, "");
 
+// Public contact for privacy, terms and reports (shown on the site)
+export const CONTACT_EMAIL = "jayaspassion@gmail.com";
+
 export function isHttpUrl(value: string) {
     if (value === "") return true;
     try {

@@ -173,6 +173,9 @@ export default function Home() {
         <Link href="/privacy" className="underline-offset-4 hover:underline">
           Privacy Policy
         </Link>
+        <Link href="/terms" className="underline-offset-4 hover:underline">
+          Terms of Use
+        </Link>
       </footer>
     </div>
   );
