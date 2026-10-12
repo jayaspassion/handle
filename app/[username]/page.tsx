@@ -6,6 +6,8 @@ import { getPublishedProfile } from "@/lib/public-profile";
 import { isHttpUrl } from "@/lib/url";
 import { resolveSectionOrder } from "@/lib/sections";
 import ProjectsSection from "@/app/_components/projects-carousel";
+import { OwnerAppearance } from "@/app/_components/sync-color-mode";
+import { ownerAppearanceScript } from "@/app/_components/color-mode";
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -539,11 +541,33 @@ export default async function PublicProfilePage({ params }: Props) {
   const renderOrder = resolveSectionOrder(profile.sectionOrder);
 
   return (
-    <div className="profile-theme relative isolate flex-1 overflow-hidden bg-pf-bg font-sans text-pf-fg antialiased">
+    <div
+      data-pf-theme={profile.theme}
+      data-pf-font={profile.font}
+      className="profile-theme relative isolate flex-1 overflow-hidden bg-pf-bg font-sans text-pf-fg antialiased"
+    >
+      <script
+        dangerouslySetInnerHTML={{
+          __html: ownerAppearanceScript({
+            mode: profile.colorMode,
+            theme: profile.theme,
+            font: profile.font,
+          }),
+        }}
+      />
+      <OwnerAppearance mode={profile.colorMode} theme={profile.theme} font={profile.font} />
       <main className="mx-auto max-w-5xl px-5 py-6 sm:px-8 sm:py-8">
         {/* Hero */}
         <header className={`${PANEL} grid items-center gap-8 md:items-start md:grid-cols-[1fr_14rem] md:gap-10 lg:grid-cols-[1fr_16rem]`}>
           <div className="order-2 min-w-0 text-center md:order-1 md:text-left">
+            {profile.openToWork && (
+              <p className="mb-3">
+                <span className="badge badge-success">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
+                  Open to opportunities
+                </span>
+              </p>
+            )}
             <h1 className="break-words font-serif text-4xl leading-[1.17] tracking-tight md:text-5xl md:leading-[1.17]">
               {name}
             </h1>

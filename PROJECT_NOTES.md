@@ -235,7 +235,8 @@ Testimonials, Education + Certifications (one box), closing links band.
 
 User(clerkId unique, email unique, tier FREE|PRO), Profile(userId unique,
 username? unique, fullName?, headline?, bio?, avatarUrl?, location?,
-resumeUrl?, isPublished, sectionOrder String[]), Experience, Education (both
+resumeUrl?, isPublished, sectionOrder String[], colorMode?, theme?, font?,
+openToWork Boolean default false), Experience, Education (both
 sorted by startDate desc, no order field), Project(tags String[], order),
 Skill(order), Certification(order), Testimonial(order), Link(order).
 Everything cascades from Profile.
@@ -267,9 +268,21 @@ Everything cascades from Profile.
 - Theme: CSS tokens + `light-dark()` in globals.css. Light is the default:
   `<html data-theme="light">`, and an inline head script applies the saved
   choice from localStorage key `handle-theme` ("light" | "dark" | "system";
-  "system" removes `data-theme`). Saved per browser, not per account. Toggle in
-  the global header. Dashboard dark mode works by remapping Tailwind palette
-  vars in `:root`.
+  "system" removes `data-theme`). Shared helpers in
+  `app/_components/color-mode.ts`. Toggle in the global header. Dashboard dark
+  mode works by remapping Tailwind palette vars in `:root`.
+- Appearance (Stage A): `lib/appearance.ts` holds the ONLY allowed ids (8
+  themes, 4 font pairs, 3 modes); DB values are resolved against it in
+  `getPublishedProfile()` and the dashboard. Theme colors are
+  `[data-pf-theme="<id>"]` blocks in globals.css overriding `--pf-*`; fonts are
+  `--pf-font-heading` / `--pf-font-body` overridden by `[data-pf-font]` (extra
+  fonts in `lib/fonts.ts`, not preloaded, variables on `<html>`).
+- Mode sync: signed-in toggle also saves `Profile.colorMode`
+  (`app/_actions/color-mode.ts`); the dashboard applies the account mode on
+  load (`AccountColorMode`). On a public page the owner's mode is the default
+  unless the visitor saved their own; theme + font are also put on `<html>` so
+  the site header matches (inline first-paint script + `OwnerAppearance`,
+  removed when leaving the page).
 - Publish: username 3-30 chars, `[a-z0-9]` with single hyphens, reserved-name
   list, DB unique is the final check, locked while published, needs a name.
 - Auth: `proxy.ts` is just `clerkMiddleware()` (deprecated createRouteMatcher
@@ -303,8 +316,10 @@ order" card; the public page follows `Profile.sectionOrder`, and
 Experience/Education stay in date order, skills stay grouped by category),
 UploadThing file cleanup when an account is deleted.
 
-Database changes so far (all applied to handle-prod): Education.location and
-Education.gpa (migration `education_location_gpa`).
+Database changes so far: Education.location and Education.gpa (migration
+`education_location_gpa`, applied to handle-prod). Profile.colorMode, theme,
+font, openToWork (migration `appearance_open_to_work`, dev only until the
+themes release).
 
 KNOWN GAPS (fine to ship):
 - An image uploaded in a project form that is then cancelled stays orphaned.
@@ -317,11 +332,12 @@ KNOWN GAPS (fine to ship):
 ## 11. Roadmap
 
 Next, in this order:
-1. Color themes + font picker ("Stage A" of templates), see section 16.
+1. Release themes + font picker + saved mode + "Open to opportunities" (built,
+   needs the production migration `appearance_open_to_work`).
 2. Layout templates ("Stage B", section 16; design together before building).
 3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
    buttons, 44px minimum for small buttons, a separate "role/tagline" field,
-   "Open to opportunities", nav links on the public page.
+   nav links on the public page.
 
 Bigger features (design together before building):
 4. Messaging (login required; inbox; optional email via Resend; spam limits)
@@ -382,6 +398,8 @@ attempts; browser DevTools Console.
   Edit/Delete buttons under each item, shorter "Public page" button
 - "résumé" spelled "resume" everywhere in the UI
 - SEO basics: robots.txt, sitemap.xml, canonical tags
+- Stage A: 8 color themes, 4 font pairs, light/dark saved to the account and
+  used as the public page default, "Open to opportunities" badge
 
 ---
 
@@ -412,8 +430,7 @@ attempts; browser DevTools Console.
   #D4B9EF, border #E7E0E9 / #403249, brand (decoration) #9975CA / #B99BE0.
 - Tokens live in app/globals.css as `--pf-*` (+ `pf-*` Tailwind colors). The
   dashboard remaps old Tailwind gray/purple/red/green vars to the same palette.
-- Radii: panel 6px (`.panel`), cards `--radius-card` (set to your chosen
-  value), buttons and chips `--radius-btn` 6px, inputs `--radius-input` 8px.
+- Radii: panel 6px (`.panel`), cards `--radius-card` 12px (0.75rem), buttons and chips `--radius-btn` 6px, inputs `--radius-input` 8px.
 - Shared classes: `.btn` (+ `-primary -outline -danger -sm`), `.card`
   (+ `.card-accent`), `.panel` (very subtle section box), `.chip`, `.input`,
   `.badge`, `.msg-success`, `.msg-error`, `.field-error`, `.eyebrow`.
@@ -425,7 +442,13 @@ attempts; browser DevTools Console.
 
 ---
 
-## 16. Plan: themes and templates (not built yet)
+## 16. Themes and templates (Stage A built; Stage B planned)
+
+Stage A as built: themes Lavender (default), Sky, Cobalt, Blush, Sage, Ocean,
+Sunset, Mono; fonts Editorial (default: Georgia + Inter), Modern sans (Plus
+Jakarta Sans), Classic serif (Playfair Display + Source Sans 3), Tech (Space
+Grotesk + Inter). Dashboard "Appearance" card with live preview, "Open to
+opportunities" card. Original plan below.
 
 Stage A, color themes: a handful of palettes (for example Lavender, Sage,
 Ocean, Sunset, Mono), each with a light and a dark version. One new nullable
@@ -470,14 +493,13 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 - No database change, so no migration. Run the live checks on https://www.handleprofile.tech if not done yet.
 
 ### Next tasks, in order
-1. Themes, Stage A: add nullable `Profile.theme` and `Profile.font` (fixed allowlists of color themes and font pairings; decided: themes also offer fonts), chosen in the dashboard and applied on the public page. One dev migration for both, then one production migration that I run by hand.
+1. Release Stage A (built on `feature/themes`): themes, font pairs, light/dark saved to the account (also the public page default), "Open to opportunities" badge. Run the production migration `appearance_open_to_work` by hand, then merge.
 2. Layout templates, Stage B, after the themes work.
 3. Optional polish:
    - Empty states with an icon and an add button.
    - Spinners on Saving/Uploading.
    - 44px minimum size for small buttons.
    - A separate role/tagline field.
-   - An "Open to opportunities" badge.
    - Nav links on the public page.
 4. Later features, in order: messaging, AI chatbot, resume autofill (after the chatbot), Stripe FREE/PRO.
 
@@ -485,7 +507,7 @@ Parked, not planned for now: Clerk popups styled to match the theme.
 
 ### Known gaps
 - An uploaded image stays orphaned if a project form upload is cancelled before saving.
-- The card radius value is not yet written in the Design system section.
+- Deleting a cancelled project upload needs proof of who uploaded the file (otherwise anyone could delete a fresh upload); design before building.
 
 ### Open decisions
 - Which plan tier gets which themes and templates (decide when Stripe is added).

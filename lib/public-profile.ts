@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { isUploadedFileUrl } from "@/lib/uploads";
+import { resolveColorMode, resolveFont, resolveTheme } from "@/lib/appearance";
 
 const byOrder = [{ order: "asc" as const }, { createdAt: "asc" as const }];
 
@@ -20,6 +21,10 @@ export const getPublishedProfile = cache(async (username: string) => {
       avatarUrl: true,
       resumeUrl: true,
       sectionOrder: true,
+      colorMode: true,
+      theme: true,
+      font: true,
+      openToWork: true,
       links: {
         orderBy: byOrder,
         select: { id: true, label: true, url: true },
@@ -94,6 +99,10 @@ export const getPublishedProfile = cache(async (username: string) => {
     ...profile,
     avatarUrl: isUploadedFileUrl(profile.avatarUrl) ? profile.avatarUrl : null,
     resumeUrl: isUploadedFileUrl(profile.resumeUrl) ? profile.resumeUrl : null,
+    // Only values from the fixed lists in lib/appearance.ts
+    colorMode: resolveColorMode(profile.colorMode),
+    theme: resolveTheme(profile.theme),
+    font: resolveFont(profile.font),
     projects: profile.projects.map((p) => ({
       ...p,
       coverImageUrl: isUploadedFileUrl(p.coverImageUrl)

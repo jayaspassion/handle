@@ -4,6 +4,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "./_components/site-header";
 import { SITE_URL } from "@/lib/url";
+import { fontPairVariables } from "@/lib/fonts";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-theme="light"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} ${fontPairVariables} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

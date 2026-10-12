@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getPublishedProfile } from "@/lib/public-profile";
+import { resolveTheme, themeAccent } from "@/lib/appearance";
 
 export const alt = "Portfolio on Handle";
 export const size = { width: 1200, height: 630 };
@@ -19,6 +20,7 @@ export default async function Image({
 
   const name = clip(profile?.fullName ?? profile?.username ?? "Handle", 60);
   const headline = profile?.headline ? clip(profile.headline, 110) : "";
+  const accent = themeAccent(resolveTheme(profile?.theme));
 
   return new ImageResponse(
     (
@@ -35,7 +37,7 @@ export default async function Image({
           color: "#f6f0fa",
         }}
       >
-        <div style={{ display: "flex", fontSize: 32, color: "#d4b9ef" }}>
+        <div style={{ display: "flex", fontSize: 32, color: accent }}>
           handle
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>

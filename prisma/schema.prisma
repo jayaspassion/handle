@@ -41,6 +41,11 @@ model Profile {
   resumeUrl   String?
   isPublished Boolean  @default(false)
   sectionOrder String[] @default(["experience", "education", "projects", "skills", "certifications", "testimonials"])
+  // Appearance, each validated against a fixed list in lib/appearance.ts
+  colorMode   String?
+  theme       String?
+  font        String?
+  openToWork  Boolean  @default(false)
   experiences Experience[]
   education Education[]
   projects Project[]

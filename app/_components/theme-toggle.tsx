@@ -1,11 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useAuth } from "@clerk/nextjs";
+import type { ColorMode } from "@/lib/appearance";
+import { saveColorMode } from "@/app/_actions/color-mode";
+import { EVENT, currentMode, saveMode } from "./color-mode";
 
-type Mode = "system" | "light" | "dark";
+type Mode = ColorMode;
 
-const KEY = "handle-theme";
-const EVENT = "handle-theme-change";
 const OPTIONS: { value: Mode; label: string }[] = [
   { value: "system", label: "System theme" },
   { value: "light", label: "Light theme" },
@@ -15,16 +17,6 @@ const OPTIONS: { value: Mode; label: string }[] = [
 function subscribe(callback: () => void) {
   window.addEventListener(EVENT, callback);
   return () => window.removeEventListener(EVENT, callback);
-}
-
-function getSnapshot(): Mode {
-  try {
-    const saved = localStorage.getItem(KEY);
-    // Light is the default; "system" is only used when chosen
-    return saved === "dark" || saved === "system" ? saved : "light";
-  } catch {
-    return "light";
-  }
 }
 
 const getServerSnapshot = (): Mode => "light";
@@ -60,16 +52,13 @@ function Icon({ mode }: { mode: Mode }) {
 }
 
 export default function ThemeToggle() {
-  const mode = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const mode = useSyncExternalStore(subscribe, currentMode, getServerSnapshot);
+  const { isSignedIn } = useAuth();
 
   function choose(next: Mode) {
-    const root = document.documentElement;
-    if (next === "system") root.removeAttribute("data-theme");
-    else root.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem(KEY, next);
-    } catch {}
-    window.dispatchEvent(new Event(EVENT));
+    saveMode(next);
+    // Signed in: remember it on the account too (best effort)
+    if (isSignedIn) saveColorMode(next).catch(() => {});
   }
 
   return (

@@ -8,12 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--pf-font-body);
+  --font-serif: var(--pf-font-heading);
   --font-mono: var(--font-geist-mono);
-}
-
-@theme {
-  --font-serif: Georgia, "Times New Roman", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,6 +23,10 @@
 /* ---------- Theme ---------- */
 :root {
   color-scheme: light dark;
+
+  /* Font tokens (overridden per font pair on the public page) */
+  --pf-font-heading: Georgia, "Times New Roman", serif;
+  --pf-font-body: var(--font-inter);
 
   /* Shape tokens */
   --radius-input: 0.5rem;
@@ -74,10 +75,139 @@
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] { color-scheme: dark; }
 
+/* ---------- Public page color themes (ids in lib/appearance.ts) ----------
+   Lavender is the default above. Each theme overrides the same tokens. */
+[data-pf-theme="sky"] {
+  --pf-bg: light-dark(#f4f9fd, #0e1820);
+  --pf-fg: light-dark(#12324a, #eaf4fb);
+  --pf-muted: light-dark(#5a7184, #a3b9c9);
+  --pf-border: light-dark(#d8e7f2, #2a3d4c);
+  --pf-surface: light-dark(#ffffff, #16232e);
+  --pf-tint: light-dark(#e6f2fb, #1b2c3a);
+  --pf-accent: light-dark(#22618f, #a9d6f5);
+  --pf-brand: light-dark(#8ec5ea, #8ec5ea);
+  --pf-solid: light-dark(#2b6a99, #a9d6f5);
+  --pf-solid-fg: light-dark(#ffffff, #0e2638);
+  --pf-avatar-bg: light-dark(#e6f2fb, #2a3d4c);
+  --pf-avatar-fg: light-dark(#1f4f73, #a9d6f5);
+  --pf-panel: light-dark(#fafcfe, #121e28);
+  --pf-panel-border: light-dark(#e6eef5, #22323f);
+}
+[data-pf-theme="cobalt"] {
+  --pf-bg: light-dark(#f5f7fa, #0d141c);
+  --pf-fg: light-dark(#0f1e2e, #eaf1f8);
+  --pf-muted: light-dark(#5a6878, #a2b1c1);
+  --pf-border: light-dark(#dce3eb, #2a3746);
+  --pf-surface: light-dark(#ffffff, #16202b);
+  --pf-tint: light-dark(#e7f0fa, #172739);
+  --pf-accent: light-dark(#0a66c2, #70b5f9);
+  --pf-brand: light-dark(#0a66c2, #4d9bea);
+  --pf-solid: light-dark(#0a66c2, #70b5f9);
+  --pf-solid-fg: light-dark(#ffffff, #0b1d30);
+  --pf-avatar-bg: light-dark(#e7f0fa, #2a3746);
+  --pf-avatar-fg: light-dark(#084f96, #70b5f9);
+  --pf-panel: light-dark(#fafbfd, #111a24);
+  --pf-panel-border: light-dark(#e8edf2, #223040);
+}
+[data-pf-theme="blush"] {
+  --pf-bg: light-dark(#fdf7f8, #1c1216);
+  --pf-fg: light-dark(#3a1a26, #faeef2);
+  --pf-muted: light-dark(#7c6570, #c9aeb9);
+  --pf-border: light-dark(#f1dfe5, #45303a);
+  --pf-surface: light-dark(#ffffff, #271a20);
+  --pf-tint: light-dark(#fbe9ef, #33212a);
+  --pf-accent: light-dark(#a23b66, #f4b6cc);
+  --pf-brand: light-dark(#f2a7c0, #e69ab5);
+  --pf-solid: light-dark(#a23b66, #f4b6cc);
+  --pf-solid-fg: light-dark(#ffffff, #3a1a26);
+  --pf-avatar-bg: light-dark(#fbe9ef, #45303a);
+  --pf-avatar-fg: light-dark(#84304f, #f4b6cc);
+  --pf-panel: light-dark(#fefbfc, #21161b);
+  --pf-panel-border: light-dark(#f5e8ec, #3a2830);
+}
+[data-pf-theme="sage"] {
+  --pf-bg: light-dark(#f6f8f4, #121713);
+  --pf-fg: light-dark(#1e2b22, #eef4ef);
+  --pf-muted: light-dark(#5f6e64, #a9b8ad);
+  --pf-border: light-dark(#dde5de, #2f3b32);
+  --pf-surface: light-dark(#ffffff, #1b221c);
+  --pf-tint: light-dark(#e8f0ea, #1f2a22);
+  --pf-accent: light-dark(#2f5d46, #9fd3b5);
+  --pf-brand: light-dark(#6f9e80, #86bc9b);
+  --pf-solid: light-dark(#2f5d46, #9fd3b5);
+  --pf-solid-fg: light-dark(#ffffff, #13261b);
+  --pf-avatar-bg: light-dark(#e8f0ea, #2f3b32);
+  --pf-avatar-fg: light-dark(#2f5d46, #9fd3b5);
+  --pf-panel: light-dark(#fbfcfa, #161c17);
+  --pf-panel-border: light-dark(#e9eee9, #263028);
+}
+[data-pf-theme="ocean"] {
+  --pf-bg: light-dark(#f5f8fb, #0f1620);
+  --pf-fg: light-dark(#14263a, #eaf2fa);
+  --pf-muted: light-dark(#5b6b7d, #a6b5c6);
+  --pf-border: light-dark(#dce4ec, #2c3a4a);
+  --pf-surface: light-dark(#ffffff, #18212d);
+  --pf-tint: light-dark(#e6eef6, #1b2838);
+  --pf-accent: light-dark(#1f4e79, #9cc7f0);
+  --pf-brand: light-dark(#4a86c5, #78a9dd);
+  --pf-solid: light-dark(#1f4e79, #9cc7f0);
+  --pf-solid-fg: light-dark(#ffffff, #0f2438);
+  --pf-avatar-bg: light-dark(#e6eef6, #2c3a4a);
+  --pf-avatar-fg: light-dark(#1f4e79, #9cc7f0);
+  --pf-panel: light-dark(#fafcfd, #131b26);
+  --pf-panel-border: light-dark(#e7edf3, #243140);
+}
+[data-pf-theme="sunset"] {
+  --pf-bg: light-dark(#fbf7f3, #1b1411);
+  --pf-fg: light-dark(#3a1f14, #f8eee8);
+  --pf-muted: light-dark(#7a6459, #c4afa4);
+  --pf-border: light-dark(#eee2da, #43322a);
+  --pf-surface: light-dark(#ffffff, #251c18);
+  --pf-tint: light-dark(#f8e9e0, #33251f);
+  --pf-accent: light-dark(#9a3b1e, #f2b08f);
+  --pf-brand: light-dark(#e07a4f, #e8956f);
+  --pf-solid: light-dark(#9a3b1e, #f2b08f);
+  --pf-solid-fg: light-dark(#ffffff, #3a1f14);
+  --pf-avatar-bg: light-dark(#f8e9e0, #43322a);
+  --pf-avatar-fg: light-dark(#9a3b1e, #f2b08f);
+  --pf-panel: light-dark(#fdfbf9, #201814);
+  --pf-panel-border: light-dark(#f2e9e3, #382a23);
+}
+[data-pf-theme="mono"] {
+  --pf-bg: light-dark(#fafafa, #121212);
+  --pf-fg: light-dark(#171717, #f2f2f2);
+  --pf-muted: light-dark(#666666, #a3a3a3);
+  --pf-border: light-dark(#e5e5e5, #333333);
+  --pf-surface: light-dark(#ffffff, #1c1c1c);
+  --pf-tint: light-dark(#f0f0f0, #262626);
+  --pf-accent: light-dark(#171717, #ededed);
+  --pf-brand: light-dark(#737373, #8c8c8c);
+  --pf-solid: light-dark(#171717, #ededed);
+  --pf-solid-fg: light-dark(#ffffff, #171717);
+  --pf-avatar-bg: light-dark(#f0f0f0, #333333);
+  --pf-avatar-fg: light-dark(#171717, #ededed);
+  --pf-panel: light-dark(#fcfcfc, #171717);
+  --pf-panel-border: light-dark(#ededed, #2a2a2a);
+}
+
+/* ---------- Public page font pairs ---------- */
+[data-pf-font="modern"] {
+  --pf-font-heading: var(--font-jakarta), system-ui, sans-serif;
+  --pf-font-body: var(--font-jakarta);
+}
+[data-pf-font="classic"] {
+  --pf-font-heading: var(--font-playfair), Georgia, serif;
+  --pf-font-body: var(--font-source-sans);
+}
+[data-pf-font="tech"] {
+  --pf-font-heading: var(--font-space-grotesk), system-ui, sans-serif;
+  --pf-font-body: var(--font-inter);
+}
+
 body {
   background: var(--pf-bg);
   color: var(--pf-fg);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--pf-font-body), system-ui, sans-serif;
 }
 
 @theme inline {

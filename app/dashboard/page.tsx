@@ -9,6 +9,9 @@ import ProfileCompletion from "./_components/profile-completion";
 import ReorderPanel from "./_components/reorder-panel";
 import SectionOrderCard from "./_components/section-order-card";
 import { resolveSectionOrder } from "@/lib/sections";
+import { resolveColorMode, resolveFont, resolveTheme } from "@/lib/appearance";
+import { AccountColorMode } from "../_components/sync-color-mode";
+import { AppearanceCard, OpenToWorkCard } from "./_sections/appearance/section";
 import PublishSection from "./_sections/publish/section";
 import ProfileSection from "./_sections/profile/section";
 import LinkForm from "./_sections/links/form";
@@ -77,6 +80,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)]">
+      <AccountColorMode mode={resolveColorMode(profile?.colorMode)} />
       <DashboardNav email={user.email} tier={user.tier} />
 
       <main className="min-w-0 px-5 pb-12 pt-4 lg:px-6 lg:pt-6">
@@ -147,6 +151,13 @@ export default async function DashboardPage() {
                 username={username}
                 isPublished={isPublished}
                 hasName={!!profile?.fullName?.trim()}
+              />
+              <OpenToWorkCard value={profile?.openToWork ?? false} />
+              <AppearanceCard
+                theme={resolveTheme(profile?.theme)}
+                font={resolveFont(profile?.font)}
+                name={profile?.fullName ?? ""}
+                headline={profile?.headline ?? ""}
               />
               <ProfileCompletion items={completion} />
               <SectionOrderCard order={resolveSectionOrder(profile?.sectionOrder)} />
