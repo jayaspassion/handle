@@ -1,6 +1,7 @@
 import { Webhook } from "svix";
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { deleteUploadedFile } from "@/lib/uploads-server";
 
 type ClerkEvent = {
   type: string;
@@ -54,7 +55,26 @@ export async function POST(req: Request) {
   // deleteMany doesn't fail if the row is already gone, so retries are safe.
   // Cascade deletes remove the profile and all its sections too.
   if (event.type === "user.deleted") {
+    // Collect the user's uploaded files first, because the rows are about to be deleted
+    const profile = await prisma.profile.findFirst({
+      where: { user: { clerkId } },
+      select: {
+        avatarUrl: true,
+        resumeUrl: true,
+        projects: { select: { coverImageUrl: true } },
+      },
+    });
+    const urls = [
+      profile?.avatarUrl,
+      profile?.resumeUrl,
+      ...(profile?.projects.map((p) => p.coverImageUrl) ?? []),
+    ];
+
     await prisma.user.deleteMany({ where: { clerkId } });
+
+    // Remove the files from UploadThing (never throws, skips files still in use)
+    await Promise.all(urls.map((url) => deleteUploadedFile(url)));
+
     console.info("User deleted:", clerkId);
     return new Response("OK", { status: 200 });
   }
