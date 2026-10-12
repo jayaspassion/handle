@@ -258,8 +258,10 @@ Everything cascades from Profile.
   only if they pass `isUploadedFileUrl` (https, host ends `.ufs.sh`, path
   starts `/f/`). Never arbitrary user-supplied image URLs.
 - Public page: unpublished == nonexistent (same 404). Username lowercase.
-- Theme: CSS tokens + `light-dark()` in globals.css; `data-theme` on `<html>`
-  set by an inline head script from localStorage key `handle-theme`; toggle in
+- Theme: CSS tokens + `light-dark()` in globals.css. Light is the default:
+  `<html data-theme="light">`, and an inline head script applies the saved
+  choice from localStorage key `handle-theme` ("light" | "dark" | "system";
+  "system" removes `data-theme`). Saved per browser, not per account. Toggle in
   the global header. Dashboard dark mode works by remapping Tailwind palette
   vars in `:root`.
 - Publish: username 3-30 chars, `[a-z0-9]` with single hyphens, reserved-name
@@ -364,6 +366,11 @@ attempts; browser DevTools Console.
 - Public page: hero photo is a fixed 4:5 portrait (cropped on display; files
   keep their original shape), top-aligned with the name; smaller bio,
   project and education description text
+- Light mode is the default (was: follow the system); the visitor's choice is
+  saved in the browser
+- Compact landing page: fits one screen on phones (down to 375x667) and
+  laptops (1280x720); hero, 3 feature lines, 3 steps, preview card styled like
+  the public page (desktop only)
 
 ---
 

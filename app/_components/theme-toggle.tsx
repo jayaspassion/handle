@@ -20,13 +20,14 @@ function subscribe(callback: () => void) {
 function getSnapshot(): Mode {
   try {
     const saved = localStorage.getItem(KEY);
-    return saved === "light" || saved === "dark" ? saved : "system";
+    // Light is the default; "system" is only used when chosen
+    return saved === "dark" || saved === "system" ? saved : "light";
   } catch {
-    return "system";
+    return "light";
   }
 }
 
-const getServerSnapshot = (): Mode => "system";
+const getServerSnapshot = (): Mode => "light";
 
 function Icon({ mode }: { mode: Mode }) {
   return (
@@ -66,8 +67,7 @@ export default function ThemeToggle() {
     if (next === "system") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", next);
     try {
-      if (next === "system") localStorage.removeItem(KEY);
-      else localStorage.setItem(KEY, next);
+      localStorage.setItem(KEY, next);
     } catch {}
     window.dispatchEvent(new Event(EVENT));
   }

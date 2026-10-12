@@ -8,59 +8,84 @@ const HOST = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").repla
 
 const features = [
   {
-    title: "Your own page",
-    text: "Claim a handle and share one link with recruiters, clients and friends.",
+    title: "Every section you need",
+    text: "Experience, projects, skills, testimonials and more, with photo, résumé and project image uploads.",
   },
   {
-    title: "Everything in one place",
-    text: "Experience, education, projects, skills, certifications, testimonials and links.",
+    title: "Arranged your way",
+    text: "Reorder items and choose the order of sections on your page.",
   },
   {
-    title: "Light and dark",
-    text: "Your page looks good in both themes and prints cleanly as a one-page resume.",
+    title: "Light, dark and print",
+    text: "Looks good in both themes and prints as a clean résumé.",
   },
 ];
 
-const steps = [
-  { title: "Sign up", text: "Create a free account in seconds." },
-  { title: "Fill in your details", text: "Add your story, work and links." },
-  { title: "Publish", text: "Pick a handle and share your link." },
-];
+const steps = ["Sign up", "Add details", "Publish"];
 
+function CheckIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="mt-0.5 shrink-0 text-pf-accent"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+// A miniature of the public page: hero with a 4:5 photo, then a project row
 function PreviewCard() {
   const cover = (angle: number) =>
     `linear-gradient(${angle}deg, color-mix(in srgb, var(--pf-brand) 32%, var(--pf-tint)), var(--pf-tint))`;
   return (
-    <div aria-hidden="true" className="card card-accent p-5">
-      <div className="flex items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-pf-avatar-bg font-serif text-xl text-pf-avatar-fg">
+    <div aria-hidden="true" className="card card-accent p-4">
+      <div className="panel grid grid-cols-[1fr_5.5rem] items-start gap-4 p-4">
+        <div className="min-w-0">
+          <p className="font-serif text-2xl leading-tight">Alex Morgan</p>
+          <p className="mt-1 font-serif text-sm">Product designer</p>
+          <p className="mt-2 text-xs leading-relaxed text-pf-muted">
+            Designing calm, useful products and helping teams ship them.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <span className="chip">Figma</span>
+            <span className="chip">Research</span>
+          </div>
+        </div>
+        <div
+          className="flex aspect-[4/5] w-full items-center justify-center rounded-lg font-serif text-2xl text-pf-avatar-fg"
+          style={{ backgroundImage: cover(135) }}
+        >
           AM
         </div>
-        <div>
-          <p className="font-serif text-xl">Alex Morgan</p>
-          <p className="text-sm text-pf-muted">Product designer</p>
-        </div>
       </div>
-      <p className="mt-4 text-sm leading-relaxed text-pf-muted">
-        Designing calm, useful products and helping teams ship them.
-      </p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <span className="chip">Figma</span>
-        <span className="chip">Research</span>
-        <span className="chip">Prototyping</span>
-      </div>
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        {[135, 225].map((angle, i) => (
-          <div key={angle} className="overflow-hidden rounded-lg border border-pf-border">
-            <div className="h-12" style={{ backgroundImage: cover(angle) }} />
-            <div className="p-3">
-              <p className="font-serif text-sm">{i === 0 ? "Atlas app" : "Design system"}</p>
-              <p className="mt-0.5 text-xs text-pf-muted">
-                {i === 0 ? "Mobile redesign" : "Tokens and docs"}
-              </p>
+      <div className="panel -mt-px p-4">
+        <p className="eyebrow">Projects</p>
+        <div className="mt-2 grid grid-cols-2 gap-3">
+          {[
+            ["Atlas app", "Mobile redesign", 135],
+            ["Design system", "Tokens and docs", 225],
+          ].map(([title, text, angle]) => (
+            <div
+              key={title}
+              className="flex overflow-hidden rounded-lg border border-pf-border"
+            >
+              <div className="w-10 shrink-0" style={{ backgroundImage: cover(Number(angle)) }} />
+              <div className="min-w-0 p-2.5">
+                <p className="truncate font-serif text-sm">{title}</p>
+                <p className="truncate text-xs text-pf-muted">{text}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -68,30 +93,30 @@ function PreviewCard() {
 
 export default function Home() {
   return (
-    <div className="flex-1">
-      <main className="mx-auto max-w-5xl px-5 pb-16 pt-6 sm:px-8 sm:pt-12">
-        {/* Hero */}
+    <div className="flex flex-1 flex-col">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-4 sm:px-8 sm:py-5 lg:py-8">
         <section
           aria-labelledby="hero-heading"
-          className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14"
+          className="grid w-full items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14"
         >
           <div>
             <p className="eyebrow">Portfolio builder</p>
             <h1
               id="hero-heading"
-              className="mt-3 font-serif text-5xl leading-[1.05] tracking-tight sm:text-6xl"
+              className="mt-2 font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl"
             >
               Your professional story, one link.
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-pf-muted">
+            <p className="mt-3 max-w-lg text-pf-muted sm:text-lg">
               Build a clean portfolio page in minutes and share it at{" "}
               <span className="font-medium text-pf-fg">{HOST}/yourname</span>.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+
+            <div className="mt-5">
               <Show when="signed-out">
                 <SignUpButton>
                   <button type="button" className="btn btn-primary">
-                    Create your page
+                    Create your page, free
                   </button>
                 </SignUpButton>
               </Show>
@@ -101,92 +126,49 @@ export default function Home() {
                 </Link>
               </Show>
             </div>
+
+            <ul className="mt-5 grid max-w-lg gap-2 sm:mt-6 sm:gap-2.5">
+              {features.map((f) => (
+                <li key={f.title} className="flex gap-2.5 text-sm leading-snug">
+                  <CheckIcon />
+                  <p>
+                    <span className="font-medium">{f.title}.</span>{" "}
+                    <span className="text-pf-muted">{f.text}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            <ol
+              aria-label="How it works"
+              className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-pf-border pt-4 text-sm sm:mt-6"
+            >
+              {steps.map((s, i) => (
+                <li key={s} className="flex items-center gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-pf-tint font-serif text-pf-accent"
+                  >
+                    {i + 1}
+                  </span>
+                  {s}
+                </li>
+              ))}
+            </ol>
           </div>
-          <PreviewCard />
-        </section>
 
-        {/* Features */}
-        <section aria-labelledby="features-heading" className="mt-20">
-          <p className="eyebrow">Why Handle</p>
-          <h2
-            id="features-heading"
-            className="mt-2 font-serif text-3xl tracking-tight sm:text-4xl"
-          >
-            Everything a portfolio needs.
-          </h2>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-3">
-            {features.map((f) => (
-              <li key={f.title} className="card card-accent">
-                <h3 className="font-serif text-xl">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-pf-muted">{f.text}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Steps */}
-        <section aria-labelledby="steps-heading" className="mt-20">
-          <p className="eyebrow">How it works</p>
-          <h2
-            id="steps-heading"
-            className="mt-2 font-serif text-3xl tracking-tight sm:text-4xl"
-          >
-            Live in three steps.
-          </h2>
-          <ol className="mt-6 grid gap-6 sm:grid-cols-3">
-            {steps.map((s, i) => (
-              <li key={s.title} className="flex gap-4">
-                <span
-                  aria-hidden="true"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-pf-tint font-serif text-lg text-pf-accent"
-                >
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="font-medium">{s.title}</h3>
-                  <p className="mt-1 text-sm text-pf-muted">{s.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* Closing band */}
-        <section className="mt-20 rounded-xl bg-pf-tint p-8 sm:p-10">
-          <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
-            <div>
-              <p className="eyebrow">Get started</p>
-              <h2 className="mt-2 font-serif text-3xl tracking-tight sm:text-4xl">
-                Ready to stand out?
-              </h2>
-              <p className="mt-2 max-w-md text-pf-muted">
-                It&apos;s free to start. Your page can be live in minutes.
-              </p>
-            </div>
-            <div>
-              <Show when="signed-out">
-                <SignUpButton>
-                  <button type="button" className="btn btn-primary">
-                    Get started free
-                  </button>
-                </SignUpButton>
-              </Show>
-              <Show when="signed-in">
-                <Link href="/dashboard" className="btn btn-primary">
-                  Open dashboard
-                </Link>
-              </Show>
-            </div>
+          <div className="hidden lg:block">
+            <PreviewCard />
           </div>
         </section>
-
-        <footer className="mt-16 flex flex-wrap items-center gap-4 border-t border-pf-border pt-4 text-xs text-pf-muted">
-          <span>&copy; {new Date().getFullYear()} Handle</span>
-          <Link href="/privacy" className="underline-offset-4 hover:underline">
-            Privacy Policy
-          </Link>
-        </footer>
       </main>
+
+      <footer className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-4 px-5 pb-4 text-xs text-pf-muted sm:px-8">
+        <span>&copy; {new Date().getFullYear()} Handle</span>
+        <Link href="/privacy" className="underline-offset-4 hover:underline">
+          Privacy Policy
+        </Link>
+      </footer>
     </div>
   );
 }
