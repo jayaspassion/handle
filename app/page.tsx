@@ -9,7 +9,7 @@ const HOST = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").repla
 const features = [
   {
     title: "Every section you need",
-    text: "Experience, projects, skills, testimonials and more, with photo, résumé and project image uploads.",
+    text: "Experience, projects, skills, testimonials and more, with photo, resume and project image uploads.",
   },
   {
     title: "Arranged your way",
@@ -17,7 +17,7 @@ const features = [
   },
   {
     title: "Light, dark and print",
-    text: "Looks good in both themes and prints as a clean résumé.",
+    text: "Looks good in both themes and prints as a clean resume.",
   },
 ];
 

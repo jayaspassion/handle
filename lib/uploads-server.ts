@@ -4,7 +4,7 @@ import { isUploadedFileUrl } from "@/lib/uploads";
 
 const utapi = new UTApi();
 
-// Removes a file we stored in UploadThing, but only when no photo, résumé or
+// Removes a file we stored in UploadThing, but only when no photo, resume or
 // project still points at it. Never throws: a failed delete must not break a save.
 export async function deleteUploadedFile(url: string | null | undefined) {
   if (!isUploadedFileUrl(url)) return;

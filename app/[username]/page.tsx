@@ -576,7 +576,7 @@ export default async function PublicProfilePage({ params }: Props) {
                   className={`btn ${hasProjects ? "btn-outline" : "btn-primary"}`}
                 >
                   <DocIcon />
-                  View résumé
+                  View resume
                 </ExternalLink>
               )}
               {links.length > 0 && (
@@ -677,7 +677,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 {resumeUrl && (
                   <ExternalLink href={resumeUrl} className="btn btn-primary">
                     <DocIcon />
-                    View résumé
+                    View resume
                   </ExternalLink>
                 )}
                 {links.length > 0 && (

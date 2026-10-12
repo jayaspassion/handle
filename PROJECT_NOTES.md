@@ -458,7 +458,7 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 
 ### Recently released
 - Reordering: drag and up/down buttons for links, projects, certifications and testimonials, plus section order on the public page.
-- Account-deletion cleanup: the Clerk `user.deleted` webhook now deletes the user's avatar, résumé and project images from UploadThing.
+- Account-deletion cleanup: the Clerk `user.deleted` webhook now deletes the user's avatar, resume and project images from UploadThing.
 - No database change, so no migration. Run the live checks on https://www.handleprofile.tech if not done yet.
 
 ### Next tasks, in order
@@ -471,7 +471,7 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
    - A separate role/tagline field.
    - An "Open to opportunities" badge.
    - Nav links on the public page.
-4. Later features, in order: messaging, AI chatbot, résumé autofill (after the chatbot), Stripe FREE/PRO.
+4. Later features, in order: messaging, AI chatbot, resume autofill (after the chatbot), Stripe FREE/PRO.
 
 Parked, not planned for now: Clerk popups styled to match the theme.
 

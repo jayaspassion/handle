@@ -165,7 +165,7 @@ export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
 
   return (
     <div>
-      <p className="text-sm font-medium">Résumé</p>
+      <p className="text-sm font-medium">Resume</p>
       <div
         className={`mt-1 flex flex-col items-center gap-3 rounded-lg border border-pf-border p-4 text-center ${
           safeUrl ? "" : "border-dashed"
@@ -179,7 +179,7 @@ export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
         </span>
         <div>
           <p className="text-sm font-medium">
-            {safeUrl ? "Résumé uploaded" : "No résumé yet"}
+            {safeUrl ? "Resume uploaded" : "No resume yet"}
           </p>
           <p className="text-xs text-pf-muted">PDF, up to 4 MB</p>
         </div>
@@ -192,7 +192,7 @@ export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
               className="btn btn-outline btn-sm"
             >
               View
-              <span className="sr-only"> résumé (opens in a new tab)</span>
+              <span className="sr-only"> resume (opens in a new tab)</span>
             </a>
           )}
           <input
