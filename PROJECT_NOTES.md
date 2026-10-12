@@ -256,8 +256,9 @@ Everything cascades from Profile.
   using `useActionState`; ids via `useId()`; errors with `aria-describedby`;
   `role="status"/"alert"` messages; focus moves on open/close.
 - New list items go to the end (order = max+1). Per-profile caps exist.
-- URLs: `lib/url.ts` isHttpUrl/normalizeUrl; only http/https; re-checked at
-  render. External links use `rel="nofollow ugc noopener noreferrer"`.
+- URLs: `lib/url.ts` normalizeUrl, then `isPublicWebUrl` in every form action
+  (real domain with a dot and a proper ending; no localhost or IPs). The looser
+  `isHttpUrl` is re-checked at render. External links use `rel="nofollow ugc noopener noreferrer"`.
 - `lib/public-profile.ts` `getPublishedProfile()` is the ONLY place deciding
   what is public (never email/clerkId/tier). avatarUrl/resumeUrl are returned
   only if they pass `isUploadedFileUrl` (https, host ends `.ufs.sh`, path
@@ -409,6 +410,13 @@ attempts; browser DevTools Console.
   restyled Privacy page, site-wide 404 and error pages, own icon + apple icon,
   landing link preview, "Report this page" link, security headers in
   next.config.ts, CONTACT_EMAIL in lib/url.ts
+- QA fixes (HANDLE-1..8): project image can't be lost by an early Save (busy
+  state covers resize + upload), stricter URL check, friendly upload errors
+  (`lib/upload-errors.ts`), honest "hidden page / files" copy, leave-page
+  warning for unsaved edits (`leave-warning.tsx`) + "Saves automatically"
+  labels, "added" messages clear on the next action, username error only for
+  the submitted name, dashboard sections collapsed on phones (except Profile),
+  smaller hero photo on phones
 
 ---
 
@@ -517,6 +525,8 @@ Parked, not planned for now: Clerk popups styled to match the theme.
 ### Known gaps
 - An uploaded image stays orphaned if a project form upload is cancelled before saving.
 - Deleting a cancelled project upload needs proof of who uploaded the file (otherwise anyone could delete a fresh upload); design before building.
+- Uploaded files are public UploadThing links: unpublishing hides the page but not files someone already has a link to (the dashboard says so). Later: serve files through an app route that checks publish state.
+- Clerk app name still "My Application" on sign-in pages and emails: set it to Handle in the Clerk dashboard (production).
 
 ### Open decisions
 - Which plan tier gets which themes and templates (decide when Stripe is added).

@@ -3,6 +3,7 @@
 import { useId, useState, useTransition } from "react";
 import { FONTS, THEMES, type FontId, type ThemeId } from "@/lib/appearance";
 import { saveAppearance, saveOpenToWork } from "./actions";
+import { useLeaveWarning } from "../../_components/leave-warning";
 
 // Theme and font picker with a live preview. Colors and fonts come from the
 // same [data-pf-theme] / [data-pf-font] CSS the public page uses.
@@ -25,6 +26,7 @@ export function AppearanceCard({
   const [error, setError] = useState("");
 
   const dirty = theme !== savedTheme || font !== savedFont;
+  useLeaveWarning(dirty && !pending);
 
   function save() {
     startTransition(async () => {
@@ -191,7 +193,7 @@ export function OpenToWorkCard({ value }: { value: boolean }) {
             Open to opportunities
           </label>
           <p id={`${id}-hint`} className="mt-1 text-sm text-pf-muted">
-            Shows a badge at the top of your public page.
+            Shows a badge at the top of your public page. Saves automatically.
           </p>
         </div>
         {/* Native checkbox (keyboard and screen readers) drawn as a switch */}

@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { isHttpUrl, normalizeUrl } from "@/lib/url";
+import { isPublicWebUrl, normalizeUrl } from "@/lib/url";
 
 const MAX_CERTIFICATIONS = 50;
 const MONTH = /^\d{4}-(0[1-9]|1[0-2])$/;
@@ -22,7 +22,7 @@ const certificationSchema = z
     credentialUrl: z
       .string()
       .max(2048, "Max 2048 characters")
-      .refine(isHttpUrl, "Enter a valid web address, like https://example.com"),
+      .refine(isPublicWebUrl, "Enter a valid web address, like example.com"),
   })
   .superRefine((d, ctx) => {
     if (d.issueDate && d.expiryDate && d.expiryDate < d.issueDate) {

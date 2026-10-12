@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { isHttpUrl, normalizeUrl } from "@/lib/url";
+import { isPublicWebUrl, normalizeUrl } from "@/lib/url";
 
 const MAX_TESTIMONIALS = 20;
 
@@ -16,7 +16,7 @@ const testimonialSchema = z.object({
   authorAvatarUrl: z
     .string()
     .max(2048, "Max 2048 characters")
-    .refine(isHttpUrl, "Enter a valid web address, like https://example.com"),
+    .refine(isPublicWebUrl, "Enter a valid web address, like example.com"),
 });
 
 export type TestimonialField =

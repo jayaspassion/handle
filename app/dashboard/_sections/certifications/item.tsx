@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { deleteCertification, type CertificationValues } from "./actions";
 import { CertificationFormFields } from "./form";
+import { LeaveGuard } from "../../_components/leave-warning";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
@@ -38,12 +39,14 @@ export default function CertificationItem({ item, initial }: Props) {
     return (
       <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
-          <CertificationFormFields
-            editId={item.id}
-            initial={initial}
-            onSaved={() => setEditing(false)}
-            onCancel={() => setEditing(false)}
-          />
+          <LeaveGuard>
+            <CertificationFormFields
+              editId={item.id}
+              initial={initial}
+              onSaved={() => setEditing(false)}
+              onCancel={() => setEditing(false)}
+            />
+          </LeaveGuard>
         </div>
       </li>
     );

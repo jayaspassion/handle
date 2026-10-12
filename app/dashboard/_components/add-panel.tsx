@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { LeaveGuard } from "./leave-warning";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
@@ -28,6 +29,19 @@ export default function AddPanel({ label, savedMessage, children }: Props) {
     wasOpen.current = open;
   }, [open]);
 
+  // The "added" message goes away after a few seconds or as soon as anything
+  // else on the page is saved or deleted, so it never describes an old action
+  useEffect(() => {
+    if (!saved) return;
+    const clear = () => setSaved(false);
+    const timer = window.setTimeout(clear, 5000);
+    document.addEventListener("submit", clear, true);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener("submit", clear, true);
+    };
+  }, [saved]);
+
   return (
     <div className="mt-3">
       {open ? (
@@ -35,13 +49,15 @@ export default function AddPanel({ label, savedMessage, children }: Props) {
           ref={panelRef}
           className="rounded-lg border border-pf-border bg-pf-bg p-4"
         >
-          {children({
-            onSaved: () => {
-              setSaved(true);
-              setOpen(false);
-            },
-            onCancel: () => setOpen(false),
-          })}
+          <LeaveGuard>
+            {children({
+              onSaved: () => {
+                setSaved(true);
+                setOpen(false);
+              },
+              onCancel: () => setOpen(false),
+            })}
+          </LeaveGuard>
         </div>
       ) : (
         <button

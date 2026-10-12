@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { deleteTestimonial, type TestimonialValues } from "./actions";
 import { TestimonialFormFields } from "./form";
+import { LeaveGuard } from "../../_components/leave-warning";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
@@ -37,12 +38,14 @@ export default function TestimonialItem({ item, initial }: Props) {
     return (
       <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
-          <TestimonialFormFields
-            editId={item.id}
-            initial={initial}
-            onSaved={() => setEditing(false)}
-            onCancel={() => setEditing(false)}
-          />
+          <LeaveGuard>
+            <TestimonialFormFields
+              editId={item.id}
+              initial={initial}
+              onSaved={() => setEditing(false)}
+              onCancel={() => setEditing(false)}
+            />
+          </LeaveGuard>
         </div>
       </li>
     );

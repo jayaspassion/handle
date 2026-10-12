@@ -22,6 +22,7 @@ type Props = {
   username: string; // the saved username, or "" if none yet
   isPublished: boolean;
   hasName: boolean;
+  hasUploads: boolean; // photo, resume or project images exist
 };
 
 function LinkIcon() {
@@ -44,7 +45,7 @@ function LinkIcon() {
   );
 }
 
-export default function PublishSection({ username, isPublished, hasName }: Props) {
+export default function PublishSection({ username, isPublished, hasName, hasUploads }: Props) {
   const [state, formAction, pending] = useActionState(publishProfile, initialState);
 
   const uid = useId();
@@ -74,6 +75,12 @@ export default function PublishSection({ username, isPublished, hasName }: Props
   const trimmed = typed.trim();
   const live = check && check.for === trimmed ? check.result : null;
   const checking = trimmed.length >= 3 && !live;
+  // The server's error only describes the name that was submitted: hide it as
+  // soon as the name changes, so it never shows next to "Available"
+  const usernameError =
+    !pending && trimmed === (state.values?.username ?? "").trim()
+      ? state.usernameError
+      : undefined;
 
   const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -166,8 +173,15 @@ export default function PublishSection({ username, isPublished, hasName }: Props
         </span>
       </div>
       <p className="mt-1 text-sm text-pf-muted">
-        Only you can see your portfolio right now. Choose a username to publish it.
+        Your page is hidden. Choose a username to publish it.
       </p>
+      {hasUploads && (
+        <p className="mt-2 text-xs text-pf-muted">
+          Files you uploaded (photo, resume, project images) can still be opened
+          by anyone who already has their direct link. Replace or remove them in
+          your profile and projects to stop that.
+        </p>
+      )}
 
       <label htmlFor={inputId} className="mt-4 block text-sm font-medium">
         Username
@@ -184,8 +198,8 @@ export default function PublishSection({ username, isPublished, hasName }: Props
           autoCapitalize="none"
           spellCheck={false}
           onChange={(e) => setTyped(e.target.value)}
-          aria-invalid={!!state.usernameError || live?.status === "taken" || live?.status === "invalid"}
-          aria-describedby={[hintId, statusId, state.usernameError ? errorId : null].filter(Boolean).join(" ")}
+          aria-invalid={!!usernameError || live?.status === "taken" || live?.status === "invalid"}
+          aria-describedby={[hintId, statusId, usernameError ? errorId : null].filter(Boolean).join(" ")}
           className="input min-w-0 rounded-l-none"
         />
       </div>
@@ -210,9 +224,9 @@ export default function PublishSection({ username, isPublished, hasName }: Props
       >
         {live ? live.message : checking ? "Checking..." : ""}
       </p>
-      {state.usernameError && (
+      {usernameError && (
         <p id={errorId} className="mt-2 text-sm text-pf-danger">
-          {state.usernameError}
+          {usernameError}
         </p>
       )}
 

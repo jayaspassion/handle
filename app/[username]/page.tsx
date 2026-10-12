@@ -621,7 +621,7 @@ export default async function PublicProfilePage({ params }: Props) {
             </div>
           </div>
 
-          <div className="order-1 mx-auto w-40 sm:w-48 md:order-2 md:mx-0 md:w-full">
+          <div className="order-1 mx-auto w-28 sm:w-40 md:order-2 md:mx-0 md:w-full">
             {profile.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

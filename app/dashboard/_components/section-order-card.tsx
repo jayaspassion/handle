@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { saveSectionOrder } from "../_actions/reorder";
 import { SECTION_LABELS, type SectionKey } from "@/lib/sections";
 import SortableList, { type SortItem } from "./sortable-list";
+import { useLeaveWarning } from "./leave-warning";
 
 export default function SectionOrderCard({ order }: { order: SectionKey[] }) {
   const [items, setItems] = useState<SortItem[]>(
@@ -14,6 +15,7 @@ export default function SectionOrderCard({ order }: { order: SectionKey[] }) {
   const [error, setError] = useState("");
 
   const dirty = items.map((i) => i.id).join() !== order.join();
+  useLeaveWarning(dirty && !pending);
 
   function save() {
     startTransition(async () => {

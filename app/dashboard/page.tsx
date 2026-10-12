@@ -132,6 +132,7 @@ export default async function DashboardPage() {
             <DashboardSection
               id="profile"
               title="Profile details"
+              openOnPhones
               description="This information appears on your public portfolio."
             >
               <ProfileSection
@@ -151,6 +152,11 @@ export default async function DashboardPage() {
                 username={username}
                 isPublished={isPublished}
                 hasName={!!profile?.fullName?.trim()}
+                hasUploads={
+                  !!profile?.avatarUrl ||
+                  !!profile?.resumeUrl ||
+                  !!profile?.projects.some((p) => p.coverImageUrl)
+                }
               />
               <OpenToWorkCard value={profile?.openToWork ?? false} />
               <AppearanceCard

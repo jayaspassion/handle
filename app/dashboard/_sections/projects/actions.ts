@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { isHttpUrl, normalizeUrl } from "@/lib/url";
+import { isPublicWebUrl, normalizeUrl } from "@/lib/url";
 import { isUploadedFileUrl } from "@/lib/uploads";
 import { deleteUploadedFile } from "@/lib/uploads-server";
 
@@ -27,7 +27,7 @@ function parseTags(value: string) {
 const urlField = z
   .string()
   .max(2048, "Max 2048 characters")
-  .refine(isHttpUrl, "Enter a valid web address, like https://example.com");
+  .refine(isPublicWebUrl, "Enter a valid web address, like example.com");
 
 const projectSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(100, "Max 100 characters"),

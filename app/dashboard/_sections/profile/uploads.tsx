@@ -4,6 +4,9 @@ import { useRef, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isUploadedFileUrl } from "@/lib/uploads";
+import { uploadErrorMessage } from "@/lib/upload-errors";
+
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 // Shrinks a photo in the browser before upload: max 800px, WebP.
 // Falls back to the original file if anything goes wrong.
@@ -83,13 +86,17 @@ export function PhotoUploader({
       setError("");
       router.refresh();
     },
-    onUploadError: (e) => setError(e.message),
+    onUploadError: (e) => setError(uploadErrorMessage(e, "photo")),
   });
 
   async function onChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    if (!IMAGE_TYPES.includes(file.type)) {
+      setError(uploadErrorMessage({ code: "InvalidFileType" }, "photo"));
+      return;
+    }
     setError("");
     await startUpload([await resizeImage(file)]);
   }
@@ -131,6 +138,7 @@ export function PhotoUploader({
         <CameraIcon />
         {isUploading ? "Uploading..." : safeUrl ? "Change photo" : "Add photo"}
       </button>
+      <p className="text-xs text-pf-muted">Saves automatically</p>
       {error && (
         <p role="alert" className="msg-error text-center">
           {error}
@@ -150,13 +158,22 @@ export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
       setError("");
       router.refresh();
     },
-    onUploadError: (e) => setError(e.message),
+    onUploadError: (e) => setError(uploadErrorMessage(e, "resume")),
   });
 
   async function onChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    // Check before uploading so the message is instant and clear
+    if (file.type !== "application/pdf") {
+      setError(uploadErrorMessage({ code: "InvalidFileType" }, "resume"));
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      setError(uploadErrorMessage({ code: "FileSizeMismatch" }, "resume"));
+      return;
+    }
     setError("");
     await startUpload([file]);
   }
@@ -181,7 +198,7 @@ export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
           <p className="text-sm font-medium">
             {safeUrl ? "Resume uploaded" : "No resume yet"}
           </p>
-          <p className="text-xs text-pf-muted">PDF, up to 4 MB</p>
+          <p className="text-xs text-pf-muted">PDF, up to 4 MB. Saves automatically.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-2">
           {safeUrl && (

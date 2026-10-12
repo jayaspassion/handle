@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { reorderItems, type ReorderModel } from "../_actions/reorder";
 import SortableList, { type SortItem } from "./sortable-list";
+import { useLeaveWarning } from "./leave-warning";
 
 export default function ReorderPanel({
   model,
@@ -17,9 +18,10 @@ export default function ReorderPanel({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
-  if (items.length < 2) return null;
-
   const dirty = order.map((i) => i.id).join() !== items.map((i) => i.id).join();
+  useLeaveWarning(open && dirty && !pending);
+
+  if (items.length < 2) return null;
 
   function openPanel() {
     setOrder(items); // always start from what is saved

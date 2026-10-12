@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { deleteExperience, type ExperienceValues } from "./actions";
 import { ExperienceFormFields } from "./form";
+import { LeaveGuard } from "../../_components/leave-warning";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
@@ -39,12 +40,14 @@ export default function ExperienceItem({ item, initial }: Props) {
     return (
       <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
-          <ExperienceFormFields
-            editId={item.id}
-            initial={initial}
-            onSaved={() => setEditing(false)}
-            onCancel={() => setEditing(false)}
-          />
+          <LeaveGuard>
+            <ExperienceFormFields
+              editId={item.id}
+              initial={initial}
+              onSaved={() => setEditing(false)}
+              onCancel={() => setEditing(false)}
+            />
+          </LeaveGuard>
         </div>
       </li>
     );

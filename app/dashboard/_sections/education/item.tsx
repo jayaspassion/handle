@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { deleteEducation, type EducationValues } from "./actions";
 import { EducationFormFields } from "./form";
+import { LeaveGuard } from "../../_components/leave-warning";
 
 const FIRST_FIELD =
   'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])';
@@ -41,12 +42,14 @@ export default function EducationItem({ item, initial }: Props) {
     return (
       <li className="rounded-lg border border-pf-border p-4">
         <div ref={panelRef}>
-          <EducationFormFields
-            editId={item.id}
-            initial={initial}
-            onSaved={() => setEditing(false)}
-            onCancel={() => setEditing(false)}
-          />
+          <LeaveGuard>
+            <EducationFormFields
+              editId={item.id}
+              initial={initial}
+              onSaved={() => setEditing(false)}
+              onCancel={() => setEditing(false)}
+            />
+          </LeaveGuard>
         </div>
       </li>
     );

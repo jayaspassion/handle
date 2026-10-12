@@ -18,6 +18,7 @@ import AddPanel from "../../_components/add-panel";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isUploadedFileUrl } from "@/lib/uploads";
 import { resizeImage } from "../profile/uploads";
+import { uploadErrorMessage } from "@/lib/upload-errors";
 
 type TextField = Exclude<ProjectField, "coverImageUrl">;
 
@@ -60,24 +61,41 @@ export function ProjectFormFields({
   );
   const [uploadError, setUploadError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  // Busy from picking a file until its address is in the form (resizing
+  // happens before UploadThing starts), so Save can't drop the image
+  const [imageBusy, setImageBusy] = useState(false);
   const { startUpload, isUploading } = useUploadThing("projectImage", {
     onClientUploadComplete: (res) => {
       const url = res?.[0]?.serverData?.url;
       if (url) {
         setCover(url);
         setUploadError("");
+      } else {
+        setUploadError(uploadErrorMessage({}, "projectImage"));
       }
     },
-    onUploadError: (e) => setUploadError(e.message),
+    onUploadError: (e) => setUploadError(uploadErrorMessage(e, "projectImage")),
   });
 
   async function onFile(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setUploadError(uploadErrorMessage({ code: "InvalidFileType" }, "projectImage"));
+      return;
+    }
     setUploadError("");
-    await startUpload([await resizeImage(file)]);
+    setImageBusy(true);
+    try {
+      await startUpload([await resizeImage(file)]);
+    } catch {
+      setUploadError(uploadErrorMessage({}, "projectImage"));
+    } finally {
+      setImageBusy(false);
+    }
   }
+  const uploading = imageBusy || isUploading;
 
   useEffect(() => {
     if (state.status === "success") onSaved();
@@ -180,16 +198,16 @@ export function ProjectFormFields({
           />
           <button
             type="button"
-            disabled={isUploading}
+            disabled={uploading}
             onClick={() => fileRef.current?.click()}
             className="btn btn-outline btn-sm"
           >
-            {isUploading ? "Uploading..." : safeCover ? "Replace" : "Upload image"}
+            {uploading ? "Uploading..." : safeCover ? "Replace" : "Upload image"}
           </button>
           {safeCover && (
             <button
               type="button"
-              disabled={isUploading}
+              disabled={uploading}
               onClick={() => setCover("")}
               className="btn btn-outline btn-sm"
             >
@@ -210,7 +228,7 @@ export function ProjectFormFields({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={pending || isUploading} className="btn btn-primary">
+        <button type="submit" disabled={pending || uploading} className="btn btn-primary">
           {pending
             ? editId ? "Saving..." : "Adding..."
             : editId ? "Save changes" : "Add project"}

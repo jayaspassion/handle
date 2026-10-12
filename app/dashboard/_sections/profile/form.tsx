@@ -3,6 +3,7 @@
 import { useActionState, useId, useState, type FormEvent } from "react";
 import { updateProfile, type ProfileFormState } from "./actions";
 import { PhotoUploader, ResumeUploader } from "./uploads";
+import { useLeaveWarning } from "../../_components/leave-warning";
 
 export type ProfileValues = {
   fullName: string;
@@ -56,6 +57,8 @@ export function ProfileForm({ initial, avatarUrl, resumeUrl }: Props) {
   const dirty =
     current !== null &&
     FIELDS.some((f) => current[f].trim() !== initial[f].trim());
+
+  useLeaveWarning(dirty);
 
   function onInput(e: FormEvent<HTMLFormElement>) {
     setTouchedState(state);
@@ -122,6 +125,9 @@ export function ProfileForm({ initial, avatarUrl, resumeUrl }: Props) {
           </p>
           {state.status === "error" && state.message && (
             <p role="alert" className="msg-error text-center">{state.message}</p>
+          )}
+          {dirty && !pending && (
+            <p className="text-center text-sm text-pf-muted">Unsaved changes</p>
           )}
           <button
             type="submit"
