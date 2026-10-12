@@ -309,7 +309,7 @@ KNOWN GAPS (fine to ship):
 ## 11. Roadmap
 
 Next, in this order:
-1. Color themes ("Stage A" of templates), see section 16.
+1. Color themes + font picker ("Stage A" of templates), see section 16.
 2. Layout templates ("Stage B", section 16; design together before building).
 3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
    buttons, 44px minimum for small buttons, a separate "role/tagline" field,
@@ -361,6 +361,9 @@ attempts; browser DevTools Console.
   project images + sliding row, compact boxed public page
 - Reordering (list items + public page section order) and UploadThing file
   cleanup on account deletion
+- Public page: hero photo is a fixed 4:5 portrait (cropped on display; files
+  keep their original shape), top-aligned with the name; smaller bio,
+  project and education description text
 
 ---
 
@@ -414,6 +417,13 @@ user-written CSS). The public page wrapper (`.profile-theme`) overrides the
 up the theme accent. Dashboard gets a theme picker. Needs a production migration
 before release (nullable column, same procedure as Education).
 
+Stage A also adds a font picker: a fixed list of 4-5 font pairings (for example
+Editorial = Georgia + Inter as today, Modern sans, Classic serif, Mono/tech),
+loaded with `next/font`. Separate nullable column `Profile.font`, validated
+against the allowlist, added in the SAME migration as `Profile.theme` (one
+production migration). The public page wrapper switches font variables by a
+`data-` attribute, like themes.
+
 Stage B, layout templates: a second column `Profile.template` plus one renderer
 per layout (for example Classic = today, single-column Resume, Sidebar). All
 renderers use the same data from `getPublishedProfile()` (the only place that
@@ -442,7 +452,7 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 - No database change, so no migration. Run the live checks on https://www.handleprofile.tech if not done yet.
 
 ### Next tasks, in order
-1. Themes, Stage A: add a nullable `Profile.theme` with a fixed allowlist of color themes, chosen in the dashboard and applied on the public page. Needs a dev migration, then a production migration that I run by hand.
+1. Themes, Stage A: add nullable `Profile.theme` and `Profile.font` (fixed allowlists of color themes and font pairings; decided: themes also offer fonts), chosen in the dashboard and applied on the public page. One dev migration for both, then one production migration that I run by hand.
 2. Layout templates, Stage B, after the themes work.
 3. Optional polish:
    - Empty states with an icon and an add button.
@@ -460,7 +470,6 @@ Parked, not planned for now: Clerk popups styled to match the theme.
 - The card radius value is not yet written in the Design system section.
 
 ### Open decisions
-- Whether themes are limited to colors, or also change fonts.
 - Which plan tier gets which themes and templates (decide when Stripe is added).
 
 ### Working preferences
