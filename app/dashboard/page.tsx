@@ -99,7 +99,8 @@ export default async function DashboardPage() {
                   rel="noopener noreferrer"
                   className="btn btn-outline btn-sm"
                 >
-                  View public page
+                  <span className="sm:hidden">Public page</span>
+                  <span className="hidden sm:inline">View public page</span>
                   <svg
                     width="16"
                     height="16"
@@ -123,7 +124,7 @@ export default async function DashboardPage() {
 
           {/* Left: profile and sections. Right: publication and checklist.
               On small screens everything stacks: profile, rail, sections. */}
-          <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_19rem] xl:items-start">
+          <div className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-[minmax(0,1fr)_19rem] xl:items-start">
             <DashboardSection
               id="profile"
               title="Profile details"

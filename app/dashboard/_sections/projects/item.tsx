@@ -56,7 +56,7 @@ export default function ProjectItem({ item, initial }: Props) {
 
   return (
     <li className="rounded-lg border border-pf-border p-4">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="flex min-w-0 flex-1 gap-3">
           {thumb && (
             // eslint-disable-next-line @next/next/no-img-element

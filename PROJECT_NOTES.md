@@ -371,6 +371,9 @@ attempts; browser DevTools Console.
 - Compact landing page: fits one screen on phones (down to 375x667) and
   laptops (1280x720); hero, 3 feature lines, 3 steps, preview card styled like
   the public page (desktop only)
+- Dashboard on phones: no sideways scrolling (content grid is
+  `minmax(0,1fr)`), sticky section tabs that keep the active tab in view,
+  Edit/Delete buttons under each item, shorter "Public page" button
 
 ---
 

@@ -88,6 +88,7 @@ export default function DashboardNav({
 }) {
   const [active, setActive] = useState<string>("overview");
   const lockUntil = useRef(0);
+  const navRef = useRef<HTMLElement>(null);
 
   // Highlight the section near the top of the screen. At the very top it is
   // Overview, at the very bottom the last section. A click wins briefly so
@@ -125,8 +126,20 @@ export default function DashboardNav({
     };
   }, []);
 
+  // On phones the nav is a horizontal strip: keep the active tab in view
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav || nav.scrollWidth <= nav.clientWidth) return;
+    const link = nav.querySelector<HTMLElement>('[aria-current="location"]');
+    if (!link) return;
+    nav.scrollTo({
+      left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2,
+      behavior: "smooth",
+    });
+  }, [active]);
+
   return (
-    <aside className="lg:border-r lg:border-pf-border lg:bg-pf-surface">
+    <aside className="sticky top-0 z-10 border-b border-pf-border bg-pf-bg lg:static lg:border-b-0 lg:border-r lg:bg-pf-surface">
       <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:px-3 lg:py-6">
         <Link
           href="/"
@@ -135,8 +148,9 @@ export default function DashboardNav({
           handle
         </Link>
         <nav
+          ref={navRef}
           aria-label="Dashboard sections"
-          className="sticky top-0 z-10 -mx-5 overflow-x-auto bg-pf-bg px-5 py-2 lg:static lg:mx-0 lg:mt-5 lg:overflow-y-auto lg:overflow-x-hidden lg:bg-transparent lg:px-0 lg:py-0"
+          className="overflow-x-auto px-5 py-2 [scrollbar-width:none] lg:mt-5 lg:overflow-y-auto lg:overflow-x-hidden lg:px-0 lg:py-0"
         >
           <ul className="flex gap-1 lg:flex-col">
             {NAV_ITEMS.map((item) => {

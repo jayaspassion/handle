@@ -52,7 +52,7 @@ export default function ExperienceItem({ item, initial }: Props) {
 
   return (
     <li className="rounded-lg border border-pf-border p-4">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div>
           <p className="font-medium">{item.role}</p>
           <p className="text-sm">
