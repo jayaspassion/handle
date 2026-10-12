@@ -434,17 +434,15 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 
 ## 18. Current status and next steps (handoff)
 
-### Built, not yet released
+### Recently released
 - Reordering: drag and up/down buttons for links, projects, certifications and testimonials, plus section order on the public page.
 - Account-deletion cleanup: the Clerk `user.deleted` webhook now deletes the user's avatar, résumé and project images from UploadThing.
-- Both are tested locally. No database change, so no migration.
-- To release: `npx tsc --noEmit && npm run lint && npm run build`, commit, merge the feature branch into `main`, push, then check https://www.handleprofile.tech.
+- No database change, so no migration. Run the live checks on https://www.handleprofile.tech if not done yet.
 
 ### Next tasks, in order
-1. Release the work above.
-2. Themes, Stage A: add a nullable `Profile.theme` with a fixed allowlist of color themes, chosen in the dashboard and applied on the public page. Needs a dev migration, then a production migration that I run by hand.
-3. Layout templates, Stage B, after the themes work.
-4. Optional polish:
+1. Themes, Stage A: add a nullable `Profile.theme` with a fixed allowlist of color themes, chosen in the dashboard and applied on the public page. Needs a dev migration, then a production migration that I run by hand.
+2. Layout templates, Stage B, after the themes work.
+3. Optional polish:
    - Empty states with an icon and an add button.
    - Spinners on Saving/Uploading.
    - 44px minimum size for small buttons.
@@ -452,7 +450,7 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
    - An "Open to opportunities" badge.
    - Nav links on the public page.
    - Clerk popups styled to match the theme.
-5. Later features, in order: messaging, AI chatbot, résumé autofill (after the chatbot), Stripe FREE/PRO.
+4. Later features, in order: messaging, AI chatbot, résumé autofill (after the chatbot), Stripe FREE/PRO.
 
 ### Known gaps
 - An uploaded image stays orphaned if a project form upload is cancelled before saving.
