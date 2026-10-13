@@ -2,27 +2,23 @@
 
 Single source of truth for the project. Keep it updated after every step.
 Contains NO secrets (never paste keys, tokens or full database URLs here).
-Last updated: October 2026 (after the reordering release)
+Last updated: 2026-10-13 (public beta launched)
 
 ---
 
-## 0. How to use this file with an AI chat (paste this part first)
+## 0. How to work with me (read first)
 
-READ FIRST - HOW TO WORK WITH ME
-- You have NOT seen my code. Before editing any existing file, ask me to run
-  `cat <path>` and paste it. Never assume a file's contents. Never ask for
-  .env values or any keys (variable NAMES are fine).
-- Files you have never seen: ask for them first.
-- Keep it minimal on tokens. For EXISTING files give: file path, the exact old
-  text to find, approximate line numbers, and the replacement. No full-file
-  rewrites. For NEW files give full code, preceded by a mkdir/touch script.
-- Short, clear explanations. End each step with a brief numbered test
-  checklist and a git commit command. Multiple steps together are fine when
-  they don't depend on each other.
-- Be honest when unsure. Check docs or say so instead of guessing at APIs.
+- In Claude Code (desktop app, Code tab): read the files you need yourself;
+  don't ask me to paste them. Never read or print `.env` files or any keys
+  (variable NAMES are fine). Rules also in CLAUDE.md.
+- In a plain web chat (no file access): ask me to `cat <path>` before editing,
+  give exact old/new text, never full-file rewrites.
+- Short, clear explanations. End each task with a numbered test checklist and
+  the git command to release.
+- Be honest when unsure. Check docs (`node_modules/next/dist/docs/`) instead of
+  guessing at APIs.
 - Mac, zsh. Quote paths containing brackets: "app/[username]/page.tsx".
-- I'm a frontend-leaning developer returning to work after a Master's.
-  Explain unfamiliar steps plainly, one at a time.
+- I'm a frontend-leaning developer. Explain unfamiliar steps plainly.
 
 ---
 
@@ -309,53 +305,21 @@ Everything cascades from Profile.
 
 ## 10. Status
 
-LIVE at https://www.handleprofile.tech: auth + webhook sync, dashboard (all
-sections), publish flow with live username check, public page, photo / resume /
-project-image uploads (resized in the browser), landing page, privacy page,
-"Editorial lavender" redesign (light + dark), collapsible dashboard sections,
-skills as grouped chips, Education location + GPA (free text), projects as a
-sliding row with the image on the left, long experience descriptions collapsed
-behind "Show details", reordering ("Reorder" panel for Links, Projects,
-Certifications and Testimonials with mouse drag + up/down buttons, and a "Page
-order" card; the public page follows `Profile.sectionOrder`, and
-`lib/sections.ts` treats the old untouched default as "not set";
-Experience/Education stay in date order, skills stay grouped by category),
-UploadThing file cleanup when an account is deleted.
+PUBLIC BETA LAUNCHED 2026-10-13 (LinkedIn post). Live at
+https://www.handleprofile.tech. Full feature list: section 13 (change log);
+what's next: section 18.
 
-Database changes so far: Education.location and Education.gpa (migration
-`education_location_gpa`, applied to handle-prod). Profile.colorMode, theme,
-font, openToWork (migration `appearance_open_to_work`, applied to handle-prod
-2026-10-12).
+Database migrations (all applied to handle-prod): `education_location_gpa`,
+`appearance_open_to_work` (2026-10-12). A pre-launch Neon backup branch of
+handle-prod exists (created 2026-10-13).
 
-KNOWN GAPS (fine to ship):
-- An image uploaded in a project form that is then cancelled stays orphaned.
-- Clerk sign-in popups do not follow our theme yet.
-- Password minimum in Clerk is 8 (consider 10+).
-- No error monitoring besides Vercel logs (Sentry planned). Visit stats via
-  Vercel Analytics.
+Known gaps: see section 18.
 
 ---
 
 ## 11. Roadmap
 
-Next, in this order:
-1. Release themes + font picker + saved mode + "Open to opportunities"
-   (production migration done; merge and run the live checks).
-2. Layout templates ("Stage B", section 16; design together before building).
-3. Optional polish: empty states with icon + hint, spinner on Saving/Uploading
-   buttons, 44px minimum for small buttons, a separate "role/tagline" field,
-   nav links on the public page.
-
-Bigger features (design together before building):
-4. Messaging (login required; inbox; optional email via Resend; spam limits)
-5. Chatbot on public page (login required, streaming, rate limits, prompt
-   injection defenses; treat profile text as untrusted data)
-6. Resume autofill (needs an AI API; suggestions only, reviewed by the user;
-   after the chatbot, they share groundwork)
-7. Analytics, Stripe test mode (templates could be a PRO feature)
-
-Parked (not planned for now): Clerk popups in our theme (Clerk appearance
-options).
+Moved to section 18 ("Next, in order") so there is one list to keep current.
 
 ---
 
@@ -439,6 +403,10 @@ attempts; browser DevTools Console.
   labels, "added" messages clear on the next action, username error only for
   the submitted name, dashboard sections collapsed on phones (except Profile),
   smaller hero photo on phones
+
+- Resume: named Firstname_Lastname_Resume.pdf, short link /<username>/resume
+- 2026-10-13: PUBLIC BETA LAUNCHED (LinkedIn post); pre-launch Neon backup
+  branch taken; Clerk branded as Handle
 
 ---
 
@@ -526,48 +494,68 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 
 ## 18. Current status and next steps (handoff)
 
-### Where things are (October 2026)
-- Live and stable: everything in section 10, Stage A appearance (themes, fonts,
-  saved light/dark, "Open to opportunities"), beta prep (terms, 404/error
-  pages, icons, report link, security headers, SEO), QA fixes HANDLE-1..8,
-  Vercel Analytics (enabled), Clerk branded as Handle.
-- Feedback: Google Form "Handle beta feedback" (link and entry ids in
-  lib/url.ts). `FeedbackLink` pre-fills "Where?" and, at click time, "Device".
-  Shown in the dashboard sidebar, the dashboard header on phones, a one-time
-  beta note (localStorage `handle-beta-note-dismissed`) and the landing footer.
-- HANDLE-1 (project image save race): fix confirmed live and working in an
-  instrumented production run; waiting for QA's retest in a fresh tab.
+### Where things are (2026-10-13)
+Public beta is live and announced. Everything in the change log (section 13)
+is in production. `main` is the only branch; it deploys to Vercel on push.
 
-### Before the LinkedIn beta post
-1. Deploy the feedback links (branch `feature/beta-feedback`).
-2. Unpublish the test profile `jayatest`; confirm other published profiles are real people.
-3. Clerk (production): bot sign-up protection on, password minimum 10.
-4. Neon handle-prod: check the restore window, take a manual backup.
-5. QA retest of HANDLE-1 in a fresh tab; real iPhone/Safari pass; account deletion test.
+Key pieces a new session should know about:
+- Public page: app/[username]/page.tsx; data ONLY from `getPublishedProfile()`
+  (lib/public-profile.ts). Project cards: app/_components/project-card.tsx
+  (client; equal height, image width from its shape max 4:3, "Show more"
+  opens a <dialog>). Resume link /<username>/resume -> named PDF route.
+- Appearance: lib/appearance.ts (themes, fonts, modes allowlist),
+  globals.css `[data-pf-theme]` / `[data-pf-font]`, owner mode sync in
+  app/_components/color-mode.ts and sync-color-mode.tsx.
+- Dashboard: app/dashboard/page.tsx + _sections/*; leave-page warnings
+  (_components/leave-warning.tsx); sections collapse on phones.
+- Beta extras: Terms/Privacy (app/_components/legal-page.tsx), feedback Google
+  Form (`feedbackUrl` in lib/url.ts, pre-fills Where/Device), Vercel
+  Analytics, security headers (next.config.ts), robots/sitemap/canonicals.
+- Brand assets: brand/ (icon, logo, project cover, LinkedIn images).
 
-### Next after launch, in order
-1. Separate UploadThing app for dev (dev and prod share one today), then a daily
-   cron that deletes uploads no row points to (only safe after the split).
-2. Sentry (needs an account and `NEXT_PUBLIC_SENTRY_DSN` in Vercel).
-3. Uptime alerts (UptimeRobot / Better Stack), a runbook for reported pages.
-4. Layout templates, Stage B, shaped by beta feedback.
-5. Polish: "Download PDF" button, public page section links, empty states,
-   spinners, 44px small buttons, role/tagline field, CSP header.
-6. Later features, in order: messaging, AI chatbot, resume autofill (after the chatbot), Stripe FREE/PRO.
+### How we release (unchanged, works well)
+1. Feature branch -> code -> `npx tsc --noEmit && npm run lint && npm run build`
+   -> commit (no Co-Authored-By lines) -> test on dev (`npm run dev`).
+2. I merge and push myself:
+   `git checkout main && git pull --ff-only && git merge --ff-only <branch> && git push`
+3. Schema changes: `prisma migrate dev` on dev only; I run the production
+   migration by hand BEFORE merging (section 5). Type the `read -s` command
+   directly in the Terminal panel, not through the chat box (the chat box
+   can't take the hidden paste, and runs in a separate shell).
+4. Dev profile `jayasoorya` mirrors production content (copied 2026-10-13 from
+   the public page; images are copies, never point dev at production files).
 
-Parked, not planned for now: Clerk popups styled to match the theme.
+### Next, in order
+1. Watch the beta: Vercel Analytics, Clerk users (production), Neon tables,
+   Google Form responses. Fix real bugs first.
+2. Sentry error alerts (needs my Sentry account + `NEXT_PUBLIC_SENTRY_DSN` in
+   Vercel; turn off personal data / session replay; add to Privacy page).
+3. Separate UploadThing app for dev (dev and prod share one today), THEN a
+   daily Vercel cron that deletes uploads no database row points to (only safe
+   after the split; fixes orphaned cancelled uploads).
+4. Uptime alerts (UptimeRobot / Better Stack) and a short runbook in these
+   notes for unpublishing a reported page.
+5. Layout templates (Stage B, section 16): `Profile.template` + one renderer
+   per layout, all using `getPublishedProfile()` and honoring `sectionOrder`.
+   Design together first; needs a production migration.
+6. Polish: "Download PDF" button (print layout exists), section links on long
+   public pages, empty states, spinners on Save/Upload, 44px small buttons,
+   optional 2-line title reserve on project cards, CSP header (test with Clerk
+   and UploadThing).
+7. Later features, in order: messaging, AI chatbot on public pages, resume
+   autofill (after the chatbot), Stripe FREE/PRO (themes/templates could be PRO).
+
+Parked: Clerk popups styled to match the theme.
 
 ### Known gaps
-- An uploaded image stays orphaned if a project form upload is cancelled before saving (fixed by the planned daily cleanup).
-- Uploaded files are public UploadThing links: unpublishing hides the page but not files someone already has a link to (the dashboard says so). Later: serve files through an app route that checks publish state.
-- A tab left open across a deploy keeps running the old code until reloaded (Vercel Skew Protection would fix this; paid plans only).
-- /favicon.ico returns 404 by design; browsers use app/icon.svg.
+- Cancelled project-image uploads stay orphaned in UploadThing (fixed by item 3).
+- Uploaded files are public UploadThing links; unpublishing hides the page and
+  the /<username>/resume link, but not a raw file URL someone already saved.
+- A tab left open across a deploy runs old code until reloaded (Vercel Skew
+  Protection is paid).
+- QA's HANDLE-1 (project image save race) retest in a fresh tab: fix verified
+  by me on production; QA confirmation pending.
+- Test profile `jayatest` is published on production on purpose.
 
 ### Open decisions
 - Which plan tier gets which themes and templates (decide when Stripe is added).
-
-### Working preferences
-- Short, simple answers.
-- Small changes are shown inline; large files get exact sections.
-- Every task ends with a numbered test checklist and a commit.
-- Never touch production or `.env` files.
