@@ -440,18 +440,17 @@ export default async function PublicProfilePage({ params }: Props) {
                   return (
                     <li
                       key={p.id}
-                      // Same height for all; width = text column (20rem), plus the
-                      // image column (15rem) when the project has an image
+                      // Same height for all; on wider screens each card is its
+                      // 20rem text column plus its image (see ProjectCard)
                       className={`shrink-0 snap-start print:w-full ${
-                        profile.projects.length === 1
-                          ? "w-full"
-                          : `w-[88%] ${p.coverImageUrl ? "sm:w-[35rem]" : "sm:w-80"}`
+                        profile.projects.length === 1 ? "w-full" : "w-[88%] sm:w-auto"
                       }`}
                     >
                       <ProjectCard
                         title={p.title}
                         description={p.description}
                         imageUrl={p.coverImageUrl}
+                        single={profile.projects.length === 1}
                         tags={p.tags.length > 0 ? <Chips items={p.tags} label="Tags" /> : null}
                         links={
                           (live || repo) && (

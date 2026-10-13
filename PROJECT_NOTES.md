@@ -405,11 +405,13 @@ attempts; browser DevTools Console.
   Edit/Delete buttons under each item, shorter "Public page" button
 - "résumé" spelled "resume" everywhere in the UI
 - SEO basics: robots.txt, sitemap.xml, canonical tags
-- Project cards (`app/_components/project-card.tsx`): equal, compact height:
-  title 2 lines, description 4 lines, tags 2 rows; "Show more" only when
-  something is cut off; print shows everything. Width: every card has the
-  same 20rem text column; cards with an image add a 15rem inset screenshot
-  (rounded, bordered, top-aligned) on the left (on top on phones)
+- Project cards (`app/_components/project-card.tsx`): every card has the same
+  height and the same 20rem text column (title 2 lines, description 4,
+  tags 2 rows). Cards with an image add an inset image on the left whose
+  width = card height x the image's shape, capped at 4:3 (measured in the
+  browser); on phones the image is on top. "Show more" (only when something
+  is cut off) opens a native <dialog> with the full project and a larger
+  image; the card never changes size. Print shows everything in place.
 - Stage A: 8 color themes, 4 font pairs, light/dark saved to the account and
   used as the public page default, "Open to opportunities" badge
 - Beta prep: font names shown in their own fonts (even size via
