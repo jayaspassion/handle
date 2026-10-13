@@ -1,9 +1,51 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 
 // Widest an image may be next to the text, as width / height (4:3)
 const MAX_RATIO = 4 / 3;
+const LINK_REL = "nofollow ugc noopener noreferrer";
+const textLink =
+  "inline-flex items-center gap-1.5 font-medium text-pf-accent underline-offset-4 hover:underline";
+
+function Chips({ items }: { items: string[] }) {
+  return (
+    <ul aria-label="Tags" className="flex flex-wrap gap-2">
+      {items.map((item, i) => (
+        <li key={`${item}-${i}`} className="chip">
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Links({ liveUrl, repoUrl }: { liveUrl: string | null; repoUrl: string | null }) {
+  if (!liveUrl && !repoUrl) return null;
+  const arrow = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+  return (
+    <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
+      {liveUrl && (
+        <a href={liveUrl} target="_blank" rel={LINK_REL} className={textLink}>
+          Live site
+          {arrow}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      )}
+      {repoUrl && (
+        <a href={repoUrl} target="_blank" rel={LINK_REL} className={textLink}>
+          Source code
+          {arrow}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      )}
+    </p>
+  );
+}
 
 // One project on the public page. Every card has the same height and the
 // same 20rem text column; a card with an image adds the image on the left,
@@ -16,14 +58,16 @@ export default function ProjectCard({
   description,
   imageUrl,
   tags,
-  links,
+  liveUrl,
+  repoUrl,
   single = false,
 }: {
   title: string;
   description: string | null;
   imageUrl: string | null;
-  tags: ReactNode;
-  links: ReactNode;
+  tags: string[];
+  liveUrl: string | null; // already checked as http(s) by the page
+  repoUrl: string | null;
   single?: boolean; // the only project: text may use the full width
 }) {
   const [clipped, setClipped] = useState(false);
@@ -110,9 +154,9 @@ export default function ProjectCard({
             {description}
           </p>
         )}
-        {tags && (
+        {tags.length > 0 && (
           <div ref={tagsRef} className={`mt-4 max-h-[4.25rem] overflow-hidden ${print}`}>
-            {tags}
+            <Chips items={tags} />
           </div>
         )}
         {clipped && (
@@ -127,7 +171,7 @@ export default function ProjectCard({
             <span className="sr-only"> about {title}</span>
           </button>
         )}
-        {links}
+        <Links liveUrl={liveUrl} repoUrl={repoUrl} />
       </div>
 
       {/* Full project. Native dialog: focus is kept inside, Esc closes, and
@@ -178,8 +222,12 @@ export default function ProjectCard({
                 {description}
               </p>
             )}
-            {tags && <div className="mt-4">{tags}</div>}
-            {links}
+            {tags.length > 0 && (
+              <div className="mt-4">
+                <Chips items={tags} />
+              </div>
+            )}
+            <Links liveUrl={liveUrl} repoUrl={repoUrl} />
           </div>
         </dialog>
       )}

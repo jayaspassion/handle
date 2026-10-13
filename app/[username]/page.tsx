@@ -451,25 +451,9 @@ export default async function PublicProfilePage({ params }: Props) {
                         description={p.description}
                         imageUrl={p.coverImageUrl}
                         single={profile.projects.length === 1}
-                        tags={p.tags.length > 0 ? <Chips items={p.tags} label="Tags" /> : null}
-                        links={
-                          (live || repo) && (
-                            <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
-                              {live && (
-                                <ExternalLink href={live} className={textLink}>
-                                  Live site
-                                  <ArrowIcon />
-                                </ExternalLink>
-                              )}
-                              {repo && (
-                                <ExternalLink href={repo} className={textLink}>
-                                  Source code
-                                  <ArrowIcon />
-                                </ExternalLink>
-                              )}
-                            </p>
-                          )
-                        }
+                        tags={p.tags}
+                        liveUrl={live}
+                        repoUrl={repo}
                       />
                     </li>
                   );
