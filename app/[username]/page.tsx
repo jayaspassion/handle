@@ -440,10 +440,12 @@ export default async function PublicProfilePage({ params }: Props) {
                   return (
                     <li
                       key={p.id}
+                      // Same height for all; width = text column (20rem), plus the
+                      // image column (15rem) when the project has an image
                       className={`shrink-0 snap-start print:w-full ${
                         profile.projects.length === 1
                           ? "w-full"
-                          : "w-[88%] sm:w-[calc(50%-0.625rem)]"
+                          : `w-[88%] ${p.coverImageUrl ? "sm:w-[35rem]" : "sm:w-80"}`
                       }`}
                     >
                       <ProjectCard

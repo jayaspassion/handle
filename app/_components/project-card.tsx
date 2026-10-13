@@ -41,14 +41,18 @@ export default function ProjectCard({
 
   return (
     <article className="card card-accent flex h-full flex-col overflow-hidden bg-pf-surface p-0 sm:flex-row">
+      {/* Inset screenshot. On wider screens it is positioned inside its
+          column, so it fills the card's height without ever setting it. */}
       {imageUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={imageUrl}
-          alt={`Screenshot of ${title}`}
-          loading="lazy"
-          className="h-40 w-full shrink-0 object-cover sm:h-auto sm:w-2/5"
-        />
+        <div className="relative shrink-0 p-3 pb-0 sm:w-60 sm:pb-3 sm:pr-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={`Screenshot of ${title}`}
+            loading="lazy"
+            className="h-40 w-full rounded-lg border border-pf-border object-cover object-top sm:absolute sm:inset-3 sm:right-0 sm:h-auto sm:w-auto"
+          />
+        </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col p-4">
         <h3 ref={titleRef} className={`break-words font-serif text-lg ${clamp("line-clamp-2")}`}>
