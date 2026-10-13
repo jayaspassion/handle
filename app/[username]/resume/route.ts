@@ -1,19 +1,18 @@
-import { getPublishedResumeUrl } from "@/lib/public-profile";
+import { getPublishedResume } from "@/lib/public-profile";
 
-// handleprofile.tech/<username>/resume: a short, shareable link that forwards
-// to the PDF on UploadThing's CDN (a redirect, so the file itself never passes
-// through our server). Works only while the profile is published.
-export const dynamic = "force-dynamic";
-
+// handleprofile.tech/<username>/resume: the short, shareable link. Forwards to
+// /<username>/resume/<Firstname_Lastname_Resume.pdf>, an address that ends in
+// the file name, so every browser saves the PDF under that name.
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ username: string }> },
 ) {
   const { username } = await params;
-  const url = await getPublishedResumeUrl(username);
-  if (!url) return new Response("Not found", { status: 404 });
+  const resume = await getPublishedResume(username);
+  if (!resume) return new Response("Not found", { status: 404 });
+  const target = new URL(`/${resume.username}/resume/${resume.fileName}`, request.url);
   return new Response(null, {
     status: 307,
-    headers: { Location: url, "Cache-Control": "no-store" },
+    headers: { Location: target.toString(), "Cache-Control": "no-store" },
   });
 }

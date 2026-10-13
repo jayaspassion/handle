@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
-import { isUploadedFileUrl } from "@/lib/uploads";
+import { isUploadedFileUrl, resumeFileName } from "@/lib/uploads";
 import { resolveColorMode, resolveFont, resolveTheme } from "@/lib/appearance";
 
 const byOrder = [{ order: "asc" as const }, { createdAt: "asc" as const }];
@@ -112,14 +112,20 @@ export const getPublishedProfile = cache(async (username: string) => {
   };
 });
 
-// Resume address for /<username>/resume: only for a published profile, and
-// only if it is one of our uploaded files (same rules as above).
-export async function getPublishedResumeUrl(username: string) {
+// Resume for /<username>/resume: only for a published profile, and only if
+// it is one of our uploaded files (same rules as above). The file name comes
+// from the current profile name.
+export async function getPublishedResume(username: string) {
   const profile = await prisma.profile.findFirst({
     where: { username: username.toLowerCase(), isPublished: true },
-    select: { resumeUrl: true },
+    select: { username: true, fullName: true, resumeUrl: true },
   });
-  return profile && isUploadedFileUrl(profile.resumeUrl) ? profile.resumeUrl : null;
+  if (!profile?.username || !isUploadedFileUrl(profile.resumeUrl)) return null;
+  return {
+    username: profile.username,
+    url: profile.resumeUrl,
+    fileName: resumeFileName(profile.fullName ?? ""),
+  };
 }
 
 // Published profiles for the sitemap: same rule as getPublishedProfile

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isUploadedFileUrl } from "@/lib/uploads";
 import { uploadErrorMessage } from "@/lib/upload-errors";
+import { resumeFileName } from "@/lib/uploads";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -146,18 +147,6 @@ export function PhotoUploader({
       )}
     </div>
   );
-}
-
-// "Jayasoorya Jithendra" -> "Jayasoorya_Jithendra_Resume.pdf". UploadThing keeps
-// the uploaded file name, so visitors download it under this name.
-export function resumeFileName(fullName: string) {
-  const parts = fullName
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .split(/\s+/)
-    .map((p) => p.replace(/[^A-Za-z0-9-]/g, ""))
-    .filter(Boolean);
-  return parts.length ? `${parts.join("_")}_Resume.pdf` : "Resume.pdf";
 }
 
 export function ResumeUploader({
