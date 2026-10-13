@@ -117,7 +117,7 @@ export function ProfileForm({ initial, avatarUrl, resumeUrl }: Props) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <ResumeUploader resumeUrl={resumeUrl} />
+        <ResumeUploader resumeUrl={resumeUrl} name={initial.fullName} />
         <div className="flex flex-col gap-2 md:mt-auto">
           {/* Always mounted so screen readers announce the message when it appears */}
           <p role="status" className={showSaved ? "msg-success text-center" : "sr-only"}>

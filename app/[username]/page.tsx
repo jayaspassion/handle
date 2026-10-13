@@ -318,6 +318,8 @@ export default async function PublicProfilePage({ params }: Props) {
 
   const name = profile.fullName ?? profile.username ?? "Profile";
   const resumeUrl = safeUrl(profile.resumeUrl);
+  // Short link that forwards to the PDF (app/[username]/resume/route.ts)
+  const resumeLink = `/${profile.username}/resume`;
   const links = profile.links.filter((l) => safeUrl(l.url));
   const hasProjects = profile.projects.length > 0;
 
@@ -567,7 +569,7 @@ export default async function PublicProfilePage({ params }: Props) {
               )}
               {resumeUrl && (
                 <ExternalLink
-                  href={resumeUrl}
+                  href={resumeLink}
                   className={`btn ${hasProjects ? "btn-outline" : "btn-primary"}`}
                 >
                   <DocIcon />
@@ -670,7 +672,7 @@ export default async function PublicProfilePage({ params }: Props) {
               </div>
               <div className="flex flex-col items-start gap-3 md:items-end">
                 {resumeUrl && (
-                  <ExternalLink href={resumeUrl} className="btn btn-primary">
+                  <ExternalLink href={resumeLink} className="btn btn-primary">
                     <DocIcon />
                     View resume
                   </ExternalLink>

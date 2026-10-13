@@ -112,6 +112,16 @@ export const getPublishedProfile = cache(async (username: string) => {
   };
 });
 
+// Resume address for /<username>/resume: only for a published profile, and
+// only if it is one of our uploaded files (same rules as above).
+export async function getPublishedResumeUrl(username: string) {
+  const profile = await prisma.profile.findFirst({
+    where: { username: username.toLowerCase(), isPublished: true },
+    select: { resumeUrl: true },
+  });
+  return profile && isUploadedFileUrl(profile.resumeUrl) ? profile.resumeUrl : null;
+}
+
 // Published profiles for the sitemap: same rule as getPublishedProfile
 // (published with a username), and only the username and update time.
 export async function listPublishedProfiles() {

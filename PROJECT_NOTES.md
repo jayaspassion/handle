@@ -405,6 +405,10 @@ attempts; browser DevTools Console.
   Edit/Delete buttons under each item, shorter "Public page" button
 - "résumé" spelled "resume" everywhere in the UI
 - SEO basics: robots.txt, sitemap.xml, canonical tags
+- Resume: uploaded as `Firstname_Lastname_Resume.pdf` (UploadThing keeps the
+  upload name, so downloads use it; older uploads keep their old name). Public
+  pages link to `/<username>/resume` (app/[username]/resume/route.ts), a 307
+  redirect to the CDN file via `getPublishedResumeUrl()`; 404 when unpublished.
 - Project cards (`app/_components/project-card.tsx`): every card has the same
   height and the same 20rem text column (title 2 lines, description 4,
   tags 2 rows). Cards with an image add an inset image on the left whose

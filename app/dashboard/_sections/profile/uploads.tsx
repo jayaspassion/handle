@@ -148,7 +148,25 @@ export function PhotoUploader({
   );
 }
 
-export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
+// "Jayasoorya Jithendra" -> "Jayasoorya_Jithendra_Resume.pdf". UploadThing keeps
+// the uploaded file name, so visitors download it under this name.
+export function resumeFileName(fullName: string) {
+  const parts = fullName
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(/\s+/)
+    .map((p) => p.replace(/[^A-Za-z0-9-]/g, ""))
+    .filter(Boolean);
+  return parts.length ? `${parts.join("_")}_Resume.pdf` : "Resume.pdf";
+}
+
+export function ResumeUploader({
+  resumeUrl,
+  name,
+}: {
+  resumeUrl: string | null;
+  name: string;
+}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -175,7 +193,8 @@ export function ResumeUploader({ resumeUrl }: { resumeUrl: string | null }) {
       return;
     }
     setError("");
-    await startUpload([file]);
+    const named = new File([file], resumeFileName(name), { type: "application/pdf" });
+    await startUpload([named]);
   }
 
   const safeUrl = isUploadedFileUrl(resumeUrl) ? resumeUrl : null;
