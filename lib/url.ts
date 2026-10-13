@@ -6,16 +6,23 @@ export const SITE_URL = (
 // Public contact for privacy, terms and reports (shown on the site)
 export const CONTACT_EMAIL = "jayaspassion@gmail.com";
 
-// Beta feedback: paste the Google Form link here. While empty, the
-// feedback links open an email to CONTACT_EMAIL instead.
-export const FEEDBACK_FORM_URL = "";
-export const FEEDBACK_HREF =
-  FEEDBACK_FORM_URL ||
-  `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Handle beta feedback")}`;
-// Forms open in a new tab; email opens the mail app
-export const FEEDBACK_LINK_PROPS = FEEDBACK_FORM_URL
-  ? { target: "_blank", rel: "noopener noreferrer" }
-  : {};
+// Beta feedback Google Form. The two entry ids pre-fill its optional
+// "Where?" and "Device" questions (never anything personal).
+const FEEDBACK_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSesuncdfOQOk70m4whcxJKFHdMBSPIPybe20DDAHanAxOY0eg/viewform";
+const FEEDBACK_FIELDS = { where: "entry.1365147982", device: "entry.1924684459" };
+
+export type FeedbackWhere = "Dashboard" | "My public page" | "Sign in or sign up" | "Home page" | "Other";
+export type FeedbackDevice = "Phone" | "Computer" | "Tablet";
+
+export function feedbackUrl(where?: FeedbackWhere, device?: FeedbackDevice) {
+  const params = new URLSearchParams();
+  if (where || device) params.set("usp", "pp_url");
+  if (where) params.set(FEEDBACK_FIELDS.where, where);
+  if (device) params.set(FEEDBACK_FIELDS.device, device);
+  const query = params.toString();
+  return query ? `${FEEDBACK_FORM_URL}?${query}` : FEEDBACK_FORM_URL;
+}
 
 export function isHttpUrl(value: string) {
     if (value === "") return true;

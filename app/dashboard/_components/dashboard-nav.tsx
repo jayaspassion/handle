@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { FEEDBACK_HREF, FEEDBACK_LINK_PROPS } from "@/lib/url";
+import FeedbackLink from "@/app/_components/feedback-link";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: "home" },
@@ -185,13 +185,12 @@ export default function DashboardNav({
           <p className="mt-1">{tier === "PRO" ? "Pro" : "Free"} plan</p>
           <p className="mt-3">
             <span className="badge mr-1.5">Beta</span>
-            <a
-              href={FEEDBACK_HREF}
-              {...FEEDBACK_LINK_PROPS}
+            <FeedbackLink
+              where="Dashboard"
               className="text-pf-accent underline-offset-4 hover:underline"
             >
               Send feedback
-            </a>
+            </FeedbackLink>
           </p>
         </div>
       </div>

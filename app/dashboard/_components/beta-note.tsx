@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { FEEDBACK_HREF, FEEDBACK_LINK_PROPS } from "@/lib/url";
+import FeedbackLink from "@/app/_components/feedback-link";
 
 const KEY = "handle-beta-note-dismissed";
 const EVENT = "handle-beta-note-change";
@@ -40,13 +40,12 @@ export default function BetaNote() {
       <p className="flex-1">
         <span className="font-medium">Handle is in beta.</span>{" "}
         Something not working, or an idea?{" "}
-        <a
-          href={FEEDBACK_HREF}
-          {...FEEDBACK_LINK_PROPS}
+        <FeedbackLink
+          where="Dashboard"
           className="font-medium text-pf-accent underline underline-offset-4 hover:no-underline"
         >
           Send feedback
-        </a>
+        </FeedbackLink>
       </p>
       <button
         type="button"

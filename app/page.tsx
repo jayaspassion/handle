@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Show, SignUpButton } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { FEEDBACK_HREF, FEEDBACK_LINK_PROPS } from "@/lib/url";
+import FeedbackLink from "./_components/feedback-link";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -177,9 +177,9 @@ export default function Home() {
         <Link href="/terms" className="underline-offset-4 hover:underline">
           Terms of Use
         </Link>
-        <a href={FEEDBACK_HREF} {...FEEDBACK_LINK_PROPS} className="underline-offset-4 hover:underline">
+        <FeedbackLink where="Home page" className="underline-offset-4 hover:underline">
           Feedback
-        </a>
+        </FeedbackLink>
       </footer>
     </div>
   );

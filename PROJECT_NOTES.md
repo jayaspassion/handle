@@ -516,13 +516,15 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
   saved light/dark, "Open to opportunities"), beta prep (terms, 404/error
   pages, icons, report link, security headers, SEO), QA fixes HANDLE-1..8,
   Vercel Analytics (enabled), Clerk branded as Handle.
-- In progress: feedback links (`FEEDBACK_FORM_URL` in lib/url.ts; email until
-  the Google Form link is pasted in).
+- Feedback: Google Form "Handle beta feedback" (link and entry ids in
+  lib/url.ts). `FeedbackLink` pre-fills "Where?" and, at click time, "Device".
+  Shown in the dashboard sidebar, the dashboard header on phones, a one-time
+  beta note (localStorage `handle-beta-note-dismissed`) and the landing footer.
 - HANDLE-1 (project image save race): fix confirmed live and working in an
   instrumented production run; waiting for QA's retest in a fresh tab.
 
 ### Before the LinkedIn beta post
-1. Paste the Google Form link into `FEEDBACK_FORM_URL` and deploy.
+1. Deploy the feedback links (branch `feature/beta-feedback`).
 2. Unpublish the test profile `jayatest`; confirm other published profiles are real people.
 3. Clerk (production): bot sign-up protection on, password minimum 10.
 4. Neon handle-prod: check the restore window, take a manual backup.
