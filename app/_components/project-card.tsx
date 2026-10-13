@@ -50,7 +50,7 @@ export default function ProjectCard({
             src={imageUrl}
             alt={`Screenshot of ${title}`}
             loading="lazy"
-            className="h-40 w-full rounded-lg border border-pf-border object-cover object-top sm:absolute sm:inset-3 sm:right-0 sm:h-auto sm:w-auto"
+            className="h-40 w-full rounded-lg border border-pf-border object-cover object-top sm:absolute sm:left-3 sm:top-3 sm:h-[calc(100%-1.5rem)] sm:w-[calc(100%-0.75rem)]"
           />
         </div>
       )}
