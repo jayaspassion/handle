@@ -28,7 +28,7 @@ function Links({ liveUrl, repoUrl }: { liveUrl: string | null; repoUrl: string |
     </svg>
   );
   return (
-    <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
+    <span className="flex flex-wrap gap-x-5 gap-y-1">
       {liveUrl && (
         <a href={liveUrl} target="_blank" rel={LINK_REL} className={textLink}>
           Live site
@@ -43,7 +43,7 @@ function Links({ liveUrl, repoUrl }: { liveUrl: string | null; repoUrl: string |
           <span className="sr-only"> (opens in a new tab)</span>
         </a>
       )}
-    </p>
+    </span>
   );
 }
 
@@ -159,19 +159,25 @@ export default function ProjectCard({
             <Chips items={tags} />
           </div>
         )}
-        {clipped && (
-          <button
-            ref={buttonRef}
-            type="button"
-            aria-haspopup="dialog"
-            onClick={() => dialogRef.current?.showModal()}
-            className="mt-3 inline-flex min-h-10 items-center self-start text-sm font-medium text-pf-accent underline-offset-4 hover:underline print:hidden"
-          >
-            Show more
-            <span className="sr-only"> about {title}</span>
-          </button>
+        {/* Bottom of the card: links, then "Show more" as the very last line,
+            so it sits in the same place in every card */}
+        {(clipped || liveUrl || repoUrl) && (
+          <div className="mt-auto flex flex-col items-start gap-1 pt-4 text-sm">
+            <Links liveUrl={liveUrl} repoUrl={repoUrl} />
+            {clipped && (
+              <button
+                ref={buttonRef}
+                type="button"
+                aria-haspopup="dialog"
+                onClick={() => dialogRef.current?.showModal()}
+                className="inline-flex min-h-10 items-center font-medium text-pf-accent underline-offset-4 hover:underline print:hidden"
+              >
+                Show more
+                <span className="sr-only"> about {title}</span>
+              </button>
+            )}
+          </div>
         )}
-        <Links liveUrl={liveUrl} repoUrl={repoUrl} />
       </div>
 
       {/* Full project. Native dialog: focus is kept inside, Esc closes, and
@@ -227,7 +233,11 @@ export default function ProjectCard({
                 <Chips items={tags} />
               </div>
             )}
-            <Links liveUrl={liveUrl} repoUrl={repoUrl} />
+            {(liveUrl || repoUrl) && (
+              <p className="mt-5 text-sm">
+                <Links liveUrl={liveUrl} repoUrl={repoUrl} />
+              </p>
+            )}
           </div>
         </dialog>
       )}

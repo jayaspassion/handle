@@ -411,7 +411,9 @@ attempts; browser DevTools Console.
   width = card height x the image's shape, capped at 4:3 (measured in the
   browser); on phones the image is on top. "Show more" (only when something
   is cut off) opens a native <dialog> with the full project and a larger
-  image; the card never changes size. Print shows everything in place.
+  image; the card never changes size. Bottom of each card: links, then
+  "Show more" as the last line, so it lines up across cards. The card gets
+  plain data (tags, live/repo URLs) and renders chips and links itself. Print shows everything in place.
 - Stage A: 8 color themes, 4 font pairs, light/dark saved to the account and
   used as the public page default, "Open to opportunities" badge
 - Beta prep: font names shown in their own fonts (even size via
