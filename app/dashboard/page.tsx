@@ -27,6 +27,8 @@ import CertificationForm from "./_sections/certifications/form";
 import CertificationList from "./_sections/certifications/list";
 import TestimonialForm from "./_sections/testimonials/form";
 import TestimonialList from "./_sections/testimonials/list";
+import { FEEDBACK_HREF, FEEDBACK_LINK_PROPS } from "@/lib/url";
+import BetaNote from "./_components/beta-note";
 
 const byOrder = [{ order: "asc" as const }, { createdAt: "asc" as const }];
 
@@ -121,10 +123,18 @@ export default async function DashboardPage() {
                   <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               )}
+              <a
+                href={FEEDBACK_HREF}
+                {...FEEDBACK_LINK_PROPS}
+                className="btn btn-outline btn-sm lg:hidden"
+              >
+                Feedback
+              </a>
               <ThemeToggle />
               <UserButton />
             </div>
           </header>
+          <BetaNote />
 
           {/* Left: profile and sections. Right: publication and checklist.
               On small screens everything stacks: profile, rail, sections. */}

@@ -57,6 +57,7 @@ export default function PrivacyPage() {
       <h2 className={legalH2}>Services that process data for us</h2>
       <ul className={legalList}>
         <li>Clerk: authentication and account management.</li>
+        <li>Google Forms: feedback you choose to send us, and only what you type into it.</li>
         <li>Neon: database hosting.</li>
         <li>UploadThing: storage of uploaded photos, resumes and project images.</li>
         <li>

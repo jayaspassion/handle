@@ -6,6 +6,17 @@ export const SITE_URL = (
 // Public contact for privacy, terms and reports (shown on the site)
 export const CONTACT_EMAIL = "jayaspassion@gmail.com";
 
+// Beta feedback: paste the Google Form link here. While empty, the
+// feedback links open an email to CONTACT_EMAIL instead.
+export const FEEDBACK_FORM_URL = "";
+export const FEEDBACK_HREF =
+  FEEDBACK_FORM_URL ||
+  `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Handle beta feedback")}`;
+// Forms open in a new tab; email opens the mail app
+export const FEEDBACK_LINK_PROPS = FEEDBACK_FORM_URL
+  ? { target: "_blank", rel: "noopener noreferrer" }
+  : {};
+
 export function isHttpUrl(value: string) {
     if (value === "") return true;
     try {

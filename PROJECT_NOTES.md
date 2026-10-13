@@ -511,29 +511,40 @@ Possible PRO gating later: one free default, extra themes/templates for PRO.
 
 ## 18. Current status and next steps (handoff)
 
-### Recently released
-- Reordering: drag and up/down buttons for links, projects, certifications and testimonials, plus section order on the public page.
-- Account-deletion cleanup: the Clerk `user.deleted` webhook now deletes the user's avatar, resume and project images from UploadThing.
-- No database change, so no migration. Run the live checks on https://www.handleprofile.tech if not done yet.
+### Where things are (October 2026)
+- Live and stable: everything in section 10, Stage A appearance (themes, fonts,
+  saved light/dark, "Open to opportunities"), beta prep (terms, 404/error
+  pages, icons, report link, security headers, SEO), QA fixes HANDLE-1..8,
+  Vercel Analytics (enabled), Clerk branded as Handle.
+- In progress: feedback links (`FEEDBACK_FORM_URL` in lib/url.ts; email until
+  the Google Form link is pasted in).
+- HANDLE-1 (project image save race): fix confirmed live and working in an
+  instrumented production run; waiting for QA's retest in a fresh tab.
 
-### Next tasks, in order
-1. Release Stage A (built on `feature/themes`): themes, font pairs, light/dark saved to the account (also the public page default), "Open to opportunities" badge. Production migration `appearance_open_to_work` applied 2026-10-12; merge and run the live checks.
-2. Layout templates, Stage B, after the themes work.
-3. Optional polish:
-   - Empty states with an icon and an add button.
-   - Spinners on Saving/Uploading.
-   - 44px minimum size for small buttons.
-   - A separate role/tagline field.
-   - Nav links on the public page.
-4. Later features, in order: messaging, AI chatbot, resume autofill (after the chatbot), Stripe FREE/PRO.
+### Before the LinkedIn beta post
+1. Paste the Google Form link into `FEEDBACK_FORM_URL` and deploy.
+2. Unpublish the test profile `jayatest`; confirm other published profiles are real people.
+3. Clerk (production): bot sign-up protection on, password minimum 10.
+4. Neon handle-prod: check the restore window, take a manual backup.
+5. QA retest of HANDLE-1 in a fresh tab; real iPhone/Safari pass; account deletion test.
+
+### Next after launch, in order
+1. Separate UploadThing app for dev (dev and prod share one today), then a daily
+   cron that deletes uploads no row points to (only safe after the split).
+2. Sentry (needs an account and `NEXT_PUBLIC_SENTRY_DSN` in Vercel).
+3. Uptime alerts (UptimeRobot / Better Stack), a runbook for reported pages.
+4. Layout templates, Stage B, shaped by beta feedback.
+5. Polish: "Download PDF" button, public page section links, empty states,
+   spinners, 44px small buttons, role/tagline field, CSP header.
+6. Later features, in order: messaging, AI chatbot, resume autofill (after the chatbot), Stripe FREE/PRO.
 
 Parked, not planned for now: Clerk popups styled to match the theme.
 
 ### Known gaps
-- An uploaded image stays orphaned if a project form upload is cancelled before saving.
-- Deleting a cancelled project upload needs proof of who uploaded the file (otherwise anyone could delete a fresh upload); design before building.
+- An uploaded image stays orphaned if a project form upload is cancelled before saving (fixed by the planned daily cleanup).
 - Uploaded files are public UploadThing links: unpublishing hides the page but not files someone already has a link to (the dashboard says so). Later: serve files through an app route that checks publish state.
-- Clerk app name still "My Application" on sign-in pages and emails: set it to Handle in the Clerk dashboard (production).
+- A tab left open across a deploy keeps running the old code until reloaded (Vercel Skew Protection would fix this; paid plans only).
+- /favicon.ico returns 404 by design; browsers use app/icon.svg.
 
 ### Open decisions
 - Which plan tier gets which themes and templates (decide when Stripe is added).
