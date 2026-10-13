@@ -405,6 +405,10 @@ attempts; browser DevTools Console.
   Edit/Delete buttons under each item, shorter "Public page" button
 - "résumé" spelled "resume" everywhere in the UI
 - SEO basics: robots.txt, sitemap.xml, canonical tags
+- Project cards (`app/_components/project-card.tsx`): equal, compact height:
+  title 2 lines, description 4 lines, tags 2 rows; "Show more" only when
+  something is cut off; image fills the left 40% (top on phones); print
+  shows everything
 - Stage A: 8 color themes, 4 font pairs, light/dark saved to the account and
   used as the public page default, "Open to opportunities" badge
 - Beta prep: font names shown in their own fonts (even size via

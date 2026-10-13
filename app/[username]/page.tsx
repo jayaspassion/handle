@@ -6,6 +6,7 @@ import { getPublishedProfile } from "@/lib/public-profile";
 import { CONTACT_EMAIL, SITE_URL, isHttpUrl } from "@/lib/url";
 import { resolveSectionOrder } from "@/lib/sections";
 import ProjectsSection from "@/app/_components/projects-carousel";
+import ProjectCard from "@/app/_components/project-card";
 import { OwnerAppearance } from "@/app/_components/sync-color-mode";
 import { ownerAppearanceScript } from "@/app/_components/color-mode";
 
@@ -445,29 +446,13 @@ export default async function PublicProfilePage({ params }: Props) {
                           : "w-[88%] sm:w-[calc(50%-0.625rem)]"
                       }`}
                     >
-                      <article className="card card-accent flex h-full flex-col bg-pf-surface p-0 sm:flex-row">
-                        {p.coverImageUrl && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={p.coverImageUrl}
-                            alt={`Screenshot of ${p.title}`}
-                            loading="lazy"
-                            className="h-40 w-full object-cover sm:h-auto sm:w-2/5 sm:shrink-0"
-                          />
-                        )}
-                        <div className="flex min-w-0 flex-1 flex-col p-4">
-                          <h3 className="break-words font-serif text-lg">{p.title}</h3>
-                          {p.description && (
-                            <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed text-pf-muted">
-                              {p.description}
-                            </p>
-                          )}
-                          {p.tags.length > 0 && (
-                            <div className="mt-4">
-                              <Chips items={p.tags} label="Tags" />
-                            </div>
-                          )}
-                          {(live || repo) && (
+                      <ProjectCard
+                        title={p.title}
+                        description={p.description}
+                        imageUrl={p.coverImageUrl}
+                        tags={p.tags.length > 0 ? <Chips items={p.tags} label="Tags" /> : null}
+                        links={
+                          (live || repo) && (
                             <p className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 text-sm">
                               {live && (
                                 <ExternalLink href={live} className={textLink}>
@@ -482,9 +467,9 @@ export default async function PublicProfilePage({ params }: Props) {
                                 </ExternalLink>
                               )}
                             </p>
-                          )}
-                        </div>
-                      </article>
+                          )
+                        }
+                      />
                     </li>
                   );
                 })}
