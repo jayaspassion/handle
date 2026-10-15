@@ -528,11 +528,25 @@ Key pieces a new session should know about:
 ### Next, in order
 1. Watch the beta: Vercel Analytics, Clerk users (production), Neon tables,
    Google Form responses. Fix real bugs first.
-2. Sentry error alerts (needs my Sentry account + `NEXT_PUBLIC_SENTRY_DSN` in
-   Vercel; turn off personal data / session replay; add to Privacy page).
-3. Separate UploadThing app for dev (dev and prod share one today), THEN a
-   daily Vercel cron that deletes uploads no database row points to (only safe
-   after the split; fixes orphaned cancelled uploads).
+2. Sentry error alerts: SKIPPED for now (2026-10-15). Vercel logs + the
+   feedback form are enough at beta traffic. When we pick it up, do the
+   minimal version: `@sentry/nextjs` (check Next 16 support), DSN only in
+   Vercel Production (`NEXT_PUBLIC_SENTRY_DSN`), `sendDefaultPii: false`, no
+   replay, no tracing, `instrumentation.ts` (`onRequestError`) +
+   `instrumentation-client.ts`, report from error.tsx/global-error.tsx,
+   email alert on new issues, Privacy page paragraph. Source maps and tunnel
+   route optional later.
+3. Uploads cleanup: PLANNED, deferred (2026-10-15). Two parts, in order:
+   - A (me, ~10 min): create UploadThing app `handle-dev`, put its token in
+     local `.env` as `UPLOADTHING_TOKEN`, restart dev, re-upload the dev
+     profile's images/resume (they currently live in the prod app and the
+     cleanup would delete them). Vercel keeps the current (prod) app.
+   - B (code, feature branch): `app/api/cron/cleanup-uploads/route.ts`
+     guarded by `CRON_SECRET` (Vercel, Production, Secret); lists UploadThing
+     files, collects every file URL in the DB (avatarUrl, resumeUrl,
+     coverImageUrl, authorAvatarUrl; confirm in schema), deletes only files
+     unreferenced AND older than 24h. Ship in dry-run (log only) first.
+     Daily cron in `vercel.json`. Test on dev app, then prod dry-run, then live.
 4. Uptime alerts (UptimeRobot / Better Stack) and a short runbook in these
    notes for unpublishing a reported page.
 5. Layout templates (Stage B, section 16): `Profile.template` + one renderer
