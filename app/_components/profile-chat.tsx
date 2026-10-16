@@ -118,7 +118,7 @@ export default function ProfileChat({ username, name }: { username: string; name
                 Ask about {first}
               </h2>
               <p className="mt-0.5 text-xs text-pf-muted">
-                AI answers based only on this profile. They can be wrong.
+                Answers from this profile. AI can be wrong.
               </p>
             </div>
             <button
