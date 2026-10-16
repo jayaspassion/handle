@@ -146,8 +146,23 @@ npx tsc --noEmit
 2. Local: `npx prisma migrate dev`, then `npx prisma generate`, then restart
    `npm run dev`
 3. Commit and push the code (including `prisma/migrations/`)
-4. Apply to production (copy the **direct** string from Neon with Connection
-   pooling OFF, then paste at the prompt):
+4. Apply to production. The **direct** prod string (Neon > handle-prod >
+   Connection pooling OFF) is saved in the macOS Keychain as `handle-prod-db`,
+   so there is nothing to copy:
+   ```bash
+   PROD_URL="$(security find-generic-password -a "$USER" -s handle-prod-db -w)"
+   PROD_URL="${PROD_URL%%\?*}?sslmode=verify-full"
+   DATABASE_URL="$PROD_URL" npx prisma migrate deploy --config prisma7.config.ts
+   DATABASE_URL="$PROD_URL" npx prisma migrate status --config prisma7.config.ts
+   unset PROD_URL
+   ```
+   - Save or replace it in the Keychain (first time, or after resetting the
+     Neon password). It asks for the value with hidden input:
+     `security add-generic-password -U -a "$USER" -s handle-prod-db -w`
+   - If macOS asks whether Terminal may use the item, choose Always Allow.
+   - Never keep the prod URL in a file in the project (Next.js loads
+     `.env.production.local` automatically for local builds).
+   - Fallback without the Keychain (paste at the prompt):
    ```bash
    read -s "PROD_URL?Paste DIRECT prod URL: "; echo
    PROD_URL="${PROD_URL%%\?*}?sslmode=verify-full"
@@ -531,9 +546,11 @@ Key pieces a new session should know about:
 2. I merge and push myself:
    `git checkout main && git pull --ff-only && git merge --ff-only <branch> && git push`
 3. Schema changes: `prisma migrate dev` on dev only; I run the production
-   migration by hand BEFORE merging (section 5). Type the `read -s` command
-   directly in the Terminal panel, not through the chat box (the chat box
-   can't take the hidden paste, and runs in a separate shell).
+   migration by hand BEFORE merging (section 5; the prod URL comes from the
+   macOS Keychain item `handle-prod-db`). Type these commands (and any
+   `security add-generic-password` / `read -s` prompt) directly in the
+   Terminal panel, not through the chat box (the chat box can't take a hidden
+   paste, and runs in a separate shell).
 4. Dev profile `jayasoorya` mirrors production content (copied 2026-10-13 from
    the public page; images are copies, never point dev at production files).
 
