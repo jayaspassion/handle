@@ -425,7 +425,7 @@ attempts; browser DevTools Console.
 - Resume: named Firstname_Lastname_Resume.pdf, short link /<username>/resume
 - 2026-10-13: PUBLIC BETA LAUNCHED (LinkedIn post); pre-launch Neon backup
   branch taken; Clerk branded as Handle
-- AI chat on public pages (floating "Ask AI" button): Gemini free tier via
+- AI chat on public pages (floating "Ask about <name>" button): Gemini free tier via
   plain fetch (`lib/ai.ts`; gemini-3.5-flash-lite, falls back to
   gemma-4-26b-a4b-it with thinking minimal), prompt built only from
   `getPublishedProfile()` (`lib/chat-prompt.ts`), Server Actions in

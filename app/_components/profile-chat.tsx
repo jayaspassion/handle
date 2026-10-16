@@ -6,7 +6,7 @@ import { getChatStatus, sendChatMessage, type ChatStatus } from "@/app/_actions/
 
 type Turn = { role: "user" | "model"; text: string };
 
-// Floating "Ask AI" button on public pages. The panel answers questions about
+// Floating "Ask about <name>" button on public pages. The panel answers questions about
 // this profile only (app/_actions/chat.ts). Answers are plain text, never HTML.
 export default function ProfileChat({ username, name }: { username: string; name: string }) {
   const id = useId();
@@ -101,7 +101,7 @@ export default function ProfileChat({ username, name }: { username: string; name
         className="btn btn-primary fixed right-4 bottom-4 z-40 rounded-full shadow-lg"
       >
         <ChatIcon />
-        {open ? "Close chat" : `Ask AI about ${first}`}
+        {open ? "Close chat" : `Ask about ${first}`}
       </button>
 
       {open && (
