@@ -85,6 +85,15 @@ export default function TermsPage() {
         indirect losses or for lost data or content.
       </p>
 
+      <h2 className={legalH2}>AI chat</h2>
+      <p className={legalP}>
+        Public pages can have an AI chat that answers questions using only that
+        profile. AI answers can be wrong or incomplete, so check anything
+        important with the person directly. Profile owners can turn the chat
+        off in their dashboard. Don&apos;t use the chat to try to make it say
+        harmful things or to get around its limits.
+      </p>
+
       <h2 className={legalH2}>Privacy</h2>
       <p className={legalP}>
         How we handle your information is described in the{" "}

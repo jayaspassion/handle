@@ -80,6 +80,8 @@ Rules:
 | `CLERK_WEBHOOK_SECRET` | Secret | Production only |
 | `NEXT_PUBLIC_SITE_URL` (= `https://www.handleprofile.tech`) | Config | Production only |
 | `UPLOADTHING_TOKEN` | Secret | Production only |
+| `GEMINI_API_KEY` (key from AI Studio project `handle-prod`; dev uses `handle-dev`) | Secret | Production only |
+| `CHAT_IP_SALT` (`openssl rand -hex 32`; different value in dev and prod) | Secret | Production only |
 
 - Preview is deliberately left empty so a test deployment can never touch the
   production database or users.
@@ -108,6 +110,7 @@ Rules:
 | Clerk (dev + production) | auth | production has CNAME records at the domain's DNS (verified) |
 | Google Cloud project | Google sign-in for production | OAuth client; consent screen External, published to production; Branding uses `/privacy` page |
 | UploadThing | photo/resume storage | same token in dev and prod for now (consider a separate app later) |
+| Google AI Studio (Gemini API) | AI chat on public pages | free tier, projects `handle-dev` and `handle-prod`; limits at aistudio.google.com/rate-limit (Flash-Lite 500/day, 15/min) |
 | Svix (inside Clerk) | webhook delivery log | Webhooks > endpoint > Message attempts |
 
 ---
@@ -407,6 +410,15 @@ attempts; browser DevTools Console.
 - Resume: named Firstname_Lastname_Resume.pdf, short link /<username>/resume
 - 2026-10-13: PUBLIC BETA LAUNCHED (LinkedIn post); pre-launch Neon backup
   branch taken; Clerk branded as Handle
+- AI chat on public pages (floating "Ask AI" button): Gemini free tier via
+  plain fetch (`lib/ai.ts`; gemini-3.5-flash-lite, falls back to
+  gemma-4-26b-a4b-it with thinking minimal), prompt built only from
+  `getPublishedProfile()` (`lib/chat-prompt.ts`), Server Actions in
+  `app/_actions/chat.ts`, UI `app/_components/profile-chat.tsx`. Daily limits
+  in `lib/chat-limits.ts` (`ChatUsage` table, Pacific-time days): guests 5 per
+  hashed IP, signed-in 20, all guests 300, total 450. Chat text is never
+  stored. `Profile.chatEnabled` (default on) + dashboard switch. Privacy and
+  Terms updated. Migration `profile_chat`.
 
 ---
 
@@ -556,7 +568,7 @@ Key pieces a new session should know about:
    public pages, empty states, spinners on Save/Upload, 44px small buttons,
    optional 2-line title reserve on project cards, CSP header (test with Clerk
    and UploadThing).
-7. Later features, in order: messaging, AI chatbot on public pages, resume
+7. Later features, in order: messaging, (AI chatbot on public pages: done), resume
    autofill (after the chatbot), Stripe FREE/PRO (themes/templates could be PRO).
 
 Parked: Clerk popups styled to match the theme.

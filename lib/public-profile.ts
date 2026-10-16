@@ -25,6 +25,7 @@ export const getPublishedProfile = cache(async (username: string) => {
       theme: true,
       font: true,
       openToWork: true,
+      chatEnabled: true,
       links: {
         orderBy: byOrder,
         select: { id: true, label: true, url: true },

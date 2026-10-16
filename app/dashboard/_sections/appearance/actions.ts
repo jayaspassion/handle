@@ -37,7 +37,10 @@ export async function saveAppearance(input: {
   return { ok: true };
 }
 
-export async function saveOpenToWork(value: boolean): Promise<AppearanceResult> {
+async function saveSwitch(
+  field: "openToWork" | "chatEnabled",
+  value: boolean,
+): Promise<AppearanceResult> {
   const { userId } = await auth();
   if (!userId) return { ok: false, message: "You must be signed in." };
 
@@ -47,7 +50,7 @@ export async function saveOpenToWork(value: boolean): Promise<AppearanceResult> 
   try {
     const { count } = await prisma.profile.updateMany({
       where: { user: { clerkId: userId } },
-      data: { openToWork: parsed.data },
+      data: { [field]: parsed.data },
     });
     if (count === 0) return { ok: false, message: "Profile not found." };
   } catch {
@@ -56,4 +59,12 @@ export async function saveOpenToWork(value: boolean): Promise<AppearanceResult> 
 
   revalidatePath("/dashboard");
   return { ok: true };
+}
+
+export async function saveOpenToWork(value: boolean) {
+  return saveSwitch("openToWork", value);
+}
+
+export async function saveChatEnabled(value: boolean) {
+  return saveSwitch("chatEnabled", value);
 }

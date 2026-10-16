@@ -31,7 +31,16 @@ export default function PrivacyPage() {
         </li>
         <li>
           Page settings you choose: color theme, font, light or dark mode, and
-          whether you show an &ldquo;Open to opportunities&rdquo; badge.
+          whether you show an &ldquo;Open to opportunities&rdquo; badge or
+          the AI chat.
+        </li>
+        <li>
+          AI chat on public pages: the questions visitors type are sent to
+          Google&apos;s Gemini API together with that public profile to get an
+          answer. Handle does not save the questions or answers. To enforce
+          daily limits we keep a count of questions per account, or for
+          visitors who are not signed in, per scrambled (hashed) IP address,
+          never the IP itself. Counts are deleted after about a week.
         </li>
         <li>
           Basic technical data such as cookies needed to keep you signed in,
@@ -57,6 +66,10 @@ export default function PrivacyPage() {
       <h2 className={legalH2}>Services that process data for us</h2>
       <ul className={legalList}>
         <li>Clerk: authentication and account management.</li>
+        <li>
+          Google (Gemini API): answers AI chat questions, using only the
+          question and the public profile being viewed.
+        </li>
         <li>Google Forms: feedback you choose to send us, and only what you type into it.</li>
         <li>Neon: database hosting.</li>
         <li>UploadThing: storage of uploaded photos, resumes and project images.</li>

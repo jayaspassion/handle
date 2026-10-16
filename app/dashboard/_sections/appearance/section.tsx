@@ -2,7 +2,7 @@
 
 import { useId, useState, useTransition } from "react";
 import { FONTS, THEMES, type FontId, type ThemeId } from "@/lib/appearance";
-import { saveAppearance, saveOpenToWork } from "./actions";
+import { saveAppearance, saveChatEnabled, saveOpenToWork, type AppearanceResult } from "./actions";
 import { useLeaveWarning } from "../../_components/leave-warning";
 
 // Theme and font picker with a live preview. Colors and fonts come from the
@@ -167,6 +167,39 @@ export function AppearanceCard({
 
 // "Open to opportunities" badge switch; saves right away
 export function OpenToWorkCard({ value }: { value: boolean }) {
+  return (
+    <SwitchCard
+      label="Open to opportunities"
+      hint="Shows a badge at the top of your public page. Saves automatically."
+      value={value}
+      save={saveOpenToWork}
+    />
+  );
+}
+
+// AI chat button on the public page; on by default
+export function ChatEnabledCard({ value }: { value: boolean }) {
+  return (
+    <SwitchCard
+      label="AI chat on my page"
+      hint="Visitors can ask an AI questions about your public profile. Saves automatically."
+      value={value}
+      save={saveChatEnabled}
+    />
+  );
+}
+
+function SwitchCard({
+  label,
+  hint,
+  value,
+  save,
+}: {
+  label: string;
+  hint: string;
+  value: boolean;
+  save: (value: boolean) => Promise<AppearanceResult>;
+}) {
   const id = useId();
   const [checked, setChecked] = useState(value);
   const [pending, startTransition] = useTransition();
@@ -175,7 +208,7 @@ export function OpenToWorkCard({ value }: { value: boolean }) {
   function toggle(next: boolean) {
     setChecked(next);
     startTransition(async () => {
-      const result = await saveOpenToWork(next);
+      const result = await save(next);
       if (result.ok) {
         setError("");
       } else {
@@ -190,10 +223,10 @@ export function OpenToWorkCard({ value }: { value: boolean }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <label htmlFor={id} className="font-serif text-xl">
-            Open to opportunities
+            {label}
           </label>
           <p id={`${id}-hint`} className="mt-1 text-sm text-pf-muted">
-            Shows a badge at the top of your public page. Saves automatically.
+            {hint}
           </p>
         </div>
         {/* Native checkbox (keyboard and screen readers) drawn as a switch */}

@@ -9,6 +9,7 @@ import ProjectsSection from "@/app/_components/projects-carousel";
 import ProjectCard from "@/app/_components/project-card";
 import { OwnerAppearance } from "@/app/_components/sync-color-mode";
 import { ownerAppearanceScript } from "@/app/_components/color-mode";
+import ProfileChat from "@/app/_components/profile-chat";
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -694,7 +695,10 @@ export default async function PublicProfilePage({ params }: Props) {
           </section>
         )}
 
-        <footer className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden">
+        {/* Extra bottom space so the floating chat button never covers the footer */}
+        <footer
+          className={`mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-pf-border pt-4 text-xs text-pf-muted print:hidden ${profile.chatEnabled ? "pb-16" : ""}`}
+        >
           <p>
             Made with{" "}
             <Link href="/" className={textLink}>
@@ -711,6 +715,9 @@ export default async function PublicProfilePage({ params }: Props) {
           </a>
         </footer>
       </main>
+      {profile.chatEnabled && (
+        <ProfileChat username={profile.username ?? username} name={name} />
+      )}
     </div>
   );
 }

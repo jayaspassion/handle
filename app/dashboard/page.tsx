@@ -11,7 +11,7 @@ import SectionOrderCard from "./_components/section-order-card";
 import { resolveSectionOrder } from "@/lib/sections";
 import { resolveColorMode, resolveFont, resolveTheme } from "@/lib/appearance";
 import { AccountColorMode } from "../_components/sync-color-mode";
-import { AppearanceCard, OpenToWorkCard } from "./_sections/appearance/section";
+import { AppearanceCard, ChatEnabledCard, OpenToWorkCard } from "./_sections/appearance/section";
 import PublishSection from "./_sections/publish/section";
 import ProfileSection from "./_sections/profile/section";
 import LinkForm from "./_sections/links/form";
@@ -165,6 +165,7 @@ export default async function DashboardPage() {
                 }
               />
               <OpenToWorkCard value={profile?.openToWork ?? false} />
+              <ChatEnabledCard value={profile?.chatEnabled ?? true} />
               <AppearanceCard
                 theme={resolveTheme(profile?.theme)}
                 font={resolveFont(profile?.font)}

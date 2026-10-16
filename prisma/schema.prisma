@@ -46,6 +46,8 @@ model Profile {
   theme       String?
   font        String?
   openToWork  Boolean  @default(false)
+  // AI chat on the public page; the owner can switch it off
+  chatEnabled Boolean  @default(true)
   experiences Experience[]
   education Education[]
   projects Project[]
@@ -158,4 +160,15 @@ model Link {
   order     Int      @default(0)
 
   createdAt DateTime @default(now())
+}
+// Daily message counters for the AI chat (lib/chat-limits.ts).
+// key is "user:<clerkId>", "ip:<hmac of IP>" (never the raw IP), "guests" or "all".
+// No chat text is stored. Rows older than a week are deleted.
+model ChatUsage {
+  key   String
+  day   DateTime @db.Date
+  count Int      @default(0)
+
+  @@id([key, day])
+  @@index([day])
 }
